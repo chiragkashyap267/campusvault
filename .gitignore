@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# bulk import script - NEVER commit service account key!
+scripts/service-account.json
+scripts/import-errors.log
