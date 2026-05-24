@@ -6,7 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Minus, HelpCircle } from "lucide-react";
 
-gsap.registerPlugin(ScrollTrigger);
+// Register GSAP ScrollTrigger inside useEffect to prevent server-side window/document reference issues in Next.js
 
 const FAQS = [
   {
@@ -37,6 +37,7 @@ export function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
     const ctx = gsap.context(() => {
       gsap.fromTo(
         qRefs.current,

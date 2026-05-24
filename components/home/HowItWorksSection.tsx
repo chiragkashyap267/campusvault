@@ -5,7 +5,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Search, Download, UploadCloud, CheckCircle } from "lucide-react";
 
-gsap.registerPlugin(ScrollTrigger);
+// Register GSAP ScrollTrigger inside useEffect to prevent server-side window/document reference issues in Next.js
 
 const STEPS = [
   {
@@ -43,6 +43,7 @@ export function HowItWorksSection() {
   const cardRefs = useRef<HTMLDivElement[]>([]);
 
   useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
     const ctx = gsap.context(() => {
       gsap.fromTo(
         cardRefs.current,

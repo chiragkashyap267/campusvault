@@ -1,11 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { MonitorPlay, ArrowRight, Code, Database, Terminal, PenTool, BookOpen, Network } from "lucide-react";
+import { MonitorPlay, ArrowRight, Network, PenTool } from "lucide-react";
 
 const POPULAR_TOOLS = [
   { name: "Cisco Packet Tracer", icon: Network, desc: "Network Sim", color: "text-cyan-500", link: "https://drive.google.com/file/d/1oTeCij1NV5emMxZbDmIRNh3LqiyPm6A-/view?usp=sharing" },
