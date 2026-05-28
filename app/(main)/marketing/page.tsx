@@ -192,19 +192,55 @@ export default function MarketingPage() {
     setBlastLogs(["[Outreach Engine] Querying Firestore database for active subscribers..."]);
 
     try {
-      // 1. Fetch ACTUAL subscribers from Firestore database matching filters
+      // 1. Fetch from Firestore database based on campaign filter
       let studentsList: Subscriber[] = [];
-      const subRef = collection(db, "subscribers");
-      let subQuery = query(subRef);
+      const emailsSet = new Set<string>();
 
-      if (campaignBranch !== "ALL") {
-        subQuery = query(subRef, where("branch", "==", campaignBranch));
+      const addStudent = (student: Subscriber) => {
+        if (!student.email) return;
+        const normEmail = student.email.trim().toLowerCase();
+        if (!emailsSet.has(normEmail)) {
+          emailsSet.add(normEmail);
+          studentsList.push({
+            ...student,
+            email: normEmail
+          });
+        }
+      };
+
+      // A. Fetch from subscribers collection
+      if (campaignBranch === "ALL" || campaignBranch === "SUBSCRIBERS" || campaignBranch === "MCA" || campaignBranch === "BTECH") {
+        const subRef = collection(db, "subscribers");
+        let subQuery = query(subRef);
+        if (campaignBranch === "MCA" || campaignBranch === "BTECH") {
+          subQuery = query(subRef, where("branch", "==", campaignBranch));
+        }
+        const querySnapshot = await getDocs(subQuery);
+        querySnapshot.forEach(doc => {
+          addStudent({ id: doc.id, ...doc.data() } as Subscriber);
+        });
       }
 
-      const querySnapshot = await getDocs(subQuery);
-      querySnapshot.forEach(doc => {
-        studentsList.push({ id: doc.id, ...doc.data() } as Subscriber);
-      });
+      // B. Fetch from users collection
+      if (campaignBranch === "ALL" || campaignBranch === "USERS") {
+        try {
+          const usersSnap = await getDocs(collection(db, "users"));
+          usersSnap.forEach(doc => {
+            const userData = doc.data();
+            if (userData.email) {
+              addStudent({
+                name: userData.displayName || "Student",
+                email: userData.email,
+                branch: "ALL",
+                topic: "weekly-digest",
+                source: "users-collection"
+              } as Subscriber);
+            }
+          });
+        } catch (userErr) {
+          console.warn("Could not load users collection, falling back to subscribers only:", userErr);
+        }
+      }
 
       // Fallback baseline seed list if Firestore collection is currently empty
       if (studentsList.length === 0) {
@@ -569,9 +605,11 @@ export default function MarketingPage() {
                   onChange={(e) => setCampaignBranch(e.target.value)}
                   className="input-field cursor-pointer font-medium"
                 >
-                  <option value="ALL">All Registered Students</option>
-                  <option value="MCA">MCA Program Only</option>
-                  <option value="BTECH">B.Tech Program Only</option>
+                  <option value="ALL">Everyone (Subscribers & Registered Users)</option>
+                  <option value="SUBSCRIBERS">Subscribers Only</option>
+                  <option value="USERS">Registered Users Only</option>
+                  <option value="MCA">MCA Program Only (Subscribers)</option>
+                  <option value="BTECH">B.Tech Program Only (Subscribers)</option>
                 </select>
               </div>
 
