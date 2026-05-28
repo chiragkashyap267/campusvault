@@ -14,7 +14,10 @@ export function NewsletterPopup() {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    // Show popup 2.5 seconds after mounting on every page load/mount
+    // Show popup 2.5 seconds after mounting, unless they already successfully subscribed
+    const hasSubscribed = localStorage.getItem("campusvault_subscribed") === "true";
+    if (hasSubscribed) return;
+
     const timer = setTimeout(() => {
       setIsOpen(true);
     }, 2500);
@@ -46,6 +49,7 @@ export function NewsletterPopup() {
 
       // Try calling our real email serverless API route to trigger a real welcome email!
       try {
+        const appOrigin = typeof window !== "undefined" ? window.location.origin : "https://campusvault.vercel.app";
         await fetch("/api/marketing/send", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -54,7 +58,7 @@ export function NewsletterPopup() {
             studentName: "Student",
             subject: "Welcome to CampusVault Digests! 📚",
             headline: "Thank you for subscribing to study alerts!",
-            message: `Hey student!\n\nYou've successfully subscribed to CampusVault academic digests.\n\nWe will regularly update you with study notes, previous year exam papers (PYQs), class tests, and syllabus templates!\n\nAlso, we highly encourage you to upload papers, books, and study guides you have to help other students succeed. Let's build a stronger campus together!\n\nCheck back regularly at http://localhost:3000/\n\nWarm regards,\nCampusVault Outreach Team`,
+            message: `Hey student!\n\nYou've successfully subscribed to CampusVault academic digests.\n\nWe will regularly update you with study notes, previous year exam papers (PYQs), class tests, and syllabus templates!\n\nAlso, we highly encourage you to upload papers, books, and study guides you have to help other students succeed. Let's build a stronger campus together!\n\nCheck back regularly at ${appOrigin}\n\nWarm regards,\nCampusVault Outreach Team`,
             templateStyle: "sky"
           })
         });
@@ -63,6 +67,7 @@ export function NewsletterPopup() {
       }
 
       toast.success("Subscribed successfully! Check your inbox.");
+      localStorage.setItem("campusvault_subscribed", "true");
       setSuccess(true);
       
       setTimeout(() => {

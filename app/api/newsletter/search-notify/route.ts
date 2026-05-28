@@ -309,8 +309,9 @@ export async function POST(req: NextRequest) {
     `;
 
     // ── Send via Resend ──────────────────────────────────────────────
+    const fromEmail = process.env.RESEND_FROM_EMAIL || "CampusVault GBPIET <onboarding@resend.dev>";
     const payload = {
-      from: "CampusVault GBPIET <onboarding@resend.dev>",
+      from: fromEmail,
       to: studentEmail,
       subject: `📚 Resources found for "${displayQuery}" — CampusVault`,
       html: htmlContent,

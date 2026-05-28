@@ -58,7 +58,8 @@ export async function POST(req: NextRequest) {
     }
 
     const theme = TEMPLATE_STYLES[templateStyle] || TEMPLATE_STYLES.sky;
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const defaultUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || defaultUrl;
 
     const htmlContent = `
 <!DOCTYPE html>
@@ -109,8 +110,9 @@ export async function POST(req: NextRequest) {
 
     // NOTE: "onboarding@resend.dev" can ONLY send to your Resend account's verified email.
     // To send to any recipient, verify your domain at resend.com/domains and change the from address.
+    const fromEmail = process.env.RESEND_FROM_EMAIL || "CampusVault <onboarding@resend.dev>";
     const payload = {
-      from: "CampusVault <onboarding@resend.dev>",
+      from: fromEmail,
       to: recipientEmail,
       subject,
       html: htmlContent
