@@ -970,9 +970,10 @@ export default function MarketingPage() {
         </div>
         <button
           onClick={() => {
+            const appOrigin = typeof window !== "undefined" ? window.location.origin : "https://campusvaultgbpiet.vercel.app";
             setCampaignSubject("[Contribute] Help your batch! Upload your CT papers and notes! 📝");
             setCampaignHeadline("Collaborate with your batchmates and build the ultimate GBPIET repository.");
-            setCampaignMessage("Hey Campus,\n\nWe need your support! CampusVault thrives when students share notes, syllabus sheets, class test (CT) papers, and lab manuals.\n\nIf you have handwritten study guides or previous year papers, please take a quick photo or convert them to PDF and upload them directly to CampusVault using the Upload tab!\n\nYour contributions help classmates study smart and score higher. Plus, climb to the top of our Hall of Fame Leaderboard!\n\nUpload now: http://localhost:3000/upload\n\nHappy sharing!");
+            setCampaignMessage(`Hey Campus,\n\nWe need your support! CampusVault thrives when students share notes, syllabus sheets, class test (CT) papers, and lab manuals.\n\nIf you have handwritten study guides or previous year papers, please take a quick photo or convert them to PDF and upload them directly to CampusVault using the Upload tab!\n\nYour contributions help classmates study smart and score higher. Plus, climb to the top of our Hall of Fame Leaderboard!\n\nUpload now: ${appOrigin}/upload\n\nHappy sharing!`);
             toast.success("Loaded Contribution campaign template!");
           }}
           className="text-xs font-semibold px-4 py-2 rounded-xl bg-cyan-400/10 border border-cyan-400/20 text-cyan-400 hover:bg-cyan-400/20 transition-all cursor-pointer whitespace-nowrap shrink-0 animate-pulse"
