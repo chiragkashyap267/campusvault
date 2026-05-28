@@ -124,13 +124,13 @@ export function Navbar() {
           scrolled ? headerScrolledClass : "bg-transparent"
         )}
       >
-        <nav className="container-app flex items-center justify-between h-16 md:h-18">
+        <nav className="container-app flex items-center justify-between h-16 gap-2">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center shadow-[0_0_16px_rgba(56,189,248,0.35)] group-hover:shadow-[0_0_24px_rgba(56,189,248,0.55)] transition-all duration-300">
+          <Link href="/" className="flex items-center gap-2 group min-w-0 shrink">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center shadow-[0_0_16px_rgba(56,189,248,0.35)] group-hover:shadow-[0_0_24px_rgba(56,189,248,0.55)] transition-all duration-300 shrink-0">
               <BookOpen className="w-4 h-4 text-white" />
             </div>
-            <span className={logoTextClass}>
+            <span className={cn(logoTextClass, "truncate")}>
               CampusVault <span className={logoBadgeClass}>GBPIET</span>
             </span>
           </Link>
@@ -152,7 +152,7 @@ export function Navbar() {
           </div>
 
           {/* Right Actions */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             {/* Search */}
             <button
               onClick={() => setSearchOpen(true)}

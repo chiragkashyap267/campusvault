@@ -10,42 +10,35 @@ import toast from "react-hot-toast";
 export function NewsletterPopup() {
   const [isOpen, setIsOpen] = useState(false);
   const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const [branch, setBranch] = useState("MCA");
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    // Show popup 2.5 seconds after mounting, unless they already subscribed during this session
-    const hasSubscribed = localStorage.getItem("campusvault_subscribed") === "true";
-    const sessionDismissed = sessionStorage.getItem("campusvault_popup_dismissed") === "true";
-
-    if (!hasSubscribed && !sessionDismissed) {
-      const timer = setTimeout(() => {
-        setIsOpen(true);
-      }, 2500);
-      return () => clearTimeout(timer);
-    }
+    // Show popup 2.5 seconds after mounting on every page load/mount
+    const timer = setTimeout(() => {
+      setIsOpen(true);
+    }, 2500);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleClose = () => {
     setIsOpen(false);
-    sessionStorage.setItem("campusvault_popup_dismissed", "true");
   };
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !name) {
-      toast.error("Please fill in both your name and email.");
+    if (!email) {
+      toast.error("Please enter a valid email address.");
       return;
     }
 
     setSubmitting(true);
     try {
+      // Save email with default values for name and branch for backwards compatibility
       await addDoc(collection(db, "subscribers"), {
-        name,
-        email,
-        branch,
+        name: "Student",
+        email: email.trim().toLowerCase(),
+        branch: "ALL",
         topic: "weekly-digest",
         subscribedAt: serverTimestamp(),
         source: "global-popup"
@@ -57,12 +50,12 @@ export function NewsletterPopup() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            recipientEmail: email,
+            recipientEmail: email.trim().toLowerCase(),
+            studentName: "Student",
             subject: "Welcome to CampusVault Digests! 📚",
-            headline: `Hey ${name}, thank you for subscribing to study alerts!`,
-            message: `Hey student!\n\nYou've successfully subscribed to CampusVault academic digests.\n\nWe will regularly update you withMCA and B.Tech study notes, previous year exam papers (PYQs), class tests, and syllabus templates matching your branch!\n\nAlso, we highly encourage you to upload papers, books, and study guides you have to help other students succeed. Let's build a stronger campus together!\n\nCheck back regularly at http://localhost:3000/\n\nWarm regards,\nCampusVault Outreach Team`,
-            templateStyle: "sky",
-            forceSingle: true // Sends instantly to this specific user
+            headline: "Thank you for subscribing to study alerts!",
+            message: `Hey student!\n\nYou've successfully subscribed to CampusVault academic digests.\n\nWe will regularly update you with study notes, previous year exam papers (PYQs), class tests, and syllabus templates!\n\nAlso, we highly encourage you to upload papers, books, and study guides you have to help other students succeed. Let's build a stronger campus together!\n\nCheck back regularly at http://localhost:3000/\n\nWarm regards,\nCampusVault Outreach Team`,
+            templateStyle: "sky"
           })
         });
       } catch (mailErr) {
@@ -70,7 +63,6 @@ export function NewsletterPopup() {
       }
 
       toast.success("Subscribed successfully! Check your inbox.");
-      localStorage.setItem("campusvault_subscribed", "true");
       setSuccess(true);
       
       setTimeout(() => {
@@ -149,40 +141,15 @@ export function NewsletterPopup() {
                 {/* Subscription Form */}
                 <form onSubmit={handleSubscribe} className="space-y-4">
                   <div>
-                    <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Student Name</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. Chirag Kashyap"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className="input-field py-2.5"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">College Email</label>
+                    <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Mail ID</label>
                     <input
                       type="email"
-                      placeholder="student@gbpiet.ac.in"
+                      placeholder="e.g. chirag@gmail.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="input-field py-2.5"
+                      className="input-field py-2.5 text-white"
                       required
                     />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Your Branch</label>
-                    <select
-                      value={branch}
-                      onChange={(e) => setBranch(e.target.value)}
-                      className="input-field py-2.5 cursor-pointer"
-                    >
-                      <option value="MCA">MCA Program</option>
-                      <option value="BTECH">B.Tech (Syllabus-aligned)</option>
-                      <option value="MTECH">M.Tech / Research</option>
-                    </select>
                   </div>
 
                   <button

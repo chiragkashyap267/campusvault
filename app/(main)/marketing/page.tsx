@@ -71,6 +71,7 @@ export default function MarketingPage() {
   const [resendApiKey, setResendApiKey] = useState<string>("");
   const [showSettings, setShowSettings] = useState<boolean>(false);
   const [sendRealEmails, setSendRealEmails] = useState<boolean>(true);
+  const [hasServerApiKey, setHasServerApiKey] = useState<boolean>(false);
 
   // Blast Simulator states
   const [isBlasting, setIsBlasting] = useState<boolean>(false);
@@ -93,6 +94,17 @@ export default function MarketingPage() {
     } else {
       setSendRealEmails(false);
     }
+
+    // Check server key configuration
+    fetch("/api/marketing/config")
+      .then(res => res.json())
+      .then(data => {
+        if (data.hasServerApiKey) {
+          setHasServerApiKey(true);
+          setSendRealEmails(true);
+        }
+      })
+      .catch(err => console.error("Error loading server key config:", err));
   }, []);
 
   const fetchMetrics = async () => {
@@ -169,7 +181,7 @@ export default function MarketingPage() {
       return;
     }
 
-    if (sendRealEmails && !resendApiKey.trim()) {
+    if (sendRealEmails && !resendApiKey.trim() && !hasServerApiKey) {
       toast.error("Please enter your Resend API Key in Mail Settings first!");
       setShowSettings(true);
       return;
@@ -494,10 +506,10 @@ export default function MarketingPage() {
             </div>
           </div>
           <p className="text-xl md:text-2xl font-black text-white truncate">
-            {resendApiKey ? "Resend Online" : "Local Simulator"}
+            {hasServerApiKey ? "Server Active" : resendApiKey ? "Resend Online" : "Local Simulator"}
           </p>
           <p className="text-[10px] text-cyan-400 font-semibold mt-1">
-            {resendApiKey ? "API dispatch active" : "Paste Key to send real"}
+            {hasServerApiKey ? "Server-side Key Active" : resendApiKey ? "API dispatch active" : "Paste Key to send real"}
           </p>
         </div>
 

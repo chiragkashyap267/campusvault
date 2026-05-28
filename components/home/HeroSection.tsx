@@ -7,19 +7,14 @@ import { ArrowRight, Upload, BookOpen, Sparkles, Zap, FileText, MonitorPlay, Pen
 import { ParticleBackground } from "./ParticleBackground";
 import { SITE_TAGLINE } from "@/lib/constants";
 import { useAuthStore } from "@/lib/store/authStore";
-import { useTheme } from "next-themes";
-import { cn } from "@/lib/utils";
 
 const WORDS = ["Resources", "PYQ Papers", "Notes", "Lab Manuals", "Projects"];
 
 export function HeroSection() {
   const { user } = useAuthStore();
-  const { resolvedTheme } = useTheme();
-  const isLight = resolvedTheme === "light";
 
   return (
     <section className="relative min-h-[100svh] flex items-center justify-center overflow-hidden hero-gradient">
-      {/* Particle Canvas */}
       <ParticleBackground />
 
       {/* Floating Orbs */}
@@ -59,10 +54,7 @@ export function HeroSection() {
           transition={{ duration: 0.7, delay: 0.1 }}
           className="mb-8"
         >
-          <h1 className={cn(
-            "text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold leading-tight mb-2",
-            isLight ? "text-slate-900" : "text-white"
-          )}>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold text-white leading-tight mb-2">
             One Vault for{" "}
             <br className="hidden sm:block" />
             <span className="gradient-text glow-text">All Your Academic</span>
@@ -77,13 +69,9 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className={cn(
-            "text-base sm:text-lg max-w-xl mx-auto mb-10 leading-relaxed",
-            isLight ? "text-slate-500" : "text-slate-400"
-          )}
+          className="text-base sm:text-lg text-slate-400 max-w-xl mx-auto mb-10 leading-relaxed"
         >
-          {SITE_TAGLINE} — Share notes, access PYQs, collaborate with your
-          batchmates, all in one premium platform.
+          {SITE_TAGLINE} — Share notes, access PYQs, collaborate with your batchmates, all in one premium platform.
         </motion.p>
 
         {/* CTA Buttons */}
@@ -125,29 +113,20 @@ export function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 + i * 0.1 }}
-              className={cn(
-                "text-left group cursor-pointer relative overflow-hidden flex flex-col justify-between rounded-xl border transition-all",
-                isLight
-                  ? "bg-white/80 border-slate-200 shadow-sm hover:shadow-md hover:border-blue-300"
-                  : "glass-card"
-              )}
+              className="glass-card text-left group cursor-pointer relative overflow-hidden flex flex-col justify-between"
             >
               <div className="p-4 pb-4">
                 <div className="mb-3">
                   <motion.div
                     whileHover={{ scale: 1.15, rotate: [-5, 5, -5, 0] }}
                     transition={{ duration: 0.3 }}
-                    className={cn(
-                      "inline-flex p-2 rounded-xl border",
-                      isLight ? "bg-blue-50 border-blue-100" : "bg-white/5 border-white/10",
-                      card.color
-                    )}
+                    className={`inline-flex p-2 rounded-xl bg-white/5 border border-white/10 ${card.color}`}
                   >
                     <card.icon className="w-5 h-5" />
                   </motion.div>
                 </div>
-                <p className={cn("text-xs font-semibold", isLight ? "text-slate-800" : "text-white")}>{card.label}</p>
-                <p className={cn("text-xs mt-0.5", isLight ? "text-slate-400" : "text-slate-500")}>{card.count}</p>
+                <p className="text-xs font-semibold text-white">{card.label}</p>
+                <p className="text-xs text-slate-500 mt-0.5">{card.count}</p>
               </div>
             </motion.div>
           ))}
