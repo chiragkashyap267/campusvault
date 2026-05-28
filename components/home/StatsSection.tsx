@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { FileText, Users, Download, Star } from "lucide-react";
+import { useTheme } from "next-themes";
+import { cn } from "@/lib/utils";
 
 const STATS = [
   { icon: <FileText className="w-5 h-5" />, label: "Resources", value: 500, suffix: "+" },
@@ -41,8 +43,11 @@ function Counter({ value, suffix }: { value: number; suffix: string }) {
 }
 
 export function StatsSection() {
+  const { resolvedTheme } = useTheme();
+  const isLight = resolvedTheme === "light";
+
   return (
-    <section className="py-16 relative">
+    <section className={cn("py-16 relative transition-colors duration-300", isLight ? "bg-white" : "")}>
       <div className="divider mb-16" />
       <div className="container-app">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
@@ -53,15 +58,25 @@ export function StatsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
               viewport={{ once: true }}
-              className="glass-card p-6 text-center group"
+              className={cn(
+                "p-6 text-center group rounded-xl border transition-all",
+                isLight
+                  ? "bg-white border-slate-200 shadow-sm hover:border-blue-300 hover:shadow-md"
+                  : "glass-card"
+              )}
             >
-              <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-cyan-400/10 text-cyan-400 mb-3 group-hover:bg-cyan-400/20 transition-all">
+              <div className={cn(
+                "inline-flex items-center justify-center w-10 h-10 rounded-xl mb-3 transition-all",
+                isLight
+                  ? "bg-blue-50 text-blue-600 group-hover:bg-blue-100"
+                  : "bg-cyan-400/10 text-cyan-400 group-hover:bg-cyan-400/20"
+              )}>
                 {stat.icon}
               </div>
               <p className="text-3xl font-display font-bold gradient-text mb-1">
                 <Counter value={stat.value} suffix={stat.suffix} />
               </p>
-              <p className="text-sm text-slate-500">{stat.label}</p>
+              <p className={cn("text-sm", isLight ? "text-slate-500" : "text-slate-500")}>{stat.label}</p>
             </motion.div>
           ))}
         </div>

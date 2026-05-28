@@ -14,6 +14,8 @@ import { NAV_LINKS, SITE_NAME } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
 import Image from "next/image";
+import { ThemeToggle } from "./ThemeToggle";
+import { useTheme } from "next-themes";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -24,6 +26,8 @@ export function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const { resolvedTheme } = useTheme();
+  const isLight = resolvedTheme === "light";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -51,38 +55,95 @@ export function Navbar() {
     }
   };
 
+  // Theme-adaptive class helpers
+  const navLinkBase = "px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200";
+  const navLinkActive = isLight
+    ? "text-blue-700 bg-blue-50 font-semibold"
+    : "text-cyan-400 bg-cyan-400/10";
+  const navLinkInactive = isLight
+    ? "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+    : "text-slate-400 hover:text-white hover:bg-white/5";
+
+  const iconBtnClass = isLight
+    ? "p-2 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-all"
+    : "p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-all";
+
+  const dropdownClass = isLight
+    ? "absolute right-0 mt-2 w-52 bg-white rounded-xl border border-slate-200 shadow-[0_8px_32px_rgba(15,23,42,0.12)] overflow-hidden"
+    : "absolute right-0 mt-2 w-52 glass rounded-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] overflow-hidden";
+
+  const dropdownHeaderClass = isLight
+    ? "p-3 border-b border-slate-100"
+    : "p-3 border-b border-white/10";
+
+  const dropdownNameClass = isLight
+    ? "text-sm font-semibold text-slate-900 truncate"
+    : "text-sm font-semibold text-white truncate";
+
+  const dropdownEmailClass = isLight
+    ? "text-xs text-slate-500 truncate"
+    : "text-xs text-slate-400 truncate";
+
+  const logoTextClass = isLight
+    ? "font-display font-bold text-base md:text-lg text-slate-900 group-hover:text-blue-700 transition-colors"
+    : "font-display font-bold text-base md:text-lg text-white group-hover:text-cyan-400 transition-colors";
+
+  const logoBadgeClass = isLight ? "text-blue-600" : "text-cyan-400";
+
+  const headerScrolledClass = isLight
+    ? "bg-white/90 border-b border-slate-200 shadow-[0_2px_16px_rgba(15,23,42,0.06)] backdrop-blur-md"
+    : "glass border-b border-white/10 shadow-[0_4px_32px_rgba(0,0,0,0.4)]";
+
+  const mobileDrawerClass = isLight
+    ? "fixed right-0 top-0 bottom-0 z-50 w-72 bg-white border-l border-slate-200 md:hidden overflow-y-auto shadow-2xl"
+    : "fixed right-0 top-0 bottom-0 z-50 w-72 glass border-l border-white/10 md:hidden overflow-y-auto";
+
+  const mobileHeaderClass = isLight
+    ? "p-4 flex items-center justify-between border-b border-slate-100"
+    : "p-4 flex items-center justify-between border-b border-white/10";
+
+  const mobileMenuLinkBase = "block px-4 py-3 rounded-xl text-sm font-medium transition-all";
+  const mobileMenuLinkActive = isLight ? "text-blue-700 bg-blue-50 font-semibold" : "text-cyan-400 bg-cyan-400/10";
+  const mobileMenuLinkInactive = isLight
+    ? "text-slate-700 hover:text-slate-900 hover:bg-slate-100"
+    : "text-slate-300 hover:text-white hover:bg-white/5";
+
+  const searchFormClass = isLight
+    ? "bg-white rounded-2xl border border-slate-200 shadow-[0_8px_32px_rgba(15,23,42,0.12)] p-4"
+    : "glass rounded-2xl border border-white/10 p-4";
+
+  const searchInputClass = isLight
+    ? "flex-1 bg-transparent text-slate-900 placeholder-slate-400 outline-none text-base"
+    : "flex-1 bg-transparent text-white placeholder-slate-500 outline-none text-base";
+
   return (
     <>
       <header
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-          scrolled
-            ? "glass border-b border-white/10 shadow-[0_4px_32px_rgba(0,0,0,0.4)]"
-            : "bg-transparent"
+          scrolled ? headerScrolledClass : "bg-transparent"
         )}
       >
         <nav className="container-app flex items-center justify-between h-16 md:h-18">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center shadow-[0_0_16px_rgba(0,212,255,0.4)] group-hover:shadow-[0_0_24px_rgba(0,212,255,0.6)] transition-all duration-300">
-              <BookOpen className="w-4 h-4 text-black" />
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center shadow-[0_0_16px_rgba(56,189,248,0.35)] group-hover:shadow-[0_0_24px_rgba(56,189,248,0.55)] transition-all duration-300">
+              <BookOpen className="w-4 h-4 text-white" />
             </div>
-            <span className="font-display font-bold text-base md:text-lg text-white group-hover:text-cyan-400 transition-colors">
-              CampusVault <span className="text-cyan-400">GBPIET</span>
+            <span className={logoTextClass}>
+              CampusVault <span className={logoBadgeClass}>GBPIET</span>
             </span>
           </Link>
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-1">
-            {NAV_LINKS.map((link) => (
+            {NAV_LINKS.filter(link => !link.adminOnly || isAdmin).map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200",
-                  pathname === link.href
-                    ? "text-cyan-400 bg-cyan-400/10"
-                    : "text-slate-400 hover:text-white hover:bg-white/5"
+                  navLinkBase,
+                  pathname === link.href ? navLinkActive : navLinkInactive
                 )}
               >
                 {link.label}
@@ -95,11 +156,13 @@ export function Navbar() {
             {/* Search */}
             <button
               onClick={() => setSearchOpen(true)}
-              className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-all"
+              className={iconBtnClass}
               aria-label="Search"
             >
               <Search className="w-5 h-5" />
             </button>
+
+            <ThemeToggle />
 
             {/* Upload CTA */}
             <Link
@@ -115,7 +178,10 @@ export function Navbar() {
               <div className="relative">
                 <button
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
-                  className="flex items-center gap-2 p-1 rounded-full hover:bg-white/5 transition-all"
+                  className={cn(
+                    "flex items-center gap-2 p-1 rounded-full transition-all",
+                    isLight ? "hover:bg-slate-100" : "hover:bg-white/5"
+                  )}
                 >
                   {user.photoURL ? (
                     <Image
@@ -123,10 +189,10 @@ export function Navbar() {
                       alt={user.displayName || "User"}
                       width={32}
                       height={32}
-                      className="rounded-full border border-cyan-400/30"
+                      className="rounded-full border border-blue-400/30"
                     />
                   ) : (
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-black font-bold text-sm">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white font-bold text-sm">
                       {user.displayName?.[0]?.toUpperCase() || "U"}
                     </div>
                   )}
@@ -139,25 +205,25 @@ export function Navbar() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 8, scale: 0.95 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute right-0 mt-2 w-52 glass rounded-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] overflow-hidden"
+                      className={dropdownClass}
                     >
-                      <div className="p-3 border-b border-white/10">
-                        <p className="text-sm font-semibold text-white truncate">
+                      <div className={dropdownHeaderClass}>
+                        <p className={dropdownNameClass}>
                           {user.displayName || "User"}
                         </p>
-                        <p className="text-xs text-slate-400 truncate">{user.email}</p>
+                        <p className={dropdownEmailClass}>{user.email}</p>
                       </div>
                       <div className="p-1">
-                        <MenuLink href="/dashboard" icon={<LayoutDashboard className="w-4 h-4" />} label="Dashboard" />
-                        <MenuLink href="/profile" icon={<User className="w-4 h-4" />} label="Profile" />
-                        <MenuLink href="/wishlist" icon={<BookmarkPlus className="w-4 h-4" />} label="Wishlist" />
-                        <MenuLink href="/upload" icon={<Upload className="w-4 h-4" />} label="Upload" />
+                        <MenuLink href="/dashboard" icon={<LayoutDashboard className="w-4 h-4" />} label="Dashboard" isLight={isLight} />
+                        <MenuLink href="/profile" icon={<User className="w-4 h-4" />} label="Profile" isLight={isLight} />
+                        <MenuLink href="/wishlist" icon={<BookmarkPlus className="w-4 h-4" />} label="Wishlist" isLight={isLight} />
+                        <MenuLink href="/upload" icon={<Upload className="w-4 h-4" />} label="Upload" isLight={isLight} />
                         {isAdmin && (
-                          <MenuLink href="/admin" icon={<Shield className="w-4 h-4" />} label="Admin Panel" className="text-cyan-400" />
+                          <MenuLink href="/admin" icon={<Shield className="w-4 h-4" />} label="Admin Panel" isLight={isLight} className={isLight ? "text-blue-600 font-semibold" : "text-cyan-400"} />
                         )}
                         <button
                           onClick={handleSignOut}
-                          className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-400 hover:bg-red-400/10 rounded-lg transition-all"
+                          className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-400/10 rounded-lg transition-all"
                         >
                           <LogOut className="w-4 h-4" />
                           Sign Out
@@ -170,7 +236,10 @@ export function Navbar() {
             ) : (
               <Link
                 href="/login"
-                className="btn-ghost text-sm py-2 px-4 rounded-lg"
+                className={cn(
+                  "btn-ghost text-sm py-2 px-4 rounded-lg",
+                  isLight && "border-slate-300 text-slate-700 hover:text-slate-900 hover:border-blue-400"
+                )}
               >
                 Login
               </Link>
@@ -179,7 +248,7 @@ export function Navbar() {
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-all"
+              className={cn("md:hidden", iconBtnClass)}
               aria-label="Toggle menu"
             >
               {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -197,51 +266,52 @@ export function Navbar() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setMobileOpen(false)}
-              className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden"
+              className={cn(
+                "fixed inset-0 z-40 backdrop-blur-sm md:hidden",
+                isLight ? "bg-slate-900/30" : "bg-black/60"
+              )}
             />
             <motion.div
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed right-0 top-0 bottom-0 z-50 w-72 glass border-l border-white/10 md:hidden overflow-y-auto"
+              className={mobileDrawerClass}
             >
-              <div className="p-4 flex items-center justify-between border-b border-white/10">
-                <span className="font-display font-bold text-white">Menu</span>
+              <div className={mobileHeaderClass}>
+                <span className={isLight ? "font-display font-bold text-slate-900" : "font-display font-bold text-white"}>Menu</span>
                 <button
                   onClick={() => setMobileOpen(false)}
-                  className="p-2 text-slate-400 hover:text-white"
+                  className={iconBtnClass}
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
               {user && (
-                <div className="p-4 border-b border-white/10 flex items-center gap-3">
+                <div className={cn("p-4 flex items-center gap-3", isLight ? "border-b border-slate-100" : "border-b border-white/10")}>
                   {user.photoURL ? (
-                    <Image src={user.photoURL} alt="" width={40} height={40} className="rounded-full border border-cyan-400/30" />
+                    <Image src={user.photoURL} alt="" width={40} height={40} className="rounded-full border border-blue-400/30" />
                   ) : (
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-black font-bold">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white font-bold">
                       {user.displayName?.[0]?.toUpperCase() || "U"}
                     </div>
                   )}
                   <div>
-                    <p className="text-sm font-semibold text-white">{user.displayName}</p>
-                    <p className="text-xs text-slate-400">{user.email}</p>
+                    <p className={isLight ? "text-sm font-semibold text-slate-900" : "text-sm font-semibold text-white"}>{user.displayName}</p>
+                    <p className={isLight ? "text-xs text-slate-500" : "text-xs text-slate-400"}>{user.email}</p>
                   </div>
                 </div>
               )}
 
               <nav className="p-4 space-y-1">
-                {NAV_LINKS.map((link) => (
+                {NAV_LINKS.filter(link => !link.adminOnly || isAdmin).map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
                     className={cn(
-                      "block px-4 py-3 rounded-xl text-sm font-medium transition-all",
-                      pathname === link.href
-                        ? "text-cyan-400 bg-cyan-400/10"
-                        : "text-slate-300 hover:text-white hover:bg-white/5"
+                      mobileMenuLinkBase,
+                      pathname === link.href ? mobileMenuLinkActive : mobileMenuLinkInactive
                     )}
                   >
                     {link.label}
@@ -249,15 +319,15 @@ export function Navbar() {
                 ))}
                 {user ? (
                   <>
-                    <Link href="/dashboard" className="block px-4 py-3 rounded-xl text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5">Dashboard</Link>
-                    <Link href="/profile" className="block px-4 py-3 rounded-xl text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5">Profile</Link>
-                    <Link href="/wishlist" className="block px-4 py-3 rounded-xl text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5">Wishlist</Link>
+                    <Link href="/dashboard" className={cn(mobileMenuLinkBase, mobileMenuLinkInactive)}>Dashboard</Link>
+                    <Link href="/profile" className={cn(mobileMenuLinkBase, mobileMenuLinkInactive)}>Profile</Link>
+                    <Link href="/wishlist" className={cn(mobileMenuLinkBase, mobileMenuLinkInactive)}>Wishlist</Link>
                     {isAdmin && (
-                      <Link href="/admin" className="block px-4 py-3 rounded-xl text-sm font-medium text-cyan-400 bg-cyan-400/5 hover:bg-cyan-400/10">Admin Panel</Link>
+                      <Link href="/admin" className={cn(mobileMenuLinkBase, isLight ? "text-blue-600 bg-blue-50 font-semibold" : "text-cyan-400 bg-cyan-400/5 hover:bg-cyan-400/10")}>Admin Panel</Link>
                     )}
                     <button
                       onClick={handleSignOut}
-                      className="w-full text-left px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:bg-red-400/10 transition-all"
+                      className={cn(mobileMenuLinkBase, "w-full text-left text-red-500", isLight ? "hover:bg-red-50" : "hover:bg-red-400/10")}
                     >
                       Sign Out
                     </button>
@@ -287,7 +357,7 @@ export function Navbar() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSearchOpen(false)}
-              className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md"
+              className={cn("fixed inset-0 z-50 backdrop-blur-md", isLight ? "bg-slate-900/30" : "bg-black/70")}
             />
             <motion.div
               initial={{ opacity: 0, y: -20, scale: 0.95 }}
@@ -295,16 +365,16 @@ export function Navbar() {
               exit={{ opacity: 0, y: -20, scale: 0.95 }}
               className="fixed top-24 left-1/2 -translate-x-1/2 z-50 w-full max-w-xl px-4"
             >
-              <form onSubmit={handleSearch} className="glass rounded-2xl border border-white/10 p-4">
+              <form onSubmit={handleSearch} className={searchFormClass}>
                 <div className="flex items-center gap-3">
-                  <Search className="w-5 h-5 text-cyan-400 shrink-0" />
+                  <Search className={cn("w-5 h-5 shrink-0", isLight ? "text-blue-600" : "text-cyan-400")} />
                   <input
                     autoFocus
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search resources, notes, PYQs..."
-                    className="flex-1 bg-transparent text-white placeholder-slate-500 outline-none text-base"
+                    className={searchInputClass}
                   />
                   <button type="submit" className="btn-primary text-sm px-4 py-1.5 rounded-lg">
                     Search
@@ -316,7 +386,12 @@ export function Navbar() {
                       key={tag}
                       type="button"
                       onClick={() => setSearchQuery(tag)}
-                      className="badge badge-cyan text-xs cursor-pointer hover:bg-cyan-400/20 transition-all"
+                      className={cn(
+                        "badge text-xs cursor-pointer transition-all",
+                        isLight
+                          ? "bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100"
+                          : "badge-cyan hover:bg-cyan-400/20"
+                      )}
                     >
                       {tag}
                     </button>
@@ -332,18 +407,22 @@ export function Navbar() {
 }
 
 function MenuLink({
-  href, icon, label, className,
+  href, icon, label, className, isLight,
 }: {
   href: string;
   icon: React.ReactNode;
   label: string;
   className?: string;
+  isLight: boolean;
 }) {
   return (
     <Link
       href={href}
       className={cn(
-        "flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-all text-slate-300 hover:text-white hover:bg-white/5",
+        "flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-all",
+        isLight
+          ? "text-slate-700 hover:text-slate-900 hover:bg-slate-100"
+          : "text-slate-300 hover:text-white hover:bg-white/5",
         className
       )}
     >

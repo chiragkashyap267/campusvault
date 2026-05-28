@@ -46,7 +46,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#030712",
+  themeColor: "#111827",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -63,7 +63,7 @@ export default function RootLayout({
       className={`${inter.variable}`}
       suppressHydrationWarning
     >
-      <body className="bg-[#030712] text-[#f1f5f9] antialiased overflow-x-hidden">
+      <body className="bg-background text-text-primary antialiased overflow-x-hidden">
         <SmoothScroll>
           <Providers>{children}</Providers>
           <RobotAssistant />

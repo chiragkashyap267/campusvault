@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useRef } from "react";
 import { motion } from "framer-motion";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import { ResourceGrid } from "@/components/resources/ResourceGrid";
@@ -9,12 +9,15 @@ import { useUIStore } from "@/lib/store/uiStore";
 import { ResourceFilters } from "@/lib/types";
 import { useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/lib/store/authStore";
 
 function ResourcesContent() {
   const { filters, setFilter, resetFilters } = useUIStore();
+  const { user } = useAuthStore();
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [search, setSearch] = useState("");
   const searchParams = useSearchParams();
+  const newsletterTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Sync URL search params on load
   useEffect(() => {
@@ -33,6 +36,32 @@ function ResourcesContent() {
     
     setFilter("sortBy", sortBy);
   }, []);
+
+  // Smart newsletter — fire after user searches (debounced, fire-and-forget)
+  useEffect(() => {
+    if (!user?.email || search.trim().length < 3) return;
+
+    // Clear any pending timer
+    if (newsletterTimerRef.current) clearTimeout(newsletterTimerRef.current);
+
+    // Debounce 800ms so we only fire when user stops typing
+    newsletterTimerRef.current = setTimeout(() => {
+      fetch("/api/newsletter/search-notify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          studentEmail: user.email,
+          studentName: user.displayName || "Student",
+          searchQuery: search.trim(),
+          branch: filters.branch || "",
+        }),
+      }).catch(() => { /* silently ignore */ });
+    }, 800);
+
+    return () => {
+      if (newsletterTimerRef.current) clearTimeout(newsletterTimerRef.current);
+    };
+  }, [search, user]);
 
   const activeFilters: ResourceFilters = {
     ...filters,

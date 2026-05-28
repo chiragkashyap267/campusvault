@@ -71,13 +71,14 @@ export const BTECH_SUBJECTS = [
 ];
 
 export const NAV_LINKS = [
-  { href: "/resources", label: "Resources" },
-  { href: "/forms", label: "Forms" },
-  { href: "/upload", label: "Upload" },
-  { href: "/leaderboard", label: "Leaderboard" },
-  { href: "/notes", label: "Notes" },
-  { href: "/todo", label: "Todo" },
-  { href: "/about", label: "About" },
+  { href: "/resources", label: "Resources", adminOnly: false },
+  { href: "/forms", label: "Forms", adminOnly: false },
+  { href: "/upload", label: "Upload", adminOnly: false },
+  { href: "/leaderboard", label: "Leaderboard", adminOnly: false },
+  { href: "/notes", label: "Notes", adminOnly: false },
+  { href: "/todo", label: "Todo", adminOnly: false },
+  { href: "/marketing", label: "Marketing", adminOnly: true },
+  { href: "/about", label: "About", adminOnly: false },
 ];
 
 export const SITE_NAME = "CampusVault GBPIET";

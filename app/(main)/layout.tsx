@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { NewsletterPopup } from "@/components/shared/NewsletterPopup";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -7,6 +8,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       <Navbar />
       <main className="flex-1 pt-16">{children}</main>
       <Footer />
+      <NewsletterPopup />
     </div>
   );
 }
