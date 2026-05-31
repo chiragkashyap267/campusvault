@@ -49,7 +49,7 @@ export function NewsletterPopup() {
 
       // Try calling our real email serverless API route to trigger a real welcome email!
       try {
-        const appOrigin = typeof window !== "undefined" ? window.location.origin : "https://campusvault.vercel.app";
+        const appOrigin = typeof window !== "undefined" ? window.location.origin : "https://campusvaultgbpiet.vercel.app";
         await fetch("/api/marketing/send", {
           method: "POST",
           headers: { "Content-Type": "application/json" },

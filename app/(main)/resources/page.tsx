@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import { ResourceGrid } from "@/components/resources/ResourceGrid";
 import { ResourceFiltersPanel } from "@/components/resources/ResourceFilters";
+import { ResourceFinder } from "@/components/home/ResourceFinder";
 import { useUIStore } from "@/lib/store/uiStore";
 import { ResourceFilters } from "@/lib/types";
 import { useSearchParams } from "next/navigation";
@@ -19,7 +20,7 @@ function ResourcesContent() {
   const searchParams = useSearchParams();
   const newsletterTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Sync URL search params on load
+  // Sync URL search params on load AND whenever URL changes (accordion links)
   useEffect(() => {
     const q = searchParams.get("search") || "";
     const type = searchParams.get("type") || "";
@@ -27,15 +28,17 @@ function ResourcesContent() {
     const semester = searchParams.get("semester") || "";
     const subject = searchParams.get("subject") || "";
     const sortBy = searchParams.get("sortBy") || "recent";
-    
+
+    // Reset first so stale filters are cleared, then apply new ones
+    resetFilters();
     if (q) setSearch(q);
     if (type) setFilter("type", type);
     if (branch) setFilter("branch", branch);
     if (semester) setFilter("semester", Number(semester));
     if (subject) setFilter("subject", subject);
-    
+
     setFilter("sortBy", sortBy);
-  }, []);
+  }, [searchParams.toString()]);
 
   // Smart newsletter — fire after user searches (debounced, fire-and-forget)
   useEffect(() => {
@@ -122,6 +125,17 @@ function ResourcesContent() {
           <button onClick={() => { resetFilters(); setFilter("type", "pyq"); }} className="badge badge-green text-xs cursor-pointer hover:bg-green-500/20 transition-colors">PYQ Papers</button>
           <button onClick={() => { resetFilters(); setFilter("type", "ct"); }} className="badge badge-blue text-xs cursor-pointer hover:bg-blue-500/20 transition-colors">CT Papers</button>
         </div>
+      </div>
+
+      {/* Resource Directory Accordion */}
+      <div className="container-app mb-8">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+        >
+          <ResourceFinder />
+        </motion.div>
       </div>
 
       <div className="container-app flex gap-6">

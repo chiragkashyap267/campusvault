@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
     // ── Build personalized HTML email ────────────────────────────────
     const firstName = studentName?.split(" ")[0] || "Student";
     const displayQuery = searchQuery.trim();
-    const resourceUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://campusvault.vercel.app"}/resources?search=${encodeURIComponent(searchQuery)}`;
+    const resourceUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://campusvaultgbpiet.vercel.app"}/resources?search=${encodeURIComponent(searchQuery)}`;
 
     const htmlContent = `
 <!DOCTYPE html>
@@ -299,7 +299,7 @@ export async function POST(req: NextRequest) {
         <p class="brand">© 2026 CampusVault GBPIET</p>
         <p>
           You received this because you're subscribed to academic digests.<br>
-          <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://campusvault.vercel.app"}/marketing">Manage preferences</a> · Built free for GBPIET students.
+          <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://campusvaultgbpiet.vercel.app"}/marketing">Manage preferences</a> · Built free for GBPIET students.
         </p>
       </div>
     </div>
