@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
 
     if (!apiKey) {
       return NextResponse.json(
-        { error: "Missing Resend API Key. Add RESEND_API_KEY to .env.local or paste it in Mail Settings." },
+        { error: "Missing Resend API Key. Add RESEND_API_KEY to environment variables." },
         { status: 400 }
       );
     }
@@ -58,8 +58,7 @@ export async function POST(req: NextRequest) {
     }
 
     const theme = TEMPLATE_STYLES[templateStyle] || TEMPLATE_STYLES.sky;
-    const defaultUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000";
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || defaultUrl;
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://campusvaultgbpiet.vercel.app";
 
     const htmlContent = `
 <!DOCTYPE html>
@@ -96,21 +95,22 @@ export async function POST(req: NextRequest) {
       <h2 class="headline">${headline}</h2>
       <div class="message-box">${message}</div>
       <div style="text-align:center;">
-        <a href="${appUrl}/resources" class="cta-btn">Access Academic Vault</a>
+        <a href="${appUrl}/resources" class="cta-btn">Access Academic Vault →</a>
       </div>
     </div>
     <div class="footer">
-      <p>You received this because you opted into digests on CampusVault.</p>
-      <p>To stop: <a href="${appUrl}/marketing">Outreach Settings</a></p>
-      <p style="margin-top:10px;font-weight:bold;color:#94a3b8;">© 2026 CampusVault. Built free for GBPIET Students.</p>
+      <p>You received this because you're registered on CampusVault GBPIET.</p>
+      <p>© 2026 CampusVault. Built free for GBPIET Students.</p>
     </div>
   </div>
 </body>
 </html>`;
 
-    // NOTE: "onboarding@resend.dev" can ONLY send to your Resend account's verified email.
-    // To send to any recipient, verify your domain at resend.com/domains and change the from address.
-    const fromEmail = process.env.RESEND_FROM_EMAIL || "CampusVault <onboarding@resend.dev>";
+    // Use env-configured sender, fall back to shared Resend sandbox sender
+    // NOTE: onboarding@resend.dev can only send to the account owner's email in sandbox mode.
+    // To send to ALL students, verify your domain at resend.com/domains and update RESEND_FROM_EMAIL.
+    const fromEmail = process.env.RESEND_FROM_EMAIL || "CampusVault GBPIET <onboarding@resend.dev>";
+
     const payload = {
       from: fromEmail,
       to: recipientEmail,
@@ -130,12 +130,12 @@ export async function POST(req: NextRequest) {
     const data = await res.json();
 
     if (!res.ok) {
-      // Surface the real Resend error so the marketing UI can show it in blast logs
       const errMsg = data?.message || data?.name || "Failed to deliver via Resend.";
-      console.error("Resend API error:", data);
+      console.error(`[Resend] Error sending to ${recipientEmail}:`, JSON.stringify(data));
       return NextResponse.json({ error: errMsg }, { status: res.status });
     }
 
+    console.log(`[Resend] ✓ Sent to ${recipientEmail} — ID: ${data.id}`);
     return NextResponse.json({ success: true, messageId: data.id, recipient: recipientEmail });
 
   } catch (error: any) {

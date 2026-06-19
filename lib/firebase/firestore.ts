@@ -87,8 +87,13 @@ export async function updateUserProfile(uid: string, data: Partial<User>) {
 }
 
 export async function isAdmin(uid: string): Promise<boolean> {
-  const snap = await getDoc(doc(db, "admins", uid));
-  return snap.exists();
+  try {
+    const snap = await getDoc(doc(db, "admins", uid));
+    return snap.exists();
+  } catch {
+    // Firestore rules may deny read access for non-admins — that's fine, just return false
+    return false;
+  }
 }
 
 // ─── Resources ────────────────────────────────────────────────

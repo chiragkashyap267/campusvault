@@ -9,7 +9,6 @@ import { ResourceFinder } from "@/components/home/ResourceFinder";
 import { useUIStore } from "@/lib/store/uiStore";
 import { ResourceFilters } from "@/lib/types";
 import { useSearchParams } from "next/navigation";
-import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/lib/store/authStore";
 
 function ResourcesContent() {
@@ -20,7 +19,7 @@ function ResourcesContent() {
   const searchParams = useSearchParams();
   const newsletterTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Sync URL search params on load AND whenever URL changes (accordion links)
+  // Sync URL search params whenever URL changes (accordion links)
   useEffect(() => {
     const q = searchParams.get("search") || "";
     const type = searchParams.get("type") || "";
@@ -29,25 +28,19 @@ function ResourcesContent() {
     const subject = searchParams.get("subject") || "";
     const sortBy = searchParams.get("sortBy") || "recent";
 
-    // Reset first so stale filters are cleared, then apply new ones
     resetFilters();
-    if (q) setSearch(q);
+    setSearch(q);
     if (type) setFilter("type", type);
     if (branch) setFilter("branch", branch);
     if (semester) setFilter("semester", Number(semester));
     if (subject) setFilter("subject", subject);
-
     setFilter("sortBy", sortBy);
   }, [searchParams.toString()]);
 
-  // Smart newsletter — fire after user searches (debounced, fire-and-forget)
+  // Smart newsletter debounce
   useEffect(() => {
     if (!user?.email || search.trim().length < 3) return;
-
-    // Clear any pending timer
     if (newsletterTimerRef.current) clearTimeout(newsletterTimerRef.current);
-
-    // Debounce 800ms so we only fire when user stops typing
     newsletterTimerRef.current = setTimeout(() => {
       fetch("/api/newsletter/search-notify", {
         method: "POST",
@@ -58,38 +51,35 @@ function ResourcesContent() {
           searchQuery: search.trim(),
           branch: filters.branch || "",
         }),
-      }).catch(() => { /* silently ignore */ });
+      }).catch(() => {});
     }, 800);
-
     return () => {
       if (newsletterTimerRef.current) clearTimeout(newsletterTimerRef.current);
     };
   }, [search, user]);
 
-  const activeFilters: ResourceFilters = {
-    ...filters,
-    search,
-  };
+  const activeFilters: ResourceFilters = { ...filters, search };
 
   return (
-    <div className="min-h-screen bg-[#030712] pt-4 pb-16">
-      {/* Page header */}
-      <div className="container-app mb-8">
+    <div className="min-h-screen bg-[#030712] pb-16">
+      {/* ── Top section: title + search + quick filters ── */}
+      <div className="container-app pt-4 sm:pt-6 pb-3">
+        {/* Title */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-6"
+          className="mb-3"
         >
-          <h1 className="font-display text-2xl sm:text-3xl font-bold text-white mb-1">
+          <h1 className="font-display text-xl sm:text-3xl font-bold text-white leading-tight">
             Resource Library
           </h1>
-          <p className="text-slate-400 text-sm">
+          <p className="text-slate-400 text-xs sm:text-sm mt-0.5">
             Browse study materials, PYQs, notes and more for GBPIET students.
           </p>
         </motion.div>
 
-        {/* Search bar */}
-        <div className="relative flex gap-2">
+        {/* Search + Mobile Filters toggle */}
+        <div className="flex gap-2 mb-3">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
             <input
@@ -97,7 +87,7 @@ function ResourcesContent() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by title, subject, or keyword..."
-              className="input-field pl-9 pr-4"
+              className="input-field pl-9 pr-9 py-2.5 text-sm"
             />
             {search && (
               <button
@@ -108,39 +98,52 @@ function ResourcesContent() {
               </button>
             )}
           </div>
-          {/* Mobile filter toggle */}
           <button
             onClick={() => setMobileFiltersOpen(true)}
-            className="lg:hidden btn-ghost px-3 py-2 rounded-xl flex items-center gap-2 text-sm"
+            className="lg:hidden btn-ghost px-3 py-2 rounded-xl flex items-center gap-1.5 text-sm shrink-0"
           >
             <SlidersHorizontal className="w-4 h-4" />
-            Filters
+            <span className="hidden xs:inline">Filters</span>
           </button>
         </div>
-        
-        {/* Quick Filters */}
-        <div className="flex flex-wrap gap-2 mt-4">
-          <button onClick={() => { resetFilters(); setFilter("branch", "mca"); }} className="badge badge-purple text-xs cursor-pointer hover:bg-purple-500/20 transition-colors">MCA</button>
-          <button onClick={() => { resetFilters(); setFilter("branch", "btech"); }} className="badge badge-cyan text-xs cursor-pointer hover:bg-cyan-500/20 transition-colors">B.Tech</button>
-          <button onClick={() => { resetFilters(); setFilter("type", "pyq"); }} className="badge badge-green text-xs cursor-pointer hover:bg-green-500/20 transition-colors">PYQ Papers</button>
-          <button onClick={() => { resetFilters(); setFilter("type", "ct"); }} className="badge badge-blue text-xs cursor-pointer hover:bg-blue-500/20 transition-colors">CT Papers</button>
+
+        {/* Quick filter badges */}
+        <div className="flex flex-wrap gap-1.5">
+          {[
+            { label: "MCA", style: "badge-purple", key: "branch", val: "mca" },
+            { label: "B.Tech", style: "badge-cyan", key: "branch", val: "btech" },
+            { label: "PYQ Papers", style: "badge-green", key: "type", val: "pyq" },
+            { label: "CT Papers", style: "badge-blue", key: "type", val: "ct" },
+          ].map((f) => (
+            <button
+              key={f.val}
+              onClick={() => {
+                resetFilters();
+                setFilter(f.key as keyof ResourceFilters, f.val);
+              }}
+              className={`badge ${f.style} text-xs cursor-pointer transition-all hover:scale-105 active:scale-95`}
+            >
+              {f.label}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Resource Directory Accordion */}
-      <div className="container-app mb-8">
+      {/* ── Resource Directory Accordion ── */}
+      <div className="container-app pb-3">
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
+          transition={{ delay: 0.08 }}
         >
           <ResourceFinder />
         </motion.div>
       </div>
 
-      <div className="container-app flex gap-6">
-        {/* Sidebar filters — desktop */}
-        <aside className="hidden lg:block w-56 shrink-0 sticky top-20 self-start">
+      {/* ── Main layout: sidebar + grid ── */}
+      <div className="container-app flex gap-4 lg:gap-6 items-start">
+        {/* Desktop sidebar */}
+        <aside className="hidden lg:block w-52 xl:w-56 shrink-0 sticky top-20 self-start">
           <div className="glass-card p-4">
             <ResourceFiltersPanel
               filters={filters}
@@ -150,13 +153,13 @@ function ResourcesContent() {
           </div>
         </aside>
 
-        {/* Main content */}
+        {/* Resource grid */}
         <div className="flex-1 min-w-0">
           <ResourceGrid filters={activeFilters} />
         </div>
       </div>
 
-      {/* Mobile Filters Drawer */}
+      {/* ── Mobile Filters Drawer ── */}
       {mobileFiltersOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div
@@ -167,6 +170,7 @@ function ResourcesContent() {
             initial={{ x: "-100%" }}
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
             className="absolute left-0 top-0 bottom-0 w-72 glass border-r border-white/10 p-4 overflow-y-auto"
           >
             <div className="flex items-center justify-between mb-4">
@@ -189,7 +193,11 @@ function ResourcesContent() {
 
 export default function ResourcesPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" /></div>}>
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+      </div>
+    }>
       <ResourcesContent />
     </Suspense>
   );

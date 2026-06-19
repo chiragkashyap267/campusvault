@@ -105,9 +105,9 @@ export function ResourceCard({ resource, showStatus = false, index = 0 }: Resour
           {resource.description}
         </p>
 
-        {/* PDF / Image thumbnail — shown on sm+ only to keep mobile clean */}
+        {/* PDF / Image thumbnail */}
         {thumbnailUrl && (
-          <div className="hidden sm:block relative h-24 rounded-lg overflow-hidden border border-white/5 bg-[#0a0f1e] mt-auto">
+          <div className="relative h-20 sm:h-24 rounded-lg overflow-hidden border border-white/5 bg-[#0a0f1e] mt-auto">
             <img
               src={thumbnailUrl}
               alt={`${resource.title} preview`}
@@ -119,25 +119,14 @@ export function ResourceCard({ resource, showStatus = false, index = 0 }: Resour
           </div>
         )}
 
-        {/* Mobile: simple file-type icon block instead of thumbnail */}
-        <div className={cn(
-          "sm:hidden flex items-center justify-center h-14 rounded-lg border border-white/5 bg-white/[0.02] mt-auto",
-          thumbnailUrl ? "" : ""
-        )}>
-          <div className="flex flex-col items-center gap-1">
-            <FileFormatIcon format={resource.fileFormat} className="w-5 h-5" />
-            <span className="text-[9px] text-slate-500 uppercase font-semibold">{resource.fileFormat}</span>
-          </div>
-        </div>
-
         {/* Tags row */}
-        <div className="flex flex-wrap gap-1">
+        <div className="flex flex-wrap gap-1 mt-auto">
           <span className="badge badge-purple text-[9px] sm:text-[10px] px-1.5 py-0.5">{resource.branch.toUpperCase()}</span>
           {resource.semester && (
             <span className="badge badge-cyan text-[9px] sm:text-[10px] px-1.5 py-0.5">Sem {resource.semester}</span>
           )}
           {resource.subject && (
-            <span className="hidden sm:inline-flex text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded-full bg-white/5 text-slate-400">
+            <span className="text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded-full bg-white/5 text-slate-400 line-clamp-1 max-w-[100px] sm:max-w-none">
               {resource.subject}
             </span>
           )}

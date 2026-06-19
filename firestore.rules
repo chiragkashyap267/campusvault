@@ -1,0 +1,97 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helpers ──────────────────────────────────────────────────────────────
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    // Checks the users/{uid}.role field (your existing role system)
+    function hasRole(role) {
+      return isSignedIn() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == role;
+    }
+
+    // Also checks the admins collection (your isAdmin() code check)
+    function isAdmin() {
+      return hasRole('admin') ||
+        (isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid)));
+    }
+
+    // ── Admins collection ─────────────────────────────────────────────────────
+    // Reading this is what triggered the permissions error.
+    // Allow users to read their own admin doc (so the code check works),
+    // and allow admins to manage others.
+    match /admins/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // ── Resources ─────────────────────────────────────────────────────────────
+    match /resources/{resourceId} {
+      allow read: if true;
+      allow create: if isSignedIn();
+      allow update, delete: if isSignedIn() &&
+        (request.auth.uid == resource.data.uploaderId || isAdmin());
+    }
+
+    // ── Users ─────────────────────────────────────────────────────────────────
+    match /users/{userId} {
+      allow read: if true;
+      allow write: if isOwner(userId) || isAdmin();
+    }
+
+    // ── Subscribers (newsletter sign-ups) ─────────────────────────────────────
+    // Anyone (including logged-out guests) can subscribe via the popup
+    match /subscribers/{docId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // ── Campaigns (sent email archive) ────────────────────────────────────────
+    match /campaigns/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    // ── Wishlist (correct path: wishlist → not wishlists) ─────────────────────
+    // Code path: db.collection("wishlist").doc(uid).collection("items")
+    match /wishlist/{uid}/items/{itemId} {
+      allow read, write: if isOwner(uid);
+    }
+
+    // ── Comments (correct path: top-level comments collection) ───────────────
+    // Code path: db.collection("comments").doc(resourceId).collection("messages")
+    match /comments/{resourceId}/messages/{commentId} {
+      allow read: if true;
+      allow create: if isSignedIn();
+      allow update, delete: if isSignedIn() &&
+        (request.auth.uid == resource.data.uid || isAdmin());
+    }
+
+    // ── Notes ─────────────────────────────────────────────────────────────────
+    match /notes/{uid}/items/{noteId} {
+      allow read, write: if isOwner(uid);
+    }
+
+    // ── Todos ─────────────────────────────────────────────────────────────────
+    match /todos/{uid}/items/{todoId} {
+      allow read, write: if isOwner(uid);
+    }
+
+    // ── Newsletter search cooldowns (managed by serverless API) ───────────────
+    match /newsletter_cooldowns/{docId} {
+      allow read, write: if true;
+    }
+
+    // ── Email blast cooldowns (managed by serverless API) ─────────────────────
+    match /blast_cooldowns/{docId} {
+      allow read, write: if true;
+    }
+
+  }
+}

@@ -82,7 +82,7 @@ export function ResourceGrid({ filters = {} }: ResourceGridProps) {
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
         {Array.from({ length: 9 }).map((_, i) => (
           <ResourceCardSkeleton key={i} />
         ))}
@@ -117,7 +117,7 @@ export function ResourceGrid({ filters = {} }: ResourceGridProps) {
 
   return (
     <div>
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
         {resources.map((resource, i) => (
           <ResourceCard key={resource.id} resource={resource} index={i} />
         ))}

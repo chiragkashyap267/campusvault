@@ -83,6 +83,10 @@ export default function MarketingPage() {
   // Preview Mode
   const [showPreview, setShowPreview] = useState<boolean>(false);
 
+  // Quick blast-all state
+  const [isQuickBlasting, setIsQuickBlasting] = useState<boolean>(false);
+  const [quickBlastResult, setQuickBlastResult] = useState<{ sent: number; failed: number; total: number } | null>(null);
+
   // Load database metrics, campaigns and settings on mount
   useEffect(() => {
     fetchMetrics();
@@ -351,6 +355,40 @@ export default function MarketingPage() {
       console.error("Outreach engine exception:", err);
       toast.error(`Outreach loop interrupted: ${err.message}`);
       setIsBlasting(false);
+    }
+  };
+
+  // Quick blast to all registered users (calls /api/marketing/blast)
+  const handleQuickBlastAll = async () => {
+    if (!confirm(`Send a weekly digest to ALL registered users and subscribers now?\n\nThis uses the 7-day cooldown so students won't get spammed.`)) return;
+
+    setIsQuickBlasting(true);
+    setQuickBlastResult(null);
+    toast.loading("Blasting emails to all registered students...", { id: "quick-blast" });
+
+    try {
+      const res = await fetch("/api/marketing/blast", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          subject: "📚 New Study Resources Are Waiting — CampusVault GBPIET",
+          headline: "Don't Fall Behind — Check What's New on CampusVault!",
+          message: `Your batchmates have been busy uploading resources!\n\nHere's what's fresh on CampusVault GBPIET:\n📄 New PYQ & Class Test Papers — sorted by subject & semester\n📝 Handwritten Notes from toppers — ready to download\n📚 Reference books & lab manuals — uploaded by your seniors\n\nOpen CampusVault now to browse everything, or contribute your own notes. Every upload earns you leaderboard points and helps 100s of fellow students at GBPIET!\n\nSee you at the top of the leaderboard 🏆`,
+          templateStyle: "royal",
+          skipCooldown: false,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Blast failed");
+
+      setQuickBlastResult({ sent: data.sent, failed: data.failed, total: data.total });
+      toast.success(`Blast complete! Sent: ${data.sent} | Failed: ${data.failed} | Total: ${data.total}`, { id: "quick-blast", duration: 6000 });
+      fetchMetrics();
+    } catch (err: any) {
+      toast.error(`Blast failed: ${err.message}`, { id: "quick-blast" });
+    } finally {
+      setIsQuickBlasting(false);
     }
   };
 
@@ -955,8 +993,44 @@ export default function MarketingPage() {
         )}
       </section>
 
+      {/* Quick Blast All Users Section */}
+      <section className="mt-8 glass-card p-6 md:p-8 rounded-3xl border border-blue-400/20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(59,130,246,0.06)_0%,transparent_60%)] pointer-events-none" />
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-bold mb-3">
+              <Send className="w-3 h-3" />
+              <span>One-Click All-Users Blast</span>
+            </div>
+            <h2 className="text-xl font-bold text-white">Send to ALL {subscribersCount > 0 ? subscribersCount : ""} Registered Students</h2>
+            <p className="text-xs text-slate-400 mt-1 leading-relaxed max-w-lg">
+              Sends a weekly academic digest to every user in the <code className="text-cyan-400 bg-cyan-400/5 px-1 rounded">users</code> and <code className="text-cyan-400 bg-cyan-400/5 px-1 rounded">subscribers</code> collections simultaneously — with a 7-day per-user cooldown to prevent spam.
+            </p>
+            {quickBlastResult && (
+              <div className="mt-3 flex items-center gap-4 text-xs font-bold">
+                <span className="text-emerald-400">✓ {quickBlastResult.sent} sent</span>
+                {quickBlastResult.failed > 0 && <span className="text-red-400">✗ {quickBlastResult.failed} failed</span>}
+                <span className="text-slate-400">{quickBlastResult.total} total recipients</span>
+              </div>
+            )}
+          </div>
+          <button
+            id="quick-blast-all-btn"
+            onClick={handleQuickBlastAll}
+            disabled={isQuickBlasting}
+            className="flex items-center gap-2.5 btn-primary font-bold py-3.5 px-7 rounded-xl shadow-lg cursor-pointer disabled:opacity-60 shrink-0 whitespace-nowrap"
+          >
+            {isQuickBlasting ? (
+              <><RefreshCw className="w-4.5 h-4.5 animate-spin" /><span>Sending...</span></>
+            ) : (
+              <><Send className="w-4.5 h-4.5" /><span>Blast All Students Now</span></>
+            )}
+          </button>
+        </div>
+      </section>
+
       {/* Templates Quick Load Footer */}
-      <footer className="mt-10 p-5 rounded-2xl bg-cyan-500/5 border border-cyan-400/10 flex flex-col md:flex-row gap-4 items-center justify-between">
+      <footer className="mt-8 p-5 rounded-2xl bg-cyan-500/5 border border-cyan-400/10 flex flex-col md:flex-row gap-4 items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-cyan-400/10 flex items-center justify-center text-cyan-400 shrink-0">
             <Info className="w-5 h-5" />
