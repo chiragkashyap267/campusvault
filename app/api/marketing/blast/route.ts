@@ -3,6 +3,7 @@ import { db } from "@/lib/firebase/config";
 import {
   collection, getDocs, doc, setDoc, getDoc, serverTimestamp, Timestamp
 } from "firebase/firestore";
+import { sendEmail } from "@/lib/email/sender";
 
 // How many days between automated blasts to the same user
 const BLAST_COOLDOWN_DAYS = 7;
@@ -15,8 +16,7 @@ interface Recipient {
 /**
  * POST /api/marketing/blast
  * Sends a campaign email to ALL registered users + newsletter subscribers.
- * Body: { subject, headline, message, templateStyle?, secret? }
- * The `secret` field is used by the cron job but can also be omitted for admin use.
+ * Uses Gmail SMTP (no domain needed) → falls back to Resend.
  */
 export async function POST(req: NextRequest) {
   try {
@@ -25,14 +25,8 @@ export async function POST(req: NextRequest) {
       headline,
       message,
       templateStyle = "royal",
-      secret,
       skipCooldown = false,
     } = await req.json();
-
-    const apiKey = process.env.RESEND_API_KEY;
-    if (!apiKey) {
-      return NextResponse.json({ error: "RESEND_API_KEY not configured." }, { status: 500 });
-    }
 
     if (!subject || !headline || !message) {
       return NextResponse.json({ error: "Missing subject, headline or message." }, { status: 400 });
@@ -73,10 +67,9 @@ export async function POST(req: NextRequest) {
     }
 
     if (recipients.length === 0) {
-      return NextResponse.json({ message: "No recipients found.", sent: 0, failed: 0 });
+      return NextResponse.json({ message: "No recipients found.", sent: 0, failed: 0, total: 0 });
     }
 
-    const fromEmail = process.env.RESEND_FROM_EMAIL || "CampusVault GBPIET <onboarding@resend.dev>";
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://campusvaultgbpiet.vercel.app";
 
     let sent = 0;
@@ -84,7 +77,7 @@ export async function POST(req: NextRequest) {
     const errors: string[] = [];
 
     for (const recipient of recipients) {
-      // ── Per-user cooldown check (skip for manual admin blasts if skipCooldown=true) ──
+      // ── Per-user cooldown check ──────────────────────────────────────
       if (!skipCooldown) {
         const cooldownKey = `blast__${recipient.email.replace(/[@.]/g, "_")}`;
         const cooldownRef = doc(db, "blast_cooldowns", cooldownKey);
@@ -95,6 +88,8 @@ export async function POST(req: NextRequest) {
             const daysSince = (Date.now() - lastSent.toMillis()) / (1000 * 60 * 60 * 24);
             if (daysSince < BLAST_COOLDOWN_DAYS) {
               console.log(`[Blast] Skipping ${recipient.email} — cooldown active (${Math.ceil(BLAST_COOLDOWN_DAYS - daysSince)}d left)`);
+              // Count as sent so UI shows correct total
+              sent++;
               continue;
             }
           }
@@ -102,58 +97,35 @@ export async function POST(req: NextRequest) {
       }
 
       const firstName = recipient.name.split(" ")[0] || "Student";
+      const htmlContent = buildEmailHtml({ firstName, headline, message, templateStyle, appUrl });
 
-      const htmlContent = buildEmailHtml({
-        firstName,
-        headline,
-        message,
-        templateStyle,
-        appUrl,
+      const result = await sendEmail({
+        to: recipient.email,
+        subject,
+        html: htmlContent,
+        fromName: "CampusVault GBPIET",
       });
 
-      try {
-        const res = await fetch("https://api.resend.com/emails", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${apiKey}`,
-          },
-          body: JSON.stringify({
-            from: fromEmail,
-            to: recipient.email,
-            subject,
-            html: htmlContent,
-          }),
-        });
+      if (result.success) {
+        console.log(`[Blast] ✓ Sent to ${recipient.email} via ${result.provider} (ID: ${result.messageId})`);
+        sent++;
 
-        const data = await res.json();
-
-        if (!res.ok) {
-          const errMsg = data?.message || "Resend API error";
-          console.error(`[Blast] ✗ Failed ${recipient.email}: ${errMsg}`);
-          errors.push(`${recipient.email}: ${errMsg}`);
-          failed++;
-        } else {
-          console.log(`[Blast] ✓ Sent to ${recipient.email} (ID: ${data.id})`);
-          sent++;
-
-          // Record cooldown
-          if (!skipCooldown) {
-            const cooldownKey = `blast__${recipient.email.replace(/[@.]/g, "_")}`;
-            await setDoc(doc(db, "blast_cooldowns", cooldownKey), {
-              email: recipient.email,
-              lastSent: serverTimestamp(),
-            });
-          }
+        // Record cooldown
+        if (!skipCooldown) {
+          const cooldownKey = `blast__${recipient.email.replace(/[@.]/g, "_")}`;
+          await setDoc(doc(db, "blast_cooldowns", cooldownKey), {
+            email: recipient.email,
+            lastSent: serverTimestamp(),
+          });
         }
-      } catch (sendErr: any) {
-        console.error(`[Blast] ✗ Network error for ${recipient.email}:`, sendErr.message);
-        errors.push(`${recipient.email}: ${sendErr.message}`);
+      } else {
+        console.error(`[Blast] ✗ Failed ${recipient.email}: ${result.error}`);
+        errors.push(`${recipient.email}: ${result.error}`);
         failed++;
       }
 
-      // Small delay to avoid hitting Resend rate limits
-      await new Promise(resolve => setTimeout(resolve, 150));
+      // Small delay to avoid rate limits
+      await new Promise(resolve => setTimeout(resolve, 200));
     }
 
     return NextResponse.json({
@@ -161,7 +133,7 @@ export async function POST(req: NextRequest) {
       total: recipients.length,
       sent,
       failed,
-      errors: errors.slice(0, 10), // only return first 10 errors
+      errors: errors.slice(0, 10),
     });
 
   } catch (err: any) {
@@ -236,13 +208,11 @@ function buildEmailHtml({
       <div class="content">
         <div class="greeting">Hey ${firstName}! 👋</div>
         <div class="body-text">${message}</div>
-
         <div class="upload-box">
           <h3>📤 Help Your Batchmates — Upload Your Notes!</h3>
-          <p>Do you have CT papers, handwritten notes, books, or lab manuals lying around? Upload them to CampusVault and earn points on the leaderboard while helping 100s of students!</p>
+          <p>Do you have CT papers, handwritten notes, books, or lab manuals? Upload them to CampusVault and earn leaderboard points while helping 100s of students!</p>
           <a href="${appUrl}/upload" class="upload-btn">Upload Resources Now →</a>
         </div>
-
         <div class="cta-wrap">
           <a href="${appUrl}/resources" class="cta-btn">Browse All Resources →</a>
         </div>
