@@ -75,8 +75,6 @@ export const NAV_LINKS = [
   { href: "/forms", label: "Forms", adminOnly: false },
   { href: "/upload", label: "Upload", adminOnly: false },
   { href: "/leaderboard", label: "Leaderboard", adminOnly: false },
-  { href: "/notes", label: "Notes", adminOnly: false },
-  { href: "/todo", label: "Todo", adminOnly: false },
   { href: "/marketing", label: "Marketing", adminOnly: true },
   { href: "/about", label: "About", adminOnly: false },
 ];

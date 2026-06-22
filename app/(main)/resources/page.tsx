@@ -63,7 +63,7 @@ function ResourcesContent() {
   return (
     <div className="min-h-screen bg-[#030712] pb-16">
       {/* ── Top section: title + search + quick filters ── */}
-      <div className="container-app pt-4 sm:pt-6 pb-3">
+      <div className="container-app pt-6 sm:pt-10 pb-4">
         {/* Title */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}

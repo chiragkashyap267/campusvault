@@ -154,75 +154,74 @@ function buildEmailHtml({
   firstName,
   headline,
   message,
-  templateStyle,
   appUrl,
 }: {
   firstName: string;
   headline: string;
   message: string;
-  templateStyle: string;
+  templateStyle?: string;
   appUrl: string;
 }) {
-  const grad = THEME_GRADIENTS[templateStyle] || THEME_GRADIENTS.royal;
-
   return `<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
   <title>${headline}</title>
   <style>
-    * { box-sizing:border-box; margin:0; padding:0; }
-    body { background:#f1f5f9; font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif; -webkit-font-smoothing:antialiased; }
-    .wrapper { max-width:600px; margin:40px auto; padding:0 16px; }
-    .card { background:#fff; border-radius:24px; overflow:hidden; box-shadow:0 8px 40px rgba(30,64,175,0.1); border:1px solid rgba(30,64,175,0.08); }
-    .header { background:${grad}; padding:40px 32px; text-align:center; color:#fff; }
-    .logo-row { display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:12px; }
-    .logo-icon { width:40px; height:40px; background:rgba(255,255,255,0.2); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:22px; }
-    .logo-text { font-size:20px; font-weight:800; color:#fff; }
-    .header p { font-size:13px; opacity:0.85; margin-top:4px; }
-    .content { padding:36px 32px 28px; }
-    .greeting { font-size:20px; font-weight:800; color:#0f172a; margin-bottom:10px; }
-    .body-text { font-size:14px; color:#334155; line-height:1.7; margin-bottom:28px; white-space:pre-wrap; }
-    .cta-wrap { text-align:center; margin-bottom:32px; }
-    .cta-btn { display:inline-block; background:${grad}; color:#fff !important; font-size:15px; font-weight:700; text-decoration:none; padding:16px 40px; border-radius:14px; box-shadow:0 6px 20px rgba(30,64,175,0.3); }
-    .upload-box { background:linear-gradient(135deg,#eff6ff,#f5f3ff); border:1px solid rgba(37,99,235,0.15); border-radius:16px; padding:20px 24px; margin-bottom:24px; }
-    .upload-box h3 { font-size:14px; font-weight:800; color:#1e40af; margin-bottom:6px; }
-    .upload-box p { font-size:13px; color:#334155; line-height:1.6; }
-    .upload-btn { display:inline-block; margin-top:14px; background:#fff; border:2px solid #2563eb; color:#2563eb !important; font-size:13px; font-weight:700; text-decoration:none; padding:10px 24px; border-radius:10px; }
-    .footer { background:#f8fafc; border-top:1px solid #e2e8f0; padding:24px 32px; text-align:center; }
-    .footer p { font-size:12px; color:#94a3b8; line-height:1.6; }
-    .footer a { color:#2563eb; text-decoration:none; font-weight:600; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #333333;
+      line-height: 1.6;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .header {
+      border-bottom: 1px solid #eeeeee;
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+    .footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #eeeeee;
+      font-size: 12px;
+      color: #777777;
+    }
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #2563eb;
+      color: #ffffff !important;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 500;
+      margin-top: 15px;
+    }
+    h2 { color: #1e293b; font-size: 20px; margin-top: 0; }
   </style>
 </head>
 <body>
-  <div class="wrapper">
-    <div class="card">
-      <div class="header">
-        <div class="logo-row">
-          <div class="logo-icon">📚</div>
-          <span class="logo-text">CampusVault <span style="opacity:0.8;">GBPIET</span></span>
-        </div>
-        <p>Your Central Academic Portal</p>
-      </div>
-      <div class="content">
-        <div class="greeting">Hey ${firstName}! 👋</div>
-        <div class="body-text">${message}</div>
-        <div class="upload-box">
-          <h3>📤 Help Your Batchmates — Upload Your Notes!</h3>
-          <p>Do you have CT papers, handwritten notes, books, or lab manuals? Upload them to CampusVault and earn leaderboard points while helping 100s of students!</p>
-          <a href="${appUrl}/upload" class="upload-btn">Upload Resources Now →</a>
-        </div>
-        <div class="cta-wrap">
-          <a href="${appUrl}/resources" class="cta-btn">Browse All Resources →</a>
-        </div>
-      </div>
-      <div class="footer">
-        <p style="font-weight:800;color:#64748b;font-size:13px;margin-bottom:8px;">© 2026 CampusVault GBPIET</p>
-        <p>You received this as a registered student on CampusVault.<br>
-        Built completely free for GBPIET students by students.</p>
-      </div>
-    </div>
+  <div class="header">
+    <strong>CampusVault GBPIET</strong>
+  </div>
+  
+  <p>Hi ${firstName},</p>
+  
+  <h2>${headline}</h2>
+  
+  <div style="white-space: pre-wrap; margin-bottom: 25px;">${message}</div>
+  
+  <p>We are constantly adding new PYQs, notes, and lab manuals. If you have any study materials, you can help your batchmates by sharing them on the platform.</p>
+  
+  <p>
+    <a href="${appUrl}" class="btn">Open CampusVault</a>
+  </p>
+  
+  <div class="footer">
+    <p>You received this email because you are registered as a student on CampusVault.</p>
+    <p>This is an automated update. If you need assistance, reply to this email.</p>
+    <p>&copy; 2026 CampusVault GBPIET (Built by students, for students)</p>
   </div>
 </body>
 </html>`;

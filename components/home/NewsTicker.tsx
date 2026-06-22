@@ -60,7 +60,7 @@ export function NewsTicker() {
       {/* Right fade */}
       <div className="absolute right-0 top-0 bottom-0 w-20 z-10 pointer-events-none bg-gradient-to-l from-[#060b18] to-transparent" />
 
-      <div className="pl-24 py-2.5">
+      <div className="pl-32 py-2.5">
         <div ref={trackRef} className="flex items-center whitespace-nowrap will-change-transform">
           {TICKER_ITEMS.map((item, i) => (
             <Link

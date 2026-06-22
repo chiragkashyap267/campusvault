@@ -56,7 +56,7 @@ export function Navbar() {
   };
 
   // Theme-adaptive class helpers
-  const navLinkBase = "px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200";
+  const navLinkBase = "px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200";
   const navLinkActive = isLight
     ? "text-blue-700 bg-blue-50 font-semibold"
     : "text-cyan-400 bg-cyan-400/10";
@@ -95,8 +95,8 @@ export function Navbar() {
     : "glass border-b border-white/10 shadow-[0_4px_32px_rgba(0,0,0,0.4)]";
 
   const mobileDrawerClass = isLight
-    ? "fixed right-0 top-0 bottom-0 z-50 w-72 bg-white border-l border-slate-200 md:hidden overflow-y-auto shadow-2xl"
-    : "fixed right-0 top-0 bottom-0 z-50 w-72 glass border-l border-white/10 md:hidden overflow-y-auto";
+    ? "fixed right-0 top-0 bottom-0 z-50 w-72 bg-white border-l border-slate-200 lg:hidden overflow-y-auto shadow-2xl"
+    : "fixed right-0 top-0 bottom-0 z-50 w-72 glass border-l border-white/10 lg:hidden overflow-y-auto";
 
   const mobileHeaderClass = isLight
     ? "p-4 flex items-center justify-between border-b border-slate-100"
@@ -136,7 +136,7 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden lg:flex items-center gap-1 xl:gap-2">
             {NAV_LINKS.filter(link => !link.adminOnly || isAdmin).map((link) => (
               <Link
                 key={link.href}
@@ -152,7 +152,7 @@ export function Navbar() {
           </div>
 
           {/* Right Actions */}
-          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 shrink-0">
             {/* Search */}
             <button
               onClick={() => setSearchOpen(true)}
@@ -248,7 +248,7 @@ export function Navbar() {
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className={cn("md:hidden", iconBtnClass)}
+              className={cn("lg:hidden", iconBtnClass)}
               aria-label="Toggle menu"
             >
               {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -267,7 +267,7 @@ export function Navbar() {
               exit={{ opacity: 0 }}
               onClick={() => setMobileOpen(false)}
               className={cn(
-                "fixed inset-0 z-40 backdrop-blur-sm md:hidden",
+                "fixed inset-0 z-40 backdrop-blur-sm lg:hidden",
                 isLight ? "bg-slate-900/30" : "bg-black/60"
               )}
             />
