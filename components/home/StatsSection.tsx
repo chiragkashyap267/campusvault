@@ -34,7 +34,7 @@ function Counter({ value, suffix }: { value: number; suffix: string }) {
 
 export function StatsSection() {
   return (
-    <section className="py-16 relative">
+    <section className="section relative">
       <div className="divider mb-16" />
       <div className="container-app">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">

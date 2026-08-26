@@ -131,6 +131,24 @@ export async function getResources(
   return { resources, lastDoc: newLastDoc };
 }
 
+/**
+ * Every approved resource, for the client-side search index.
+ *
+ * Search has to see the whole library: filtering only the pages already loaded
+ * by infinite scroll means a match sitting on page 5 reads as "no results".
+ * The collection is small enough that one read, cached for the session, is
+ * cheaper than the repeated paged queries it replaces.
+ */
+export async function getAllApprovedResources(): Promise<Resource[]> {
+  const q = query(
+    collection(db, "resources"),
+    where("status", "==", "approved"),
+    limit(3000)
+  );
+  const snap = await getDocs(q);
+  return snap.docs.map(toResource);
+}
+
 export async function getFeaturedResources(): Promise<Resource[]> {
   const q = query(
     collection(db, "resources"),

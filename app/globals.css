@@ -61,8 +61,23 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  /* No `scroll-behavior: smooth` here on purpose.
+     Lenis drives scrolling from JS every frame; CSS smooth scrolling
+     interpolates the same value at the same time and the two fight, which is
+     what makes scrolling feel like it stutters and overshoots.
+     Next.js 16 also stopped neutralising this during route changes, so leaving
+     it on additionally makes every navigation animate instead of jumping. */
   scroll-padding-top: 80px;
+}
+
+/* Honour the OS "reduce motion" setting everywhere, including Lenis. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 body {
@@ -167,7 +182,11 @@ html.light .glass {
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 1rem;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  /* `transform` is deliberately not transitioned here.
+     Framer Motion writes the inline transform on these same elements; a CSS
+     transition on the same property fights every inline write and produces the
+     visible stutter on hover. Motion owns transform, CSS owns the rest. */
+  transition: border-color 0.22s ease, box-shadow 0.22s ease;
 }
 
 html.light .glass-card {
@@ -179,13 +198,11 @@ html.light .glass-card {
 .glass-card:hover {
   border-color: rgba(56, 189, 248, 0.3);
   box-shadow: 0 0 30px rgba(56, 189, 248, 0.1), 0 8px 32px rgba(0, 0, 0, 0.2);
-  transform: translateY(-2px);
 }
 
 html.light .glass-card:hover {
   border-color: rgba(37, 99, 235, 0.3) !important;
   box-shadow: 0 8px 40px rgba(30, 64, 175, 0.12) !important;
-  transform: translateY(-2px);
 }
 
 /* ─── Glow Effects ────────────────────────────────────────── */
@@ -553,14 +570,73 @@ html.light .badge-red {
 }
 
 /* ─── Section ─────────────────────────────────────────────── */
+/* ─── Vertical rhythm ─────────────────────────────────────────
+   Home sections previously each picked their own padding (py-16, py-20,
+   py-24, section-padding), so the gaps between them never matched and the
+   page read as a stack of unrelated blocks. Everything now uses one scale.
+
+   --section-y   normal section
+   --section-y-sm tighter, for a section that continues the one above it
+*/
+:root {
+  --nav-height: 4rem;
+  --section-y: 3.5rem;
+  --section-y-sm: 2.25rem;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --section-y: 5rem;
+    --section-y-sm: 3rem;
+  }
+}
+
+.section {
+  padding-top: var(--section-y);
+  padding-bottom: var(--section-y);
+}
+
+.section-tight {
+  padding-top: var(--section-y-sm);
+  padding-bottom: var(--section-y-sm);
+}
+
+/* Kept for existing callers; now aligned to the same scale. */
 .section-padding {
-  padding: 5rem 1rem;
+  padding: var(--section-y) 1rem;
 }
 
 @media (min-width: 768px) {
   .section-padding {
-    padding: 7rem 2rem;
+    padding: var(--section-y) 2rem;
   }
+}
+
+/* ─── Section heading block ───────────────────────────────────
+   One consistent title + subtitle treatment, so every section's header
+   occupies the same space instead of each choosing its own margins. */
+.section-head {
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .section-head { margin-bottom: 2.75rem; }
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2.25rem);
+}
+
+.section-subtitle {
+  margin-top: 0.6rem;
+  font-size: clamp(0.875rem, 0.84rem + 0.15vw, 1rem);
+  line-height: 1.6;
+  color: var(--color-text-muted);
+  max-width: 46ch;
 }
 
 /* ─── Container ───────────────────────────────────────────── */
@@ -855,7 +931,9 @@ html.light .min-h-screen.bg-\[\#030712\] {
   border: 1px solid rgba(30, 64, 175, 0.12);
   border-radius: 1.25rem;
   box-shadow: 0 8px 40px rgba(30, 64, 175, 0.08), 0 2px 8px rgba(30, 64, 175, 0.04);
-  transition: all 0.3s ease;
+  /* Named properties rather than `all` — `all` also animates backdrop-filter
+     and border-radius, each of which forces a full repaint per frame. */
+  transition: box-shadow 0.22s ease, border-color 0.22s ease, transform 0.22s ease;
 }
 
 .light-premium-card:hover {
@@ -871,4 +949,49 @@ html.light .min-h-screen.bg-\[\#030712\] {
 
 html.dark .newsletter-gradient {
   background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 50%, #4c1d95 100%);
+}
+
+/* ─── Ticker marquee ──────────────────────────────────────────
+   Compositor-driven marquee. The track renders its items twice, so a -50%
+   translation is a seamless loop point and nothing has to be measured at
+   runtime. Replaces a rAF loop that read scrollWidth every frame and forced a
+   synchronous layout 60 times a second for the life of the page. */
+@keyframes ticker-scroll {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+
+.ticker-track {
+  width: max-content;
+  animation: ticker-scroll 60s linear infinite;
+}
+
+.ticker:hover .ticker-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track { animation: none; }
+}
+
+/* ─── Offscreen section skipping ──────────────────────────────
+   `content-visibility: auto` lets the browser skip layout, paint and
+   compositing for a section while it is outside the viewport, and do that work
+   only as it scrolls into range. On a homepage this long that removes most of
+   the per-frame work during a scroll.
+
+   `contain-intrinsic-size` supplies a placeholder height so skipped sections
+   still contribute a sensible scroll height — without it the scrollbar jumps
+   as sections are rendered for the first time.
+
+   Deliberately NOT applied to `.section` globally: the hero and the first
+   section below it are visible immediately, and skipping work for something
+   already on screen just costs an extra pass. Opt in per section instead. */
+.section-defer {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px;
+}
+
+@media (max-width: 640px) {
+  .section-defer { contain-intrinsic-size: auto 800px; }
 }

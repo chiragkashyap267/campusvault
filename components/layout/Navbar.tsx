@@ -30,7 +30,28 @@ export function Navbar() {
   const isLight = resolvedTheme === "light";
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    // Lenis emits a scroll event every frame, so this handler runs ~60x/sec.
+    // Reading window.scrollY forces a layout read each time, and calling
+    // setState each time churns React even though the value rarely changes.
+    // The rAF gate coalesces bursts to one read per frame, and the ref guard
+    // means setState only fires on the two frames where the flag flips.
+    let queued = false;
+    let last = window.scrollY > 20;
+    setScrolled(last);
+
+    const onScroll = () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => {
+        queued = false;
+        const next = window.scrollY > 20;
+        if (next !== last) {
+          last = next;
+          setScrolled(next);
+        }
+      });
+    };
+
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);

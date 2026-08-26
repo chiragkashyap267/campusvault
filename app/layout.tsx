@@ -3,14 +3,20 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
-import { RobotAssistant } from "@/components/shared/RobotAssistant";
 import Script from "next/script";
 import { SITE_NAME, SITE_DESCRIPTION } from "@/lib/constants";
 
-const inter = Inter({ 
-  subsets: ["latin"], 
+const inter = Inter({
+  subsets: ["latin"],
   variable: "--font-inter",
-  weight: ["300", "400", "500", "600", "700", "800"],
+  // Only the weights the app actually uses.
+  //   300 was loaded but never used anywhere.
+  //   900 is used by `font-black` in 11 places but was NOT loaded, so those
+  //   headings were being rendered with a browser-synthesised weight.
+  // The single `font-extrabold` (800) resolves to the nearest loaded weight.
+  weight: ["400", "500", "600", "700", "900"],
+  display: "swap",
+  preload: true,
 });
 
 export const metadata: Metadata = {
@@ -66,7 +72,6 @@ export default function RootLayout({
       <body className="bg-background text-text-primary antialiased overflow-x-hidden">
         <SmoothScroll>
           <Providers>{children}</Providers>
-          <RobotAssistant />
         </SmoothScroll>
 
         {/* Google Analytics Loader */}

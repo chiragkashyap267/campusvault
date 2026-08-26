@@ -86,6 +86,28 @@ export const SITE_DESCRIPTION =
 export const CREATOR_NAME = "Chirag Kashyap";
 export const CREATOR_PROGRAM = "MCA";
 
+/**
+ * The creator's links, in one place.
+ *
+ * These were previously hardcoded separately in the footer, the about page and
+ * the contact page, and had already drifted: about/ contact pointed at a
+ * `chiragkashyap` GitHub handle and a `chiragkashyap.dev` domain that are not
+ * the real ones. Every surface now reads from here so they cannot diverge
+ * again.
+ */
+export const CREATOR_LINKS = {
+  github: "https://github.com/chiragkashyap267",
+  linkedin: "https://www.linkedin.com/in/chirag-kashyap-00405633b",
+  portfolio: "https://chiragkashyapwebdev.vercel.app/",
+} as const;
+
+/** Display form of the same links, for when the URL is shown as text. */
+export const CREATOR_LINK_LABELS = {
+  github: "github.com/chiragkashyap267",
+  linkedin: "linkedin.com/in/chirag-kashyap",
+  portfolio: "chiragkashyapwebdev.vercel.app",
+} as const;
+
 export const CLOUDINARY_BASE_URL = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}`;
 
 export const MAX_FILE_SIZE_MB = 50;

@@ -1,13 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import { sendEmail } from "@/lib/email/sender";
+import { sendEmail, closeEmailTransport } from "@/lib/email/sender";
+import { buildEmailHtml, buildEmailText, buildUnsubscribeUrl } from "@/lib/email/template";
 
-// TEMPLATE_STYLES removed for simpler text-based emails
+/**
+ * POST /api/marketing/send
+ * Sends a single campaign email to one recipient.
+ */
 export async function POST(req: NextRequest) {
   try {
     const {
       recipientEmail,
       subject,
-      headline,
       headline,
       message,
       studentName = "Student",
@@ -21,90 +24,45 @@ export async function POST(req: NextRequest) {
     }
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://campusvaultgbpiet.vercel.app";
+    const to = String(recipientEmail).trim().toLowerCase();
+    const unsubscribeUrl = buildUnsubscribeUrl(appUrl, to);
 
-    const htmlContent = `<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>${headline}</title>
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      color: #333333;
-      line-height: 1.6;
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    .header {
-      border-bottom: 1px solid #eeeeee;
-      padding-bottom: 15px;
-      margin-bottom: 20px;
-    }
-    .footer {
-      margin-top: 40px;
-      padding-top: 20px;
-      border-top: 1px solid #eeeeee;
-      font-size: 12px;
-      color: #777777;
-    }
-    .btn {
-      display: inline-block;
-      padding: 10px 20px;
-      background-color: #2563eb;
-      color: #ffffff !important;
-      text-decoration: none;
-      border-radius: 6px;
-      font-weight: 500;
-      margin-top: 15px;
-    }
-    h2 { color: #1e293b; font-size: 20px; margin-top: 0; }
-  </style>
-</head>
-<body>
-  <div class="header">
-    <strong>CampusVault GBPIET</strong>
-  </div>
-  
-  <p>Hi ${studentName},</p>
-  
-  <h2>${headline}</h2>
-  
-  <div style="white-space: pre-wrap; margin-bottom: 25px;">${message}</div>
-  
-  <p>
-    <a href="${appUrl}/resources" class="btn">View on CampusVault</a>
-  </p>
-  
-  <div class="footer">
-    <p>This is an automated update from CampusVault GBPIET.</p>
-    <p>&copy; 2026 CampusVault (Built by students, for students)</p>
-  </div>
-</body>
-</html>`;
+    const template = {
+      firstName: String(studentName).split(" ")[0] || "Student",
+      headline: String(headline),
+      message: String(message),
+      ctaLabel: "View on CampusVault",
+      ctaUrl: `${appUrl}/resources`,
+      unsubscribeUrl,
+    };
 
     const result = await sendEmail({
-      to: recipientEmail,
+      to,
       subject,
-      html: htmlContent,
+      html: buildEmailHtml(template),
+      text: buildEmailText(template),
       fromName: "CampusVault GBPIET",
+      unsubscribeUrl,
+      entityRefId: `send-${to}-${Date.now()}`,
     });
 
     if (!result.success) {
-      console.error(`[Send] Failed to ${recipientEmail}: ${result.error}`);
+      console.error(`[Send] Failed to ${to}: ${result.error}`);
       return NextResponse.json({ error: result.error }, { status: 500 });
     }
 
-    console.log(`[Send] Sent to ${recipientEmail} via ${result.provider}`);
+    console.log(`[Send] Sent to ${to} via ${result.provider}`);
     return NextResponse.json({
       success: true,
       messageId: result.messageId,
-      recipient: recipientEmail,
+      recipient: to,
       provider: result.provider,
     });
-
-  } catch (error: any) {
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : "Internal server error.";
     console.error("Marketing send error:", error);
-    return NextResponse.json({ error: error.message || "Internal server error." }, { status: 500 });
+    return NextResponse.json({ error: msg }, { status: 500 });
+  } finally {
+    closeEmailTransport();
   }
 }

@@ -43,3 +43,9 @@ next-env.d.ts
 # bulk import script - NEVER commit service account key!
 scripts/service-account.json
 scripts/import-errors.log
+
+# local dev server log
+dev.log
+
+# keep the env template (no values in it)
+!.env.local.example

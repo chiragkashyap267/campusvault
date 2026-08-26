@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, MessageSquare, Send, Loader2, Globe, MapPin, CheckCircle } from "lucide-react";
+import { Mail, MessageSquare, Send, Loader2, Globe, MapPin, CheckCircle, ExternalLink } from "lucide-react";
+import { CREATOR_LINKS, CREATOR_LINK_LABELS } from "@/lib/constants";
 import toast from "react-hot-toast";
 
 const FAQS = [
@@ -86,7 +87,11 @@ export default function ContactPage() {
               </div>
               <div className="flex items-center gap-3 text-sm text-slate-400">
                 <Globe className="w-4 h-4 text-cyan-400 shrink-0" />
-                <a href="https://github.com/chiragkashyap" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-400 transition-colors">github.com/chiragkashyap</a>
+                <a href={CREATOR_LINKS.github} target="_blank" rel="noopener noreferrer" className="hover:text-cyan-400 transition-colors">{CREATOR_LINK_LABELS.github}</a>
+              </div>
+              <div className="flex items-center gap-3 text-sm text-slate-400">
+                <ExternalLink className="w-4 h-4 text-cyan-400 shrink-0" />
+                <a href={CREATOR_LINKS.portfolio} target="_blank" rel="noopener noreferrer" className="hover:text-cyan-400 transition-colors">{CREATOR_LINK_LABELS.portfolio}</a>
               </div>
               <div className="flex items-center gap-3 text-sm text-slate-400">
                 <MapPin className="w-4 h-4 text-cyan-400 shrink-0" />

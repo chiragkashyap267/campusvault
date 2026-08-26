@@ -8,11 +8,20 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { useAuthStore } from "@/lib/store/authStore";
 import toast from "react-hot-toast";
 
-// How long (ms) to wait before re-showing the popup if user dismissed without subscribing
-const REDISPLAY_DELAY_MS = 45_000; // 45 seconds
+// Wait before showing the popup at all. Someone who has just landed is
+// usually here to find a paper; interrupting that within a few seconds is the
+// opposite of the goal. Long enough that they have seen the page first.
+const INITIAL_DELAY_MS = 20_000; // 20 seconds
 
-// localStorage key
+// How long a dismissal is honoured.
+// This used to re-show the popup 45 seconds after every dismissal, forever,
+// until the visitor subscribed — so "close" never actually closed it. A
+// dismissal is now remembered so it is not asked again for a week.
+const DISMISS_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+
+// localStorage keys
 const SUBSCRIBED_KEY = "campusvault_subscribed_v2";
+const DISMISSED_KEY = "campusvault_newsletter_dismissed_at";
 
 export function NewsletterPopup() {
   const { user } = useAuthStore();
@@ -22,28 +31,41 @@ export function NewsletterPopup() {
   const [success, setSuccess] = useState(false);
   const redisplayTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Check if already subscribed (localStorage fast-path)
-  const isAlreadySubscribed = () =>
-    typeof window !== "undefined" &&
-    localStorage.getItem(SUBSCRIBED_KEY) === "true";
+  // localStorage is unavailable in some privacy modes; treat a throw as
+  // "no stored preference" rather than letting it break the page.
+  const readStorage = (key: string): string | null => {
+    try {
+      return typeof window === "undefined" ? null : localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  };
+
+  const isAlreadySubscribed = () => readStorage(SUBSCRIBED_KEY) === "true";
+
+  const isRecentlyDismissed = () => {
+    const at = Number(readStorage(DISMISSED_KEY) || 0);
+    return at > 0 && Date.now() - at < DISMISS_TTL_MS;
+  };
+
+  const shouldStaySilent = () => isAlreadySubscribed() || isRecentlyDismissed();
 
   // Schedule or immediately show the popup
   const scheduleShow = (delayMs: number) => {
-    if (isAlreadySubscribed()) return;
+    if (shouldStaySilent()) return;
     if (redisplayTimer.current) clearTimeout(redisplayTimer.current);
     redisplayTimer.current = setTimeout(() => {
-      if (!isAlreadySubscribed()) setIsOpen(true);
+      if (!shouldStaySilent()) setIsOpen(true);
     }, delayMs);
   };
 
   useEffect(() => {
-    if (isAlreadySubscribed()) return;
+    if (shouldStaySilent()) return;
 
     // Pre-fill email from logged-in user
     if (user?.email) setEmail(user.email);
 
-    // Show popup 3 seconds after mount
-    scheduleShow(3000);
+    scheduleShow(INITIAL_DELAY_MS);
 
     return () => {
       if (redisplayTimer.current) clearTimeout(redisplayTimer.current);
@@ -51,10 +73,15 @@ export function NewsletterPopup() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
-  // When user closes without subscribing → re-show after REDISPLAY_DELAY_MS
+  // Closing means closing: remember it and stop asking for DISMISS_TTL_MS.
   const handleClose = () => {
     setIsOpen(false);
-    scheduleShow(REDISPLAY_DELAY_MS);
+    if (redisplayTimer.current) clearTimeout(redisplayTimer.current);
+    try {
+      localStorage.setItem(DISMISSED_KEY, String(Date.now()));
+    } catch {
+      /* private mode — the popup simply may reappear next session */
+    }
   };
 
   const handleSubscribe = async (e: React.FormEvent) => {

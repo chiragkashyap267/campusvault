@@ -6,7 +6,10 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-1 pt-24 md:pt-28">{children}</main>
+      {/* Exactly the navbar's height (h-16). It was pt-24/md:pt-28, which
+          left 32-48px of dead space under the nav on every single page.
+          Sections own their own breathing room via the .section scale. */}
+      <main className="flex-1 pt-16">{children}</main>
       <Footer />
       <NewsletterPopup />
     </div>

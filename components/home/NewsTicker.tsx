@@ -1,6 +1,3 @@
-"use client";
-
-import { useRef, useEffect } from "react";
 import Link from "next/link";
 import { MessageSquare, HelpCircle, FileText, Upload, Shield, Sparkles, Bell, Zap } from "lucide-react";
 
@@ -19,37 +16,27 @@ const NEWS_ITEMS = [
 
 const TICKER_ITEMS = [...NEWS_ITEMS, ...NEWS_ITEMS];
 
+/**
+ * Scrolling announcements bar.
+ *
+ * The marquee is a pure CSS animation, deliberately.
+ *
+ * The previous version ran a requestAnimationFrame loop that read
+ * `track.scrollWidth` and wrote `track.style.transform` on every frame. Reading
+ * scrollWidth forces the browser to flush layout synchronously, so that loop
+ * triggered a full layout recalculation sixty times a second, for the entire
+ * life of the page, whether or not the ticker was even on screen.
+ *
+ * A keyframe animation on `transform` is handed to the compositor instead: it
+ * costs the main thread nothing, keeps running while JavaScript is busy, and
+ * pauses on hover with a single CSS property.
+ *
+ * The track renders the item list twice, so translating by exactly -50% lands
+ * on a seamless loop point without measuring anything.
+ */
 export function NewsTicker() {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const animRef = useRef<number | null>(null);
-  const posRef = useRef(0);
-  const pausedRef = useRef(false);
-
-  useEffect(() => {
-    const track = trackRef.current;
-    if (!track) return;
-    const speed = 0.5;
-
-    const animate = () => {
-      if (!pausedRef.current) {
-        posRef.current -= speed;
-        const singleSetWidth = track.scrollWidth / 2;
-        if (Math.abs(posRef.current) >= singleSetWidth) posRef.current = 0;
-        track.style.transform = `translateX(${posRef.current}px)`;
-      }
-      animRef.current = requestAnimationFrame(animate);
-    };
-
-    animRef.current = requestAnimationFrame(animate);
-    return () => { if (animRef.current !== null) cancelAnimationFrame(animRef.current); };
-  }, []);
-
   return (
-    <div
-      className="relative w-full overflow-hidden border-y border-white/5 bg-gradient-to-r from-[#060b18] via-[#07101f] to-[#060b18]"
-      onMouseEnter={() => { pausedRef.current = true; }}
-      onMouseLeave={() => { pausedRef.current = false; }}
-    >
+    <div className="ticker relative w-full overflow-hidden border-y border-white/5 bg-gradient-to-r from-[#060b18] via-[#07101f] to-[#060b18]">
       {/* Left fade */}
       <div className="absolute left-0 top-0 bottom-0 w-20 z-10 pointer-events-none bg-gradient-to-r from-[#060b18] to-transparent" />
       {/* LIVE badge */}
@@ -61,7 +48,7 @@ export function NewsTicker() {
       <div className="absolute right-0 top-0 bottom-0 w-20 z-10 pointer-events-none bg-gradient-to-l from-[#060b18] to-transparent" />
 
       <div className="pl-32 py-2.5">
-        <div ref={trackRef} className="flex items-center whitespace-nowrap will-change-transform">
+        <div className="ticker-track flex items-center whitespace-nowrap">
           {TICKER_ITEMS.map((item, i) => (
             <Link
               key={i}

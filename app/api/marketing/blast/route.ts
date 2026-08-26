@@ -3,19 +3,46 @@ import { db } from "@/lib/firebase/config";
 import {
   collection, getDocs, doc, setDoc, getDoc, serverTimestamp, Timestamp
 } from "firebase/firestore";
-import { sendEmail } from "@/lib/email/sender";
+import { sendEmail, closeEmailTransport } from "@/lib/email/sender";
+import { buildEmailHtml, buildEmailText, buildUnsubscribeUrl } from "@/lib/email/template";
+
+// Ask the platform for the longest run it will allow. Vercel Hobby caps at
+// 60s regardless; Pro honours this.
+export const maxDuration = 300;
 
 // How many days between automated blasts to the same user
 const BLAST_COOLDOWN_DAYS = 7;
+
+// Gmail SMTP tolerates a steady trickle far better than a burst.
+const SEND_INTERVAL_MS = 900;
+
+// Free Gmail accounts cap around 500 recipients/day. Stop short of that so a
+// single blast can never burn the whole quota and start bouncing mid-run.
+const MAX_RECIPIENTS_PER_RUN = 400;
+
+/**
+ * Wall-clock budget for one invocation.
+ *
+ * A serverless function is killed at its platform limit with no chance to
+ * respond, which would leave the caller unable to tell what was sent. So the
+ * loop stops on its own and reports honestly instead.
+ *
+ * The 7-day per-user cooldown makes re-running safe and idempotent: anyone
+ * already mailed is skipped, so the next run simply picks up where this one
+ * left off. That is why the cron runs daily rather than weekly.
+ */
+const TIME_BUDGET_MS = 45_000;
 
 interface Recipient {
   name: string;
   email: string;
 }
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 /**
  * POST /api/marketing/blast
- * Sends a campaign email to ALL registered users + newsletter subscribers.
+ * Sends a campaign email to all registered users + newsletter subscribers.
  * Uses Gmail SMTP (no domain needed) → falls back to Resend.
  */
 export async function POST(req: NextRequest) {
@@ -24,7 +51,6 @@ export async function POST(req: NextRequest) {
       subject,
       headline,
       message,
-      templateStyle = "royal",
       skipCooldown = false,
     } = await req.json();
 
@@ -36,12 +62,12 @@ export async function POST(req: NextRequest) {
     const emailSet = new Set<string>();
     const recipients: Recipient[] = [];
 
-    const addRecipient = (name: string, email: string) => {
-      const norm = email.trim().toLowerCase();
-      if (norm && !emailSet.has(norm)) {
-        emailSet.add(norm);
-        recipients.push({ name: name || "Student", email: norm });
-      }
+    const addRecipient = (name: string, email: unknown) => {
+      const norm = String(email ?? "").trim().toLowerCase();
+      if (!EMAIL_RE.test(norm)) return;
+      if (emailSet.has(norm)) return;
+      emailSet.add(norm);
+      recipients.push({ name: name || "Student", email: norm });
     };
 
     // 1. Registered users from Firestore `users` collection
@@ -66,57 +92,113 @@ export async function POST(req: NextRequest) {
       console.warn("[Blast] Could not read subscribers collection:", e);
     }
 
+    // 3. Drop anyone who opted out. Sending to an unsubscribed address is the
+    //    fastest way to get a sender marked as spam.
+    let unsubscribed = 0;
+    try {
+      const optOutSnap = await getDocs(collection(db, "unsubscribes"));
+      const optedOut = new Set<string>();
+      optOutSnap.forEach(d => {
+        const email = String(d.data()?.email ?? "").trim().toLowerCase();
+        if (email) optedOut.add(email);
+      });
+      if (optedOut.size > 0) {
+        for (let i = recipients.length - 1; i >= 0; i--) {
+          if (optedOut.has(recipients[i].email)) {
+            recipients.splice(i, 1);
+            unsubscribed++;
+          }
+        }
+      }
+    } catch (e) {
+      console.warn("[Blast] Could not read unsubscribes collection:", e);
+    }
+
     if (recipients.length === 0) {
-      return NextResponse.json({ message: "No recipients found.", sent: 0, failed: 0, total: 0 });
+      return NextResponse.json({
+        message: "No recipients found.",
+        sent: 0, failed: 0, skipped: 0, unsubscribed, total: 0,
+      });
     }
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://campusvaultgbpiet.vercel.app";
 
     let sent = 0;
     let failed = 0;
+    let skipped = 0;
+    let capped = 0;
+    let outOfTime = false;
+    const startedAt = Date.now();
     const errors: string[] = [];
 
     for (const recipient of recipients) {
+      if (sent >= MAX_RECIPIENTS_PER_RUN) {
+        capped++;
+        continue;
+      }
+      if (Date.now() - startedAt > TIME_BUDGET_MS) {
+        outOfTime = true;
+        capped++;
+        continue;
+      }
+
+      const cooldownKey = `blast__${recipient.email.replace(/[@.]/g, "_")}`;
+
       // ── Per-user cooldown check ──────────────────────────────────────
       if (!skipCooldown) {
-        const cooldownKey = `blast__${recipient.email.replace(/[@.]/g, "_")}`;
-        const cooldownRef = doc(db, "blast_cooldowns", cooldownKey);
-        const cooldownSnap = await getDoc(cooldownRef);
-        if (cooldownSnap.exists()) {
-          const lastSent = cooldownSnap.data()?.lastSent as Timestamp | undefined;
-          if (lastSent) {
-            const daysSince = (Date.now() - lastSent.toMillis()) / (1000 * 60 * 60 * 24);
-            if (daysSince < BLAST_COOLDOWN_DAYS) {
-              console.log(`[Blast] Skipping ${recipient.email} — cooldown active (${Math.ceil(BLAST_COOLDOWN_DAYS - daysSince)}d left)`);
-              // Count as sent so UI shows correct total
-              sent++;
-              continue;
+        try {
+          const cooldownSnap = await getDoc(doc(db, "blast_cooldowns", cooldownKey));
+          if (cooldownSnap.exists()) {
+            const lastSent = cooldownSnap.data()?.lastSent as Timestamp | undefined;
+            if (lastSent) {
+              const daysSince = (Date.now() - lastSent.toMillis()) / (1000 * 60 * 60 * 24);
+              if (daysSince < BLAST_COOLDOWN_DAYS) {
+                console.log(`[Blast] Skipping ${recipient.email} — cooldown active (${Math.ceil(BLAST_COOLDOWN_DAYS - daysSince)}d left)`);
+                skipped++;
+                continue;
+              }
             }
           }
+        } catch (e) {
+          console.warn(`[Blast] Cooldown check failed for ${recipient.email}:`, e);
         }
       }
 
       const firstName = recipient.name.split(" ")[0] || "Student";
-      const htmlContent = buildEmailHtml({ firstName, headline, message, templateStyle, appUrl });
+      const unsubscribeUrl = buildUnsubscribeUrl(appUrl, recipient.email);
+      const template = {
+        firstName,
+        headline: String(headline),
+        message: String(message),
+        ctaLabel: "Open CampusVault",
+        ctaUrl: appUrl,
+        unsubscribeUrl,
+      };
 
       const result = await sendEmail({
         to: recipient.email,
         subject,
-        html: htmlContent,
+        html: buildEmailHtml(template),
+        text: buildEmailText(template),
         fromName: "CampusVault GBPIET",
+        unsubscribeUrl,
+        // Unique per recipient so Gmail shows separate messages, not a thread.
+        entityRefId: `blast-${cooldownKey}-${Date.now()}`,
       });
 
       if (result.success) {
         console.log(`[Blast] ✓ Sent to ${recipient.email} via ${result.provider} (ID: ${result.messageId})`);
         sent++;
 
-        // Record cooldown
         if (!skipCooldown) {
-          const cooldownKey = `blast__${recipient.email.replace(/[@.]/g, "_")}`;
-          await setDoc(doc(db, "blast_cooldowns", cooldownKey), {
-            email: recipient.email,
-            lastSent: serverTimestamp(),
-          });
+          try {
+            await setDoc(doc(db, "blast_cooldowns", cooldownKey), {
+              email: recipient.email,
+              lastSent: serverTimestamp(),
+            });
+          } catch (e) {
+            console.warn(`[Blast] Could not record cooldown for ${recipient.email}:`, e);
+          }
         }
       } else {
         console.error(`[Blast] ✗ Failed ${recipient.email}: ${result.error}`);
@@ -124,8 +206,16 @@ export async function POST(req: NextRequest) {
         failed++;
       }
 
-      // Small delay to avoid rate limits
-      await new Promise(resolve => setTimeout(resolve, 200));
+      // Throttle so Gmail sees a steady trickle rather than a burst.
+      await new Promise(resolve => setTimeout(resolve, SEND_INTERVAL_MS));
+    }
+
+    if (capped > 0) {
+      console.warn(
+        `[Blast] ${outOfTime ? "Time budget" : "Daily cap"} reached — ` +
+        `${capped} recipient(s) not attempted this run. Re-run to continue; ` +
+        `the cooldown skips anyone already mailed.`
+      );
     }
 
     return NextResponse.json({
@@ -133,96 +223,21 @@ export async function POST(req: NextRequest) {
       total: recipients.length,
       sent,
       failed,
+      skipped,
+      unsubscribed,
+      notAttempted: capped,
+      // The caller (or tomorrow's cron run) should call again to finish.
+      hasMore: capped > 0,
+      stoppedReason: outOfTime ? "time-budget" : capped > 0 ? "daily-cap" : null,
       errors: errors.slice(0, 10),
     });
 
-  } catch (err: any) {
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "Server error";
     console.error("[Blast] Fatal error:", err);
-    return NextResponse.json({ error: err.message || "Server error" }, { status: 500 });
+    return NextResponse.json({ error: msg }, { status: 500 });
+  } finally {
+    // Release the pooled SMTP connection so the serverless instance can idle.
+    closeEmailTransport();
   }
-}
-
-// ── Email HTML builder ──────────────────────────────────────────────────────
-const THEME_GRADIENTS: Record<string, string> = {
-  sky:     "linear-gradient(135deg, #38bdf8 0%, #0284c7 100%)",
-  royal:   "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)",
-  gold:    "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
-  emerald: "linear-gradient(135deg, #10b981 0%, #047857 100%)",
-};
-
-function buildEmailHtml({
-  firstName,
-  headline,
-  message,
-  appUrl,
-}: {
-  firstName: string;
-  headline: string;
-  message: string;
-  templateStyle?: string;
-  appUrl: string;
-}) {
-  return `<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>${headline}</title>
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      color: #333333;
-      line-height: 1.6;
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    .header {
-      border-bottom: 1px solid #eeeeee;
-      padding-bottom: 15px;
-      margin-bottom: 20px;
-    }
-    .footer {
-      margin-top: 40px;
-      padding-top: 20px;
-      border-top: 1px solid #eeeeee;
-      font-size: 12px;
-      color: #777777;
-    }
-    .btn {
-      display: inline-block;
-      padding: 10px 20px;
-      background-color: #2563eb;
-      color: #ffffff !important;
-      text-decoration: none;
-      border-radius: 6px;
-      font-weight: 500;
-      margin-top: 15px;
-    }
-    h2 { color: #1e293b; font-size: 20px; margin-top: 0; }
-  </style>
-</head>
-<body>
-  <div class="header">
-    <strong>CampusVault GBPIET</strong>
-  </div>
-  
-  <p>Hi ${firstName},</p>
-  
-  <h2>${headline}</h2>
-  
-  <div style="white-space: pre-wrap; margin-bottom: 25px;">${message}</div>
-  
-  <p>We are constantly adding new PYQs, notes, and lab manuals. If you have any study materials, you can help your batchmates by sharing them on the platform.</p>
-  
-  <p>
-    <a href="${appUrl}" class="btn">Open CampusVault</a>
-  </p>
-  
-  <div class="footer">
-    <p>You received this email because you are registered as a student on CampusVault.</p>
-    <p>This is an automated update. If you need assistance, reply to this email.</p>
-    <p>&copy; 2026 CampusVault GBPIET (Built by students, for students)</p>
-  </div>
-</body>
-</html>`;
 }

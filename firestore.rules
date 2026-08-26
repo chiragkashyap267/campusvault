@@ -93,5 +93,12 @@ service cloud.firestore {
       allow read, write: if true;
     }
 
+    // ── Email opt-outs (written by the unsubscribe API, read by the blast) ────
+    // Open like the cooldown collections above — the API routes use the client
+    // SDK, so they authenticate as an anonymous caller.
+    match /unsubscribes/{docId} {
+      allow read, write: if true;
+    }
+
   }
 }

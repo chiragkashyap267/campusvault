@@ -72,9 +72,12 @@ export function ResourceCard({ resource, showStatus = false, index = 0 }: Resour
   return (
     <motion.div
       onClick={() => router.push(`/resources/${resource.id}`)}
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: index * 0.05 }}
+      /* Stagger is capped: at index * 0.05 the 30th card waited 1.5s before it
+         appeared, which reads as the grid loading in slowly rather than as a
+         flourish. Six steps is enough to feel deliberate. */
+      transition={{ duration: 0.25, ease: "easeOut", delay: Math.min(index, 6) * 0.03 }}
       whileHover={{ y: -4 }}
       className="glass-card group relative flex flex-col h-full overflow-hidden cursor-pointer"
     >
@@ -108,9 +111,16 @@ export function ResourceCard({ resource, showStatus = false, index = 0 }: Resour
         {/* PDF / Image thumbnail */}
         {thumbnailUrl && (
           <div className="relative h-20 sm:h-24 rounded-lg overflow-hidden border border-white/5 bg-[#0a0f1e] mt-auto">
+            {/* Lazy + async-decoded. Without these every card in the grid
+                fetched and decoded its preview immediately, so an infinite
+                scroll of 12 cards at a time fired a dozen requests and a dozen
+                main-thread decodes for images mostly still off screen. The
+                wrapper has a fixed height, so deferring costs no layout shift. */}
             <img
               src={thumbnailUrl}
               alt={`${resource.title} preview`}
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover object-top opacity-70 group-hover:opacity-100 transition-opacity"
               onError={(e) => {
                 (e.currentTarget.parentElement as HTMLElement).style.display = "none";

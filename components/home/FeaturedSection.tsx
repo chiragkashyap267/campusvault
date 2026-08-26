@@ -11,7 +11,7 @@ export function FeaturedSection() {
   const { data: trending, isLoading: loadingTrending } = useTrendingResources(3);
 
   return (
-    <section className="py-20 bg-radial-blue relative">
+    <section className="section section-defer bg-radial-blue relative">
       <div className="container-app space-y-20">
 
         {/* Trending */}

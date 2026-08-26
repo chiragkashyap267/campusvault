@@ -14,13 +14,21 @@ export function HeroSection() {
   const { user } = useAuthStore();
 
   return (
-    <section className="relative min-h-[100svh] flex items-center justify-center overflow-hidden hero-gradient">
+    /* Height excludes the navbar. At a flat 100svh the hero was a full
+       viewport tall *below* a 64px nav, so it always overflowed the screen and
+       pushed the call to action under the fold. */
+    <section className="relative min-h-[calc(100svh-var(--nav-height))] flex items-center justify-center overflow-hidden hero-gradient">
       <ParticleBackground />
 
-      {/* Floating Orbs */}
-      <div className="absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-cyan-400/5 blur-3xl animate-float pointer-events-none" />
-      <div className="absolute bottom-1/3 right-1/4 w-96 h-96 rounded-full bg-blue-500/5 blur-3xl animate-float-delay pointer-events-none" />
-      <div className="absolute top-1/2 right-1/6 w-48 h-48 rounded-full bg-purple-500/5 blur-3xl animate-float pointer-events-none" style={{ animationDelay: "3s" }} />
+      {/* Ambient orbs.
+          Static on purpose. Each is a large element under a 64px blur, and
+          animating the transform of a blurred layer forces the browser to
+          re-render and re-blur that whole surface every single frame — three
+          of them, permanently, was the heaviest continuous cost on the page.
+          Painted once, they look identical and cost nothing. */}
+      <div className="absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-cyan-400/5 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/3 right-1/4 w-96 h-96 rounded-full bg-blue-500/5 blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 right-1/6 w-48 h-48 rounded-full bg-purple-500/5 blur-3xl pointer-events-none" />
 
       {/* Grid overlay */}
       <div
@@ -32,13 +40,13 @@ export function HeroSection() {
         }}
       />
 
-      <div className="container-app relative z-10 text-center pt-28 pb-20 sm:pt-36 sm:pb-24">
+      <div className="container-app relative z-10 text-center py-12 sm:py-16">
         {/* Announcement badge */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="flex justify-center mb-6"
+          transition={{ duration: 0.45 }}
+          className="flex justify-center mb-5"
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-cyan-400/20 text-sm text-cyan-400">
             <Sparkles className="w-3.5 h-3.5" />
@@ -51,7 +59,7 @@ export function HeroSection() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.1 }}
+          transition={{ duration: 0.5, delay: 0.08 }}
           className="mb-8"
         >
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold text-white leading-tight mb-2">
@@ -68,8 +76,8 @@ export function HeroSection() {
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="text-base sm:text-lg text-slate-400 max-w-xl mx-auto mb-10 leading-relaxed"
+          transition={{ duration: 0.45, delay: 0.22 }}
+          className="text-base sm:text-lg text-slate-400 max-w-xl mx-auto mb-8 leading-relaxed"
         >
           {SITE_TAGLINE} — Share notes, access PYQs, collaborate with your batchmates, all in one premium platform.
         </motion.p>
@@ -78,8 +86,8 @@ export function HeroSection() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
+          transition={{ duration: 0.45, delay: 0.3 }}
+          className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-10"
         >
           <Link
             href="/resources"
@@ -104,7 +112,7 @@ export function HeroSection() {
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
+          transition={{ duration: 0.5, delay: 0.35 }}
           className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-w-2xl mx-auto"
         >
           {PREVIEW_CARDS.map((card, i) => (
@@ -112,7 +120,7 @@ export function HeroSection() {
               key={card.label}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 + i * 0.1 }}
+              transition={{ delay: 0.45 + Math.min(i, 5) * 0.05 }}
               className="glass-card text-left group cursor-pointer relative overflow-hidden flex flex-col justify-between"
             >
               <div className="p-4 pb-4">

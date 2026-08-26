@@ -11,7 +11,7 @@ const POPULAR_TOOLS = [
 
 export function SoftwaresSection() {
   return (
-    <section className="py-24 relative overflow-hidden bg-[#0a0f1e] border-y border-white/5">
+    <section className="section section-defer relative overflow-hidden bg-[#0a0f1e] border-y border-white/5">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-64 bg-cyan-500/5 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="container-app relative z-10">

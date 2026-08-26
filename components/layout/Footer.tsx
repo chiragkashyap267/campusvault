@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { BookOpen, Globe, Link2, Heart, ExternalLink } from "lucide-react";
-import { CREATOR_NAME, NAV_LINKS, SITE_NAME } from "@/lib/constants";
+import { CREATOR_LINKS, CREATOR_NAME, NAV_LINKS, SITE_NAME } from "@/lib/constants";
 
 const FOOTER_LINKS = {
   Platform: [
@@ -28,21 +28,9 @@ const FOOTER_LINKS = {
 };
 
 const SOCIAL_LINKS = [
-  {
-    label: "GitHub",
-    href: "https://github.com/chiragkashyap267",
-    icon: <Globe className="w-4 h-4" />,
-  },
-  {
-    label: "LinkedIn",
-    href: "https://www.linkedin.com/in/chirag-kashyap-00405633b",
-    icon: <Link2 className="w-4 h-4" />,
-  },
-  {
-    label: "Portfolio",
-    href: "https://chiragkashyapwebdev.vercel.app/",
-    icon: <ExternalLink className="w-4 h-4" />,
-  },
+  { label: "GitHub", href: CREATOR_LINKS.github, icon: <Globe className="w-4 h-4" /> },
+  { label: "LinkedIn", href: CREATOR_LINKS.linkedin, icon: <Link2 className="w-4 h-4" /> },
+  { label: "Portfolio", href: CREATOR_LINKS.portfolio, icon: <ExternalLink className="w-4 h-4" /> },
 ];
 
 export function Footer() {

@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { BookOpen, Globe, Link2, ExternalLink, Code2, Cpu, Zap, Shield, Heart } from "lucide-react";
-import { CREATOR_NAME, SITE_NAME } from "@/lib/constants";
+import { CREATOR_LINKS, CREATOR_NAME, SITE_NAME } from "@/lib/constants";
 
 const TECH_STACK = [
   { name: "Next.js 16", desc: "React framework", icon: "⚡" },
@@ -111,11 +111,14 @@ export default function AboutPage() {
             </p>
             <div className="flex justify-center gap-3 mb-6">
               {[
-                { icon: <Globe className="w-4 h-4" />, href: "https://github.com/chiragkashyap", label: "GitHub" },
-                { icon: <Link2 className="w-4 h-4" />, href: "https://linkedin.com/in/chiragkashyap", label: "LinkedIn" },
-                { icon: <ExternalLink className="w-4 h-4" />, href: "https://chiragkashyap.dev", label: "Portfolio" },
+                { icon: <Globe className="w-4 h-4" />, href: CREATOR_LINKS.github, label: "GitHub" },
+                { icon: <Link2 className="w-4 h-4" />, href: CREATOR_LINKS.linkedin, label: "LinkedIn" },
+                { icon: <ExternalLink className="w-4 h-4" />, href: CREATOR_LINKS.portfolio, label: "Portfolio" },
               ].map((s) => (
+                /* The three icons are visually indistinguishable, so name them
+                   for screen readers and for the hover tooltip. */
                 <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer"
+                  aria-label={s.label} title={s.label}
                   className="p-3 glass rounded-xl text-slate-400 hover:text-cyan-400 hover:border-cyan-400/20 border border-white/10 transition-all">
                   {s.icon}
                 </a>

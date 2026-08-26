@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect, Suspense, useRef } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect, Suspense, useRef, useDeferredValue } from "react";
 import { Search, SlidersHorizontal, X } from "lucide-react";
+import { motion } from "framer-motion";
 import { ResourceGrid } from "@/components/resources/ResourceGrid";
 import { ResourceFiltersPanel } from "@/components/resources/ResourceFilters";
 import { ResourceFinder } from "@/components/home/ResourceFinder";
@@ -11,6 +11,13 @@ import { ResourceFilters } from "@/lib/types";
 import { useSearchParams } from "next/navigation";
 import { useAuthStore } from "@/lib/store/authStore";
 
+const QUICK_FILTERS = [
+  { label: "PYQ Papers", style: "badge-green", key: "type", val: "pyq" },
+  { label: "CT Papers", style: "badge-blue", key: "type", val: "ct" },
+  { label: "MCA", style: "badge-purple", key: "branch", val: "mca" },
+  { label: "B.Tech", style: "badge-cyan", key: "branch", val: "btech" },
+] as const;
+
 function ResourcesContent() {
   const { filters, setFilter, resetFilters } = useUIStore();
   const { user } = useAuthStore();
@@ -18,6 +25,10 @@ function ResourcesContent() {
   const [search, setSearch] = useState("");
   const searchParams = useSearchParams();
   const newsletterTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Keeps the input responsive while the (heavier) result list re-ranks at a
+  // lower priority. Typing never waits on rendering a few hundred cards.
+  const deferredSearch = useDeferredValue(search);
 
   // Sync URL search params whenever URL changes (accordion links)
   useEffect(() => {
@@ -52,47 +63,46 @@ function ResourcesContent() {
           branch: filters.branch || "",
         }),
       }).catch(() => {});
-    }, 800);
+    }, 1500);
     return () => {
       if (newsletterTimerRef.current) clearTimeout(newsletterTimerRef.current);
     };
   }, [search, user]);
 
-  const activeFilters: ResourceFilters = { ...filters, search };
+  const activeFilters: ResourceFilters = { ...filters, search: deferredSearch };
+
+  const hasActiveFilter =
+    !!(filters.type || filters.branch || filters.semester || filters.subject);
 
   return (
-    <div className="min-h-screen bg-[#030712] pb-16">
-      {/* ── Top section: title + search + quick filters ── */}
-      <div className="container-app pt-6 sm:pt-10 pb-4">
-        {/* Title */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-3"
-        >
-          <h1 className="font-display text-xl sm:text-3xl font-bold text-white leading-tight">
-            Resource Library
-          </h1>
-          <p className="text-slate-400 text-xs sm:text-sm mt-0.5">
-            Browse study materials, PYQs, notes and more for GBPIET students.
+    <div className="min-h-screen bg-[#030712] pb-20">
+      <div className="container-app pt-8 sm:pt-10">
+        {/* ── Header ── */}
+        <div className="mb-5 sm:mb-6">
+          <h1 className="section-title text-white">Resource Library</h1>
+          <p className="section-subtitle">
+            PYQs, class tests, notes and lab manuals for GBPIET — search by subject,
+            code or paper type.
           </p>
-        </motion.div>
+        </div>
 
-        {/* Search + Mobile Filters toggle */}
+        {/* ── Search ── */}
         <div className="flex gap-2 mb-3">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by title, subject, or keyword..."
-              className="input-field pl-9 pr-9 py-2.5 text-sm"
+              placeholder="Try “DBMS pyq”, “os sem 1”, or a subject name…"
+              autoComplete="off"
+              className="input-field pl-10 pr-10 py-3 text-sm"
             />
             {search && (
               <button
                 onClick={() => setSearch("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white"
+                aria-label="Clear search"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -100,50 +110,59 @@ function ResourcesContent() {
           </div>
           <button
             onClick={() => setMobileFiltersOpen(true)}
-            className="lg:hidden btn-ghost px-3 py-2 rounded-xl flex items-center gap-1.5 text-sm shrink-0"
+            className="lg:hidden btn-ghost px-3.5 rounded-xl flex items-center gap-1.5 text-sm shrink-0"
           >
             <SlidersHorizontal className="w-4 h-4" />
             <span className="hidden xs:inline">Filters</span>
           </button>
         </div>
 
-        {/* Quick filter badges */}
-        <div className="flex flex-wrap gap-1.5">
-          {[
-            { label: "MCA", style: "badge-purple", key: "branch", val: "mca" },
-            { label: "B.Tech", style: "badge-cyan", key: "branch", val: "btech" },
-            { label: "PYQ Papers", style: "badge-green", key: "type", val: "pyq" },
-            { label: "CT Papers", style: "badge-blue", key: "type", val: "ct" },
-          ].map((f) => (
+        {/* ── Quick filters ── */}
+        <div className="flex flex-wrap items-center gap-1.5">
+          {QUICK_FILTERS.map((f) => {
+            const isActive = filters[f.key as keyof ResourceFilters] === f.val;
+            return (
+              <button
+                key={f.val}
+                onClick={() => {
+                  if (isActive) {
+                    setFilter(f.key as keyof ResourceFilters, "");
+                  } else {
+                    resetFilters();
+                    setFilter(f.key as keyof ResourceFilters, f.val);
+                  }
+                }}
+                aria-pressed={isActive}
+                className={`badge ${f.style} text-xs cursor-pointer transition-[opacity,box-shadow] active:scale-95 ${
+                  isActive ? "ring-1 ring-current" : "opacity-70 hover:opacity-100"
+                }`}
+              >
+                {f.label}
+              </button>
+            );
+          })}
+          {(hasActiveFilter || search) && (
             <button
-              key={f.val}
               onClick={() => {
                 resetFilters();
-                setFilter(f.key as keyof ResourceFilters, f.val);
+                setSearch("");
               }}
-              className={`badge ${f.style} text-xs cursor-pointer transition-all hover:scale-105 active:scale-95`}
+              className="text-xs text-slate-500 hover:text-slate-300 transition-colors ml-1 underline underline-offset-2"
             >
-              {f.label}
+              Clear all
             </button>
-          ))}
+          )}
         </div>
       </div>
 
-      {/* ── Resource Directory Accordion ── */}
-      <div className="container-app pb-3">
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.08 }}
-        >
-          <ResourceFinder />
-        </motion.div>
+      {/* ── Directory ── */}
+      <div className="container-app mt-5">
+        <ResourceFinder />
       </div>
 
-      {/* ── Main layout: sidebar + grid ── */}
-      <div className="container-app flex gap-4 lg:gap-6 items-start">
-        {/* Desktop sidebar */}
-        <aside className="hidden lg:block w-52 xl:w-56 shrink-0 sticky top-20 self-start">
+      {/* ── Sidebar + grid ── */}
+      <div className="container-app flex gap-6 items-start mt-5 sm:mt-6">
+        <aside className="hidden lg:block w-56 shrink-0 sticky top-20 self-start">
           <div className="glass-card p-4">
             <ResourceFiltersPanel
               filters={filters}
@@ -153,13 +172,12 @@ function ResourcesContent() {
           </div>
         </aside>
 
-        {/* Resource grid */}
         <div className="flex-1 min-w-0">
           <ResourceGrid filters={activeFilters} />
         </div>
       </div>
 
-      {/* ── Mobile Filters Drawer ── */}
+      {/* ── Mobile filters drawer ── */}
       {mobileFiltersOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div
@@ -169,20 +187,22 @@ function ResourcesContent() {
           <motion.div
             initial={{ x: "-100%" }}
             animate={{ x: 0 }}
-            exit={{ x: "-100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            transition={{ type: "spring", damping: 30, stiffness: 300 }}
             className="absolute left-0 top-0 bottom-0 w-72 glass border-r border-white/10 p-4 overflow-y-auto"
           >
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold text-white">Filters</h3>
-              <button onClick={() => setMobileFiltersOpen(false)}>
+              <button onClick={() => setMobileFiltersOpen(false)} aria-label="Close filters">
                 <X className="w-5 h-5 text-slate-400" />
               </button>
             </div>
             <ResourceFiltersPanel
               filters={filters}
-              onChange={(k, v) => { setFilter(k, v); }}
-              onReset={() => { resetFilters(); setMobileFiltersOpen(false); }}
+              onChange={setFilter}
+              onReset={() => {
+                resetFilters();
+                setMobileFiltersOpen(false);
+              }}
             />
           </motion.div>
         </div>
@@ -193,11 +213,13 @@ function ResourcesContent() {
 
 export default function ResourcesPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+        </div>
+      }
+    >
       <ResourcesContent />
     </Suspense>
   );
