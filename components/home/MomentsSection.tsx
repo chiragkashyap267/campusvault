@@ -1,8 +1,8 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ImagePlus, Loader2, X } from "lucide-react";
+import { ImagePlus, Loader2, X, ChevronLeft, ChevronRight } from "lucide-react";
 import toast from "react-hot-toast";
 import { getMoments, createMoment } from "@/lib/firebase/firestore";
 import { uploadToCloudinary } from "@/lib/cloudinary/upload";
@@ -32,12 +32,47 @@ export function MomentsSection() {
   const [pendingFile, setPendingFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [caption, setCaption] = useState("");
+  /** Index into `moments` of the photo open in the lightbox, or null. */
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   const { data: moments = [], isLoading } = useQuery({
     queryKey: ["moments"],
     queryFn: () => getMoments(24),
     staleTime: 5 * 60 * 1000,
   });
+
+  const closeLightbox = useCallback(() => setLightboxIndex(null), []);
+
+  const step = useCallback(
+    (delta: number) =>
+      setLightboxIndex((current) =>
+        current === null || moments.length === 0
+          ? null
+          : (current + delta + moments.length) % moments.length
+      ),
+    [moments.length]
+  );
+
+  // Escape closes, arrows move. Also locks page scroll: without it the page
+  // scrolls behind the overlay, which is disorienting on a phone.
+  useEffect(() => {
+    if (lightboxIndex === null) return;
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeLightbox();
+      if (e.key === "ArrowRight") step(1);
+      if (e.key === "ArrowLeft") step(-1);
+    };
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [lightboxIndex, closeLightbox, step]);
 
   const upload = useMutation({
     mutationFn: async () => {
@@ -84,8 +119,19 @@ export function MomentsSection() {
     setPreviewUrl(URL.createObjectURL(file));
   }
 
-  // Render the row twice so a -50% translation loops seamlessly.
-  const track = moments.length > 0 ? [...moments, ...moments] : [];
+  /**
+   * A marquee needs the row rendered twice so translating it -50% lands on a
+   * seamless loop point. With only a handful of photos that duplication is
+   * plainly visible — one upload showed the same picture twice, which reads as
+   * a bug rather than as a loop.
+   *
+   * So the wall only scrolls once there is genuinely more than a screenful.
+   * Below that it is a plain centred row: no duplicates, no animation, and
+   * nothing to misread.
+   */
+  const SCROLL_THRESHOLD = 7;
+  const shouldScroll = moments.length >= SCROLL_THRESHOLD;
+  const track = shouldScroll ? [...moments, ...moments] : moments;
 
   return (
     <section className="section-tight relative border-y border-white/5 bg-[#060b18]">
@@ -192,15 +238,23 @@ export function MomentsSection() {
           </div>
         </div>
       ) : (
-        <div className="moments-marquee">
-          <div className="moments-track">
+        <div className={shouldScroll ? "moments-marquee" : "moments-static"}>
+          <div className={shouldScroll ? "moments-track" : "moments-row"}>
             {track.map((m: Moment, i) => (
               <figure
                 key={`${m.id}-${i}`}
                 className="moments-item group"
                 // The duplicated half is decorative; hide it from screen readers.
-                aria-hidden={i >= moments.length}
+                aria-hidden={shouldScroll && i >= moments.length}
               >
+                {/* A duplicated tile must open the original, not its copy. */}
+                <button
+                  type="button"
+                  onClick={() => setLightboxIndex(i % moments.length)}
+                  aria-label={`Open photo: ${m.caption || "campus moment"}`}
+                  tabIndex={shouldScroll && i >= moments.length ? -1 : 0}
+                  className="absolute inset-0 z-10 cursor-zoom-in"
+                />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={m.imageUrl}
@@ -218,6 +272,66 @@ export function MomentsSection() {
               </figure>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* ── Lightbox ── */}
+      {lightboxIndex !== null && moments[lightboxIndex] && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Photo viewer"
+          className="fixed inset-0 z-[60] flex items-center justify-center p-4 sm:p-8 bg-black/85 backdrop-blur-sm"
+          onClick={closeLightbox}
+        >
+          <button
+            onClick={closeLightbox}
+            aria-label="Close"
+            className="absolute top-4 right-4 p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+
+          {moments.length > 1 && (
+            <>
+              <button
+                onClick={(e) => { e.stopPropagation(); step(-1); }}
+                aria-label="Previous photo"
+                className="absolute left-2 sm:left-5 p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button
+                onClick={(e) => { e.stopPropagation(); step(1); }}
+                aria-label="Next photo"
+                className="absolute right-2 sm:right-5 p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </>
+          )}
+
+          {/* Stop clicks on the photo itself from closing the overlay. */}
+          <figure
+            className="max-w-3xl w-full flex flex-col items-center gap-3"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={moments[lightboxIndex].imageUrl}
+              alt={moments[lightboxIndex].caption || "Campus moment"}
+              className="max-h-[78vh] w-auto max-w-full rounded-xl object-contain shadow-2xl"
+            />
+            <figcaption className="text-center">
+              <p className="text-sm font-medium text-white">
+                {moments[lightboxIndex].caption}
+              </p>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Posted by {moments[lightboxIndex].uploaderName}
+                {moments.length > 1 && ` · ${lightboxIndex + 1} of ${moments.length}`}
+              </p>
+            </figcaption>
+          </figure>
         </div>
       )}
     </section>
