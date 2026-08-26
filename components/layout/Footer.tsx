@@ -5,18 +5,25 @@ import { motion } from "framer-motion";
 import { BookOpen, Globe, Link2, Heart, ExternalLink } from "lucide-react";
 import { CREATOR_LINKS, CREATOR_NAME, NAV_LINKS, SITE_NAME } from "@/lib/constants";
 
+/**
+ * Only links that actually go somewhere.
+ *
+ * "Notes Editor" (/notes) and "Todo Tracker" (/todo) were listed here but
+ * neither route exists — both were plain 404s. "B.Tech CSE" filtered on
+ * branch=cse, which is not one of the branch values resources are stored
+ * under, so it always returned an empty library.
+ */
 const FOOTER_LINKS = {
   Platform: [
     { label: "Resources", href: "/resources" },
     { label: "Upload", href: "/upload" },
     { label: "Leaderboard", href: "/leaderboard" },
-    { label: "Notes Editor", href: "/notes" },
-    { label: "Todo Tracker", href: "/todo" },
+    { label: "Forms", href: "/forms" },
   ],
   Institution: [
     { label: "About GBPIET", href: "/about" },
-    { label: "MCA Department", href: "/resources?branch=mca" },
-    { label: "B.Tech CSE", href: "/resources?branch=cse" },
+    { label: "MCA", href: "/resources?branch=mca" },
+    { label: "B.Tech", href: "/resources?branch=btech" },
     { label: "Contact", href: "/contact" },
   ],
   Resources: [

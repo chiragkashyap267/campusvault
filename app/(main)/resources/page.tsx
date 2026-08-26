@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, Suspense, useRef, useDeferredValue } from "react";
+import { useState, useEffect, Suspense, useRef, useDeferredValue, useCallback } from "react";
+import { useLenis } from "lenis/react";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { ResourceGrid } from "@/components/resources/ResourceGrid";
@@ -33,6 +34,29 @@ function ResourcesContent() {
   const [search, setSearch] = useState("");
   const searchParams = useSearchParams();
   const newsletterTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const resultsRef = useRef<HTMLDivElement>(null);
+  const lenis = useLenis();
+
+  /**
+   * Bring the results into view after the directory sets a filter.
+   *
+   * Goes through Lenis rather than scrollIntoView: Lenis owns the scroll
+   * position, and a native smooth scroll fights it for control. The offset
+   * clears the fixed navbar so the first row of cards is not hidden under it.
+   */
+  const scrollToResults = useCallback(() => {
+    const target = resultsRef.current;
+    if (!target) return;
+    // Let the filter state and the new card list commit first.
+    requestAnimationFrame(() => {
+      if (lenis) {
+        lenis.scrollTo(target, { offset: -80 });
+      } else {
+        const y = target.getBoundingClientRect().top + window.scrollY - 80;
+        window.scrollTo({ top: y, behavior: "smooth" });
+      }
+    });
+  }, [lenis]);
 
   // Keeps the input responsive while the (heavier) result list re-ranks at a
   // lower priority. Typing never waits on rendering a few hundred cards.
@@ -89,8 +113,7 @@ function ResourcesContent() {
         <div className="mb-6">
           <h1 className="section-title text-white">Resource Library</h1>
           <p className="section-subtitle">
-            PYQs, class tests, notes and lab manuals for GBPIET — search by subject,
-            code or paper type.
+            Search by subject, code or paper type.
           </p>
         </div>
 
@@ -165,7 +188,7 @@ function ResourcesContent() {
 
       {/* ── Directory ── */}
       <div className="container-app mt-6">
-        <ResourceFinder />
+        <ResourceFinder onSelect={scrollToResults} />
       </div>
 
       {/* ── Sidebar + grid ── */}
@@ -180,7 +203,7 @@ function ResourcesContent() {
           </div>
         </aside>
 
-        <div className="flex-1 min-w-0">
+        <div ref={resultsRef} className="flex-1 min-w-0 scroll-mt-20">
           <ResourceGrid filters={activeFilters} />
         </div>
       </div>

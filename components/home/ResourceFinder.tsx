@@ -21,7 +21,17 @@ const SUBJECT_LINKS = [
   { type: "study_material", label: "Books", icon: Book, accent: "type-book" },
 ] as const;
 
-export function ResourceFinder() {
+interface ResourceFinderProps {
+  /**
+   * Called after a subject shortcut is chosen. The library page uses it to
+   * scroll the results into view: on a phone the accordion filled the screen,
+   * so picking a subject appeared to do nothing — the results it loaded were
+   * below the fold with no indication anything had happened.
+   */
+  onSelect?: () => void;
+}
+
+export function ResourceFinder({ onSelect }: ResourceFinderProps = {}) {
   const [openBranch, setOpenBranch] = useState<string | null>(null);
   const [openSemester, setOpenSemester] = useState<number | string | null>(null);
   const [openSubject, setOpenSubject] = useState<string | null>(null);
@@ -112,6 +122,14 @@ export function ResourceFinder() {
     setOpenSubject(openSubject === val ? null : val);
   };
 
+  /** Collapse the whole directory once a choice is made, then hand off. */
+  const handleSelect = () => {
+    setOpenBranch(null);
+    setOpenSemester(null);
+    setOpenSubject(null);
+    onSelect?.();
+  };
+
   return (
     <div className="glass-card overflow-hidden">
       {/* Header */}
@@ -119,14 +137,9 @@ export function ResourceFinder() {
         <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-cyan-400/10 border border-cyan-400/20 flex items-center justify-center shrink-0">
           <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-400" />
         </div>
-        <div>
-          <h3 className="font-display text-sm sm:text-base font-bold text-white leading-tight">
-            Resource Directory
-          </h3>
-          <p className="text-[10px] text-slate-500 leading-none mt-0.5">
-            Browse by branch → semester → subject
-          </p>
-        </div>
+        <h3 className="font-display text-sm sm:text-base font-bold text-white leading-tight">
+          Browse by subject
+        </h3>
       </div>
 
       {/* Branch list */}
@@ -220,6 +233,7 @@ export function ResourceFinder() {
                                                     <Link
                                                       key={link.type}
                                                       href={`/resources?branch=${branch.value}&semester=${sem.value}&subject=${encodeURIComponent(sub)}&type=${link.type}`}
+                                                      onClick={handleSelect}
                                                       className={`type-tile ${link.accent}`}
                                                     >
                                                       <link.icon className="w-3.5 h-3.5" />
