@@ -23,12 +23,14 @@ export function QuickActions() {
 
   return (
     <div className="border-b border-white/[0.06] bg-[#070d1a]">
-      <div className="container-app py-2.5">
-        <div className="flex items-stretch gap-2">
+      <div className="container-app py-3">
+        {/* Side by side and equal width on a phone, so neither button is a
+            stray full-width block when the other is hidden. */}
+        <div className="flex items-stretch gap-2.5">
           {!onResources && (
             <Link
               href="/resources"
-              className="flex-1 sm:flex-none flex items-center justify-center gap-2 btn-primary px-5 py-2.5 rounded-xl text-sm font-semibold"
+              className="flex-1 sm:flex-initial flex items-center justify-center gap-2 btn-primary px-4 sm:px-6 py-3 rounded-xl text-sm font-semibold whitespace-nowrap"
             >
               <Download className="w-4 h-4 shrink-0" />
               Download Papers
@@ -37,7 +39,7 @@ export function QuickActions() {
           {!onUpload && (
             <Link
               href="/upload"
-              className="flex-1 sm:flex-none flex items-center justify-center gap-2 btn-ghost px-5 py-2.5 rounded-xl text-sm font-semibold"
+              className="flex-1 sm:flex-initial flex items-center justify-center gap-2 btn-ghost px-4 sm:px-6 py-3 rounded-xl text-sm font-semibold whitespace-nowrap"
             >
               <Upload className="w-4 h-4 shrink-0" />
               Upload Papers

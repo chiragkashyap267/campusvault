@@ -123,7 +123,7 @@ function ResourcesContent() {
 
   return (
     <div className="min-h-screen bg-[#030712] pb-20">
-      <div className="container-app pt-8 sm:pt-10">
+      <div className="container-app pt-7 sm:pt-10">
         {/* ── Header ── */}
         <div className="mb-6">
           <h1 className="section-title text-white">Resource Library</h1>
@@ -164,7 +164,10 @@ function ResourcesContent() {
         </div>
 
         {/* ── Quick filters ── */}
-        <div className="flex flex-wrap items-center gap-1.5">
+        {/* A single scrollable row on a phone. Wrapping put five chips onto
+            three ragged lines, which is most of what made the header look
+            cluttered on mobile. */}
+        <div className="flex items-center gap-2 overflow-x-auto sm:flex-wrap no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 pb-0.5">
           {QUICK_FILTERS.map((f) => {
             const isActive = filters[f.key as keyof ResourceFilters] === f.val;
             return (
@@ -180,7 +183,7 @@ function ResourcesContent() {
                   }
                 }}
                 aria-pressed={isActive}
-                className={`type-badge ${f.style} cursor-pointer px-2.5 py-1 transition-opacity active:scale-95 ${
+                className={`type-badge ${f.style} cursor-pointer shrink-0 px-3 py-1.5 transition-opacity active:scale-95 ${
                   isActive ? "ring-1 ring-current" : "opacity-65 hover:opacity-100"
                 }`}
               >
@@ -194,7 +197,7 @@ function ResourcesContent() {
                 resetFilters();
                 setSearch("");
               }}
-              className="text-xs text-slate-500 hover:text-slate-300 transition-colors ml-1 underline underline-offset-2"
+              className="text-xs text-slate-500 hover:text-slate-300 transition-colors shrink-0 ml-1 underline underline-offset-2 whitespace-nowrap"
             >
               Clear all
             </button>
@@ -203,12 +206,12 @@ function ResourcesContent() {
       </div>
 
       {/* ── Directory ── */}
-      <div className="container-app mt-6">
+      <div className="container-app mt-5 sm:mt-6">
         <ResourceFinder onSelect={scrollToResults} />
       </div>
 
       {/* ── Sidebar + grid ── */}
-      <div className="container-app flex gap-6 items-start mt-6">
+      <div className="container-app flex gap-6 items-start mt-5 sm:mt-6">
         <aside className="hidden lg:block w-56 shrink-0 sticky top-20 self-start">
           <div className="glass-card p-4">
             <ResourceFiltersPanel

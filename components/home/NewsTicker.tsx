@@ -37,17 +37,26 @@ const TICKER_ITEMS = [...NEWS_ITEMS, ...NEWS_ITEMS];
 export function NewsTicker() {
   return (
     <div className="ticker relative w-full overflow-hidden border-y border-white/5 bg-gradient-to-r from-[#060b18] via-[#07101f] to-[#060b18]">
-      {/* Left fade */}
-      <div className="absolute left-0 top-0 bottom-0 w-20 z-10 pointer-events-none bg-gradient-to-r from-[#060b18] to-transparent" />
-      {/* LIVE badge */}
-      <div className="absolute left-4 top-1/2 -translate-y-1/2 z-20 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border bg-cyan-400/10 text-cyan-400 border-cyan-400/25">
-        <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-        LIVE
+      {/* Left cap: an opaque block behind the LIVE badge, then a fade.
+          The badge used to sit on a translucent cyan background over a fade
+          that had already gone transparent by the time it reached it, so the
+          scrolling headlines were visible straight through the badge. */}
+      <div className="absolute left-0 top-0 bottom-0 z-20 flex items-center pointer-events-none">
+        <div className="h-full flex items-center pl-3 pr-2 bg-[#060b18]">
+          <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border bg-cyan-400/15 text-cyan-400 border-cyan-400/25 whitespace-nowrap">
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+            LIVE
+          </span>
+        </div>
+        <div className="h-full w-10 bg-gradient-to-r from-[#060b18] to-transparent" />
       </div>
-      {/* Right fade */}
-      <div className="absolute right-0 top-0 bottom-0 w-20 z-10 pointer-events-none bg-gradient-to-l from-[#060b18] to-transparent" />
 
-      <div className="pl-32 py-2.5">
+      {/* Right fade */}
+      <div className="absolute right-0 top-0 bottom-0 w-16 z-10 pointer-events-none bg-gradient-to-l from-[#060b18] to-transparent" />
+
+      {/* Left padding clears the cap so the first headline does not start
+          underneath it. */}
+      <div className="pl-[6.5rem] sm:pl-28 py-2.5">
         <div className="ticker-track flex items-center whitespace-nowrap">
           {TICKER_ITEMS.map((item, i) => (
             <Link

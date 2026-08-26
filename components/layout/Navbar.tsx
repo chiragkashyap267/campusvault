@@ -151,8 +151,12 @@ export function Navbar() {
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center shadow-[0_0_16px_rgba(56,189,248,0.35)] group-hover:shadow-[0_0_24px_rgba(56,189,248,0.55)] transition-all duration-300 shrink-0">
               <BookOpen className="w-4 h-4 text-white" />
             </div>
-            <span className={cn(logoTextClass, "truncate")}>
-              CampusVault <span className={logoBadgeClass}>GBPIET</span>
+            {/* "GBPIET" is dropped on a phone rather than letting the whole
+                name truncate to "CampusVault ...". The full name is on every
+                page title and in the footer. */}
+            <span className={cn(logoTextClass, "whitespace-nowrap")}>
+              CampusVault{" "}
+              <span className={cn(logoBadgeClass, "hidden sm:inline")}>GBPIET</span>
             </span>
           </Link>
 
