@@ -62,13 +62,52 @@ export async function uploadToCloudinary(
 
     xhr.addEventListener("load", () => {
       if (xhr.status >= 200 && xhr.status < 300) {
-        resolve(JSON.parse(xhr.responseText) as CloudinaryUploadResult);
-      } else {
-        reject(new Error("Cloudinary upload failed: " + xhr.responseText));
+        try {
+          resolve(JSON.parse(xhr.responseText) as CloudinaryUploadResult);
+        } catch {
+          reject(new Error("Upload succeeded but the response could not be read."));
+        }
+        return;
       }
+      // Cloudinary reports real problems as JSON, so surface its own wording
+      // rather than a generic failure.
+      let detail = `HTTP ${xhr.status}`;
+      try {
+        const parsed = JSON.parse(xhr.responseText);
+        if (parsed?.error?.message) detail = parsed.error.message;
+      } catch {
+        if (xhr.responseText) detail = xhr.responseText.slice(0, 200);
+      }
+      reject(new Error(`Upload rejected: ${detail}`));
     });
 
-    xhr.addEventListener("error", () => reject(new Error("Network error during upload")));
+    /**
+     * The `error` event means the request never completed at the network
+     * level — the server's own rejections arrive through `load` above with a
+     * status. In practice that is almost always something on the client side
+     * blocking the request rather than a fault in the app, so the message says
+     * so instead of the bare "Network error" it used to give, which was
+     * impossible to act on.
+     */
+    xhr.addEventListener("error", () => {
+      reject(
+        new Error(
+          "Could not reach the upload server. This is usually an ad blocker or " +
+          "privacy extension blocking cloudinary.com, or a network that blocks it. " +
+          "Try pausing extensions, or switching to mobile data or another browser."
+        )
+      );
+    });
+
+    xhr.addEventListener("abort", () => reject(new Error("Upload cancelled.")));
+
+    // Without a timeout a stalled connection hangs the upload forever with no
+    // feedback. Generous, because this runs on student phones on campus wifi.
+    xhr.timeout = 120000;
+    xhr.addEventListener("timeout", () =>
+      reject(new Error("Upload timed out. Check your connection and try again."))
+    );
+
     xhr.send(formData);
   });
 }
