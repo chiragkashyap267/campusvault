@@ -86,7 +86,7 @@ export default function MarketingPage() {
 
   // Quick blast-all state
   const [isQuickBlasting, setIsQuickBlasting] = useState<boolean>(false);
-  const [quickBlastResult, setQuickBlastResult] = useState<{ sent: number; failed: number; total: number } | null>(null);
+  const [quickBlastResult, setQuickBlastResult] = useState<{ sent: number; failed: number; skipped?: number; total: number } | null>(null);
 
   // Load database metrics, campaigns and settings on mount
   useEffect(() => {
@@ -360,8 +360,22 @@ export default function MarketingPage() {
   };
 
   // Quick blast to all registered users (calls /api/marketing/blast)
-  const handleQuickBlastAll = async () => {
-    if (!confirm(`Send a weekly digest to ALL registered users and subscribers now?\n\nThis uses the 7-day cooldown so students won't get spammed.`)) return;
+  /**
+   * @param ignoreCooldown Bypass the 7-day per-user cooldown.
+   *   Needed to re-test deliverability: after any blast every recipient is on
+   *   cooldown, so a follow-up run reports "sent 0, skipped 16" and nothing
+   *   actually goes out. Guarded behind its own button and a sterner
+   *   confirmation, because using it on a real campaign mails people twice.
+   */
+  const handleQuickBlastAll = async (ignoreCooldown = false) => {
+    const question = ignoreCooldown
+      ? `Re-send to ALL registered users and subscribers, IGNORING the 7-day cooldown?
+
+Anyone mailed recently will be mailed again. Use this for deliverability testing, not for a real campaign.`
+      : `Send a weekly digest to ALL registered users and subscribers now?
+
+This uses the 7-day cooldown so students won't get spammed.`;
+    if (!confirm(question)) return;
 
     setIsQuickBlasting(true);
     setQuickBlastResult(null);
@@ -378,14 +392,14 @@ export default function MarketingPage() {
           subject: WEEKLY_DIGEST.subject,
           headline: WEEKLY_DIGEST.headline,
           message: WEEKLY_DIGEST.message,
-          skipCooldown: false,
+          skipCooldown: ignoreCooldown,
         }),
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Blast failed");
 
-      setQuickBlastResult({ sent: data.sent, failed: data.failed, total: data.total });
+      setQuickBlastResult({ sent: data.sent, failed: data.failed, skipped: data.skipped, total: data.total });
       // Report every bucket. Showing only sent/failed made a run where most
       // recipients were skipped by the 7-day cooldown read as a full send.
       const parts = [`Sent: ${data.sent}`];
@@ -394,6 +408,9 @@ export default function MarketingPage() {
       if (data.unsubscribed) parts.push(`Opted out: ${data.unsubscribed}`);
       if (data.notAttempted) parts.push(`Not attempted: ${data.notAttempted}`);
       toast.success(`${parts.join(" | ")} — of ${data.total} recipients`, { id: "quick-blast", duration: 9000 });
+      if (data.sent === 0 && data.skipped > 0) {
+        toast(`Nothing sent: all ${data.skipped} recipient(s) were mailed within the last 7 days. Use "Resend now" below to override the cooldown.`, { duration: 11000 });
+      }
       if (data.hasMore) {
         toast(`${data.notAttempted} recipient(s) not reached this run — run again, or the daily cron continues.`, { duration: 9000 });
       }
@@ -1022,23 +1039,34 @@ export default function MarketingPage() {
             {quickBlastResult && (
               <div className="mt-3 flex items-center gap-4 text-xs font-bold">
                 <span className="text-emerald-400">✓ {quickBlastResult.sent} sent</span>
+                {!!quickBlastResult.skipped && <span className="text-amber-400">⏳ {quickBlastResult.skipped} on cooldown</span>}
                 {quickBlastResult.failed > 0 && <span className="text-red-400">✗ {quickBlastResult.failed} failed</span>}
                 <span className="text-slate-400">{quickBlastResult.total} total recipients</span>
               </div>
             )}
           </div>
-          <button
-            id="quick-blast-all-btn"
-            onClick={handleQuickBlastAll}
-            disabled={isQuickBlasting}
-            className="flex items-center gap-2.5 btn-primary font-bold py-3.5 px-7 rounded-xl shadow-lg cursor-pointer disabled:opacity-60 shrink-0 whitespace-nowrap"
-          >
-            {isQuickBlasting ? (
-              <><RefreshCw className="w-4.5 h-4.5 animate-spin" /><span>Sending...</span></>
-            ) : (
-              <><Send className="w-4.5 h-4.5" /><span>Blast All Students Now</span></>
-            )}
-          </button>
+          <div className="flex flex-col items-stretch gap-2 shrink-0">
+            <button
+              id="quick-blast-all-btn"
+              onClick={() => handleQuickBlastAll(false)}
+              disabled={isQuickBlasting}
+              className="flex items-center justify-center gap-2.5 btn-primary font-bold py-3.5 px-7 rounded-xl shadow-lg cursor-pointer disabled:opacity-60 whitespace-nowrap"
+            >
+              {isQuickBlasting ? (
+                <><RefreshCw className="w-4.5 h-4.5 animate-spin" /><span>Sending...</span></>
+              ) : (
+                <><Send className="w-4.5 h-4.5" /><span>Blast All Students Now</span></>
+              )}
+            </button>
+            <button
+              onClick={() => handleQuickBlastAll(true)}
+              disabled={isQuickBlasting}
+              title="Re-send even to people mailed in the last 7 days. For deliverability testing, not for real campaigns."
+              className="text-[11px] text-amber-400/80 hover:text-amber-300 underline underline-offset-2 disabled:opacity-40 whitespace-nowrap text-center"
+            >
+              Resend now (ignore 7-day cooldown)
+            </button>
+          </div>
         </div>
       </section>
 
