@@ -6,6 +6,21 @@ import { ChevronDown, ChevronRight, Folder, FileText, Book, PenTool, Search } fr
 import Link from "next/link";
 import { BRANCHES, SEMESTERS, MCA_SUBJECTS, BTECH_SUBJECTS } from "@/lib/constants";
 
+/**
+ * The four things you can open for a subject.
+ *
+ * Accents come from the shared type classes, so a "Final Exams" tile here, the
+ * PYQ chip on the library page and the PYQ badge on a card are all the same
+ * colour. The four blocks this replaces were near-identical markup with the
+ * colours written out by hand each time.
+ */
+const SUBJECT_LINKS = [
+  { type: "ct", label: "CT Papers", icon: PenTool, accent: "type-ct" },
+  { type: "pyq", label: "Final Exams", icon: FileText, accent: "type-pyq" },
+  { type: "notes", label: "Notes", icon: FileText, accent: "type-notes" },
+  { type: "study_material", label: "Books", icon: Book, accent: "type-book" },
+] as const;
+
 export function ResourceFinder() {
   const [openBranch, setOpenBranch] = useState<string | null>(null);
   const [openSemester, setOpenSemester] = useState<number | string | null>(null);
@@ -201,34 +216,16 @@ export function ResourceFinder() {
                                                 className="overflow-hidden"
                                               >
                                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 px-2 pt-1 pb-2">
-                                                  <Link
-                                                    href={`/resources?branch=${branch.value}&semester=${sem.value}&subject=${encodeURIComponent(sub)}&type=ct`}
-                                                    className="flex flex-col items-center justify-center p-2 sm:p-3 rounded-lg bg-white/5 hover:bg-cyan-500/20 border border-white/5 hover:border-cyan-500/30 transition-all text-center gap-1 group"
-                                                  >
-                                                    <PenTool className="w-3.5 h-3.5 text-cyan-400 group-hover:scale-110 transition-transform" />
-                                                    <span className="text-[9px] sm:text-[10px] font-semibold text-slate-300 group-hover:text-cyan-400">CT Papers</span>
-                                                  </Link>
-                                                  <Link
-                                                    href={`/resources?branch=${branch.value}&semester=${sem.value}&subject=${encodeURIComponent(sub)}&type=pyq`}
-                                                    className="flex flex-col items-center justify-center p-2 sm:p-3 rounded-lg bg-white/5 hover:bg-purple-500/20 border border-white/5 hover:border-purple-500/30 transition-all text-center gap-1 group"
-                                                  >
-                                                    <FileText className="w-3.5 h-3.5 text-purple-400 group-hover:scale-110 transition-transform" />
-                                                    <span className="text-[9px] sm:text-[10px] font-semibold text-slate-300 group-hover:text-purple-400">Final Exams</span>
-                                                  </Link>
-                                                  <Link
-                                                    href={`/resources?branch=${branch.value}&semester=${sem.value}&subject=${encodeURIComponent(sub)}&type=notes`}
-                                                    className="flex flex-col items-center justify-center p-2 sm:p-3 rounded-lg bg-white/5 hover:bg-yellow-500/20 border border-white/5 hover:border-yellow-500/30 transition-all text-center gap-1 group"
-                                                  >
-                                                    <FileText className="w-3.5 h-3.5 text-yellow-400 group-hover:scale-110 transition-transform" />
-                                                    <span className="text-[9px] sm:text-[10px] font-semibold text-slate-300 group-hover:text-yellow-400">Notes</span>
-                                                  </Link>
-                                                  <Link
-                                                    href={`/resources?branch=${branch.value}&semester=${sem.value}&subject=${encodeURIComponent(sub)}&type=study_material`}
-                                                    className="flex flex-col items-center justify-center p-2 sm:p-3 rounded-lg bg-white/5 hover:bg-emerald-500/20 border border-white/5 hover:border-emerald-500/30 transition-all text-center gap-1 group"
-                                                  >
-                                                    <Book className="w-3.5 h-3.5 text-emerald-400 group-hover:scale-110 transition-transform" />
-                                                    <span className="text-[9px] sm:text-[10px] font-semibold text-slate-300 group-hover:text-emerald-400">Books</span>
-                                                  </Link>
+                                                  {SUBJECT_LINKS.map((link) => (
+                                                    <Link
+                                                      key={link.type}
+                                                      href={`/resources?branch=${branch.value}&semester=${sem.value}&subject=${encodeURIComponent(sub)}&type=${link.type}`}
+                                                      className={`type-tile ${link.accent}`}
+                                                    >
+                                                      <link.icon className="w-3.5 h-3.5" />
+                                                      <span>{link.label}</span>
+                                                    </Link>
+                                                  ))}
                                                 </div>
                                               </motion.div>
                                             )}

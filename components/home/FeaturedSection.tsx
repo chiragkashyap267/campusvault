@@ -22,18 +22,18 @@ export function FeaturedSection() {
                 <TrendingUp className="w-4 h-4" />
                 <span className="text-xs font-semibold uppercase tracking-widest">Most Downloaded This Week</span>
               </div>
-              <h2 className="font-display text-xl sm:text-2xl font-bold text-white">Trending Resources</h2>
+              <h2 className="section-title">Trending Resources</h2>
             </div>
             <Link href="/resources?sortBy=downloads" className="flex items-center gap-1 text-sm text-slate-400 hover:text-cyan-400 transition-colors group">
               View all <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
             </Link>
           </div>
           {loadingTrending ? (
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+            <div className="resource-grid">
               {Array.from({ length: 3 }).map((_, i) => <ResourceCardSkeleton key={i} />)}
             </div>
           ) : trending && trending.length > 0 ? (
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+            <div className="resource-grid">
               {trending.map((r, i) => <ResourceCard key={r.id} resource={r} index={i} />)}
             </div>
           ) : (

@@ -89,11 +89,11 @@ export default function DashboardPage() {
             <Link href="/upload" className="btn-primary text-xs px-4 py-2 rounded-lg">+ Upload</Link>
           </div>
           {loadingUploads ? (
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-4">
+            <div className="resource-grid">
               {Array.from({ length: 3 }).map((_, i) => <ResourceCardSkeleton key={i} />)}
             </div>
           ) : uploads && uploads.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-4">
+            <div className="resource-grid">
               {uploads.map((r, i) => <ResourceCard key={r.id} resource={r} showStatus index={i} />)}
             </div>
           ) : (

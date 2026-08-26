@@ -63,13 +63,13 @@ export default function WishlistPage() {
       </div>
 
       {isLoading ? (
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-4">
+        <div className="resource-grid">
           {Array.from({ length: 4 }).map((_, i) => (
             <ResourceCardSkeleton key={i} />
           ))}
         </div>
       ) : resources.length > 0 ? (
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-4">
+        <div className="resource-grid">
           {resources.map((resource, i) => (
             <ResourceCard key={resource.id} resource={resource} index={i} />
           ))}

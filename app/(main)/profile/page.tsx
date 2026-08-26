@@ -140,7 +140,7 @@ export default function ProfilePage() {
         {approved.length > 0 && (
           <section>
             <h2 className="font-display text-lg font-bold text-white mb-4">Public Contributions ({approved.length})</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="resource-grid">
               {approved.map((r, i) => <ResourceCard key={r.id} resource={r} index={i} />)}
             </div>
           </section>

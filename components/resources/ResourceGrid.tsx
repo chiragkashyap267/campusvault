@@ -53,7 +53,13 @@ function applySort(list: Resource[], sortBy?: string): Resource[] {
   return out;
 }
 
-const GRID_CLASS = "grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4";
+/**
+ * One column on a phone, where each card renders as a wide scannable row, then
+ * a card grid from `sm` up. Two narrow columns on mobile gave every card about
+ * 160px to hold a badge, title, subject, preview and an action row — the main
+ * reason the library felt cramped and was hard to skim for a paper.
+ */
+const GRID_CLASS = "resource-grid";
 
 export function ResourceGrid({ filters = {} }: ResourceGridProps) {
   const searchTerm = (filters.search || "").trim();

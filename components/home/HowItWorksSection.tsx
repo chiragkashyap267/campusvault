@@ -40,10 +40,10 @@ export function HowItWorksSection() {
       <div className="divider mb-0" />
       <div className="container-app relative z-10">
         <div className="section-head text-center">
-          <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-4">
+          <h2 className="section-title">
             How CampusVault Works
           </h2>
-          <p className="text-slate-400 max-w-2xl mx-auto">
+          <p className="section-subtitle mx-auto">
             A simple, open, and community-driven platform for GBPIET students.
           </p>
         </div>

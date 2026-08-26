@@ -48,15 +48,15 @@ export function LeaderboardPreviewSection() {
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-          className="text-center mb-14"
+          className="section-head text-center"
         >
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-yellow-400/10 border border-yellow-400/20 text-yellow-400 text-xs font-semibold mb-4">
             <Trophy className="w-3.5 h-3.5" /> Hall of Fame
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-white mb-4">
+          <h2 className="section-title">
             Top <span className="gradient-text">Contributors</span>
           </h2>
-          <p className="text-slate-400 max-w-xl mx-auto">
+          <p className="section-subtitle mx-auto">
             Students who shared the most. Upload more — could be you next!
           </p>
         </motion.div>

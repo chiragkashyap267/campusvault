@@ -42,10 +42,10 @@ export function FAQSection() {
             <HelpCircle className="w-4 h-4" />
             <span>Got Questions?</span>
           </div>
-          <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-4">
+          <h2 className="section-title">
             Frequently Asked Questions
           </h2>
-          <p className="text-slate-400 max-w-2xl mx-auto">
+          <p className="section-subtitle mx-auto">
             Everything you need to know about using CampusVault effectively for your academic journey.
           </p>
         </div>

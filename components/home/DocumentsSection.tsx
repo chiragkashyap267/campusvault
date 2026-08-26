@@ -22,10 +22,10 @@ export function DocumentsSection() {
               <FileText className="w-4 h-4" />
               <span className="text-xs font-semibold uppercase tracking-widest">Important Forms</span>
             </div>
-            <h2 className="font-display text-3xl sm:text-4xl font-bold text-white mb-4">
+            <h2 className="section-title">
               College Documents
             </h2>
-            <p className="text-slate-400 max-w-xl">
+            <p className="section-subtitle">
               Quickly find and download essential GBPIET forms, gatepasses, syllabus, and practical front pages.
             </p>
           </div>
@@ -42,11 +42,11 @@ export function DocumentsSection() {
         </div>
 
         {isLoading ? (
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
+          <div className="resource-grid">
             {Array.from({ length: 3 }).map((_, i) => <ResourceCardSkeleton key={i} />)}
           </div>
         ) : displayResources.length > 0 ? (
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
+          <div className="resource-grid">
             {displayResources.map((r, i) => (
               <ResourceCard key={r.id} resource={r} index={i} />
             ))}

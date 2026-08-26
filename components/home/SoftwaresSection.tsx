@@ -15,16 +15,16 @@ export function SoftwaresSection() {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-64 bg-cyan-500/5 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="container-app relative z-10">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-8 section-head">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-sm font-medium mb-4">
               <MonitorPlay className="w-4 h-4" />
               <span>Essential Tools</span>
             </div>
-            <h2 className="text-3xl md:text-4xl font-display font-bold text-white mb-4">
+            <h2 className="section-title">
               Useful Softwares
             </h2>
-            <p className="text-slate-400 max-w-xl">
+            <p className="section-subtitle">
               Download the IDEs, local servers, and development tools you need for your practicals and projects.
             </p>
           </div>

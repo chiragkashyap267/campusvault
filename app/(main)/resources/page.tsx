@@ -11,11 +11,19 @@ import { ResourceFilters } from "@/lib/types";
 import { useSearchParams } from "next/navigation";
 import { useAuthStore } from "@/lib/store/authStore";
 
+/**
+ * Type accents match the badges on the cards exactly — a PYQ chip here and a
+ * PYQ badge on a card are the same colour, so a filter visibly corresponds to
+ * what appears in the results. They used to disagree (green here, purple on
+ * the card), which made the colour coding meaningless.
+ * Exam papers lead, since finding those is what most people came to do.
+ */
 const QUICK_FILTERS = [
-  { label: "PYQ Papers", style: "badge-green", key: "type", val: "pyq" },
-  { label: "CT Papers", style: "badge-blue", key: "type", val: "ct" },
-  { label: "MCA", style: "badge-purple", key: "branch", val: "mca" },
-  { label: "B.Tech", style: "badge-cyan", key: "branch", val: "btech" },
+  { label: "PYQ Papers", style: "type-pyq", key: "type", val: "pyq" },
+  { label: "CT Papers", style: "type-ct", key: "type", val: "ct" },
+  { label: "Notes", style: "type-notes", key: "type", val: "notes" },
+  { label: "MCA", style: "type-other", key: "branch", val: "mca" },
+  { label: "B.Tech", style: "type-other", key: "branch", val: "btech" },
 ] as const;
 
 function ResourcesContent() {
@@ -133,8 +141,8 @@ function ResourcesContent() {
                   }
                 }}
                 aria-pressed={isActive}
-                className={`badge ${f.style} text-xs cursor-pointer transition-[opacity,box-shadow] active:scale-95 ${
-                  isActive ? "ring-1 ring-current" : "opacity-70 hover:opacity-100"
+                className={`type-badge ${f.style} cursor-pointer px-2.5 py-1 transition-opacity active:scale-95 ${
+                  isActive ? "ring-1 ring-current" : "opacity-65 hover:opacity-100"
                 }`}
               >
                 {f.label}
