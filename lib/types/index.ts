@@ -105,30 +105,6 @@ export interface WishlistItem {
   savedAt: string;
 }
 
-// ─── Notes Types ──────────────────────────────────────────────
-export interface Note {
-  id: string;
-  uid: string;
-  title: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-// ─── Todo Types ───────────────────────────────────────────────
-export type Priority = "low" | "medium" | "high";
-
-export interface Todo {
-  id: string;
-  uid: string;
-  title: string;
-  description?: string;
-  done: boolean;
-  priority: Priority;
-  dueDate?: string;
-  category?: "assignment" | "exam" | "project" | "general";
-  createdAt: string;
-}
 
 // ─── Upload Types ─────────────────────────────────────────────
 export interface UploadFormData {

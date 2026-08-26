@@ -133,13 +133,14 @@ export function ResourceFinder({ onSelect }: ResourceFinderProps = {}) {
   return (
     <div className="glass-card overflow-hidden">
       {/* Header */}
-      <div className="flex items-center gap-2.5 px-3 sm:px-4 py-2.5 sm:py-3 border-b border-white/5 bg-white/[0.02]">
-        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-cyan-400/10 border border-cyan-400/20 flex items-center justify-center shrink-0">
-          <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-400" />
+      <div className="flex items-center gap-2.5 px-3 sm:px-4 py-3 border-b border-white/[0.07] bg-white/[0.03]">
+        <div className="w-8 h-8 rounded-lg bg-cyan-400/10 border border-cyan-400/20 flex items-center justify-center shrink-0">
+          <Search className="w-4 h-4 text-cyan-400" />
         </div>
         <h3 className="font-display text-sm sm:text-base font-bold text-white leading-tight">
           Browse by subject
         </h3>
+        <span className="ml-auto text-[11px] text-slate-500">Pick a branch</span>
       </div>
 
       {/* Branch list */}
@@ -147,21 +148,33 @@ export function ResourceFinder({ onSelect }: ResourceFinderProps = {}) {
         {BRANCHES.filter(b => b.value === 'mca' || b.value === 'btech').map((branch) => {
           const isOpenBranch = openBranch === branch.value;
           return (
-            <div key={branch.value} className="rounded-lg overflow-hidden bg-white/[0.02] border border-white/[0.06]">
-              {/* Branch row */}
+            <div
+              key={branch.value}
+              className={`rounded-lg overflow-hidden border transition-colors ${
+                isOpenBranch
+                  ? "bg-cyan-400/[0.06] border-cyan-400/25"
+                  : "bg-white/[0.025] border-white/[0.08]"
+              }`}
+            >
+              {/* Branch row — 48px min height, comfortably tappable on a phone */}
               <button
                 onClick={() => toggleBranch(branch.value)}
-                className="w-full flex items-center justify-between px-3 py-2.5 sm:py-3 hover:bg-white/[0.04] transition-colors"
+                aria-expanded={isOpenBranch}
+                className="w-full flex items-center justify-between px-3.5 py-3.5 min-h-[3rem] hover:bg-white/[0.05] active:bg-white/[0.07] transition-colors"
               >
                 <div className="flex items-center gap-2.5">
                   <Folder className={`w-4 h-4 shrink-0 ${isOpenBranch ? "text-cyan-400" : "text-slate-400"}`} />
-                  <span className="font-semibold text-white uppercase tracking-wider text-xs sm:text-sm">
+                  <span className="font-bold text-white uppercase tracking-wider text-sm">
                     {branch.label}
                   </span>
                 </div>
-                <ChevronDown
-                  className={`w-4 h-4 text-slate-400 transition-transform duration-200 shrink-0 ${isOpenBranch ? "rotate-180" : ""}`}
-                />
+                <span className={`flex items-center justify-center w-6 h-6 rounded-full shrink-0 transition-colors ${
+                  isOpenBranch ? "bg-cyan-400/20 text-cyan-300" : "bg-white/[0.06] text-slate-400"
+                }`}>
+                  <ChevronDown
+                    className={`w-3.5 h-3.5 transition-transform duration-200 ${isOpenBranch ? "rotate-180" : ""}`}
+                  />
+                </span>
               </button>
 
               <AnimatePresence initial={false}>
@@ -181,11 +194,12 @@ export function ResourceFinder({ onSelect }: ResourceFinderProps = {}) {
                             {/* Semester row */}
                             <button
                               onClick={() => toggleSemester(sem.value)}
-                              className="w-full flex items-center justify-between px-3 py-2 hover:bg-white/[0.04] transition-colors"
+                              aria-expanded={isOpenSem}
+                              className="w-full flex items-center justify-between px-3 py-2.5 min-h-[2.5rem] hover:bg-white/[0.05] active:bg-white/[0.07] transition-colors"
                             >
                               <div className="flex items-center gap-2">
-                                <Folder className={`w-3.5 h-3.5 shrink-0 ${isOpenSem ? "text-blue-400" : "text-slate-500"}`} />
-                                <span className="text-xs font-medium text-slate-300">{sem.label}</span>
+                                <Folder className={`w-3.5 h-3.5 shrink-0 ${isOpenSem ? "text-cyan-400" : "text-slate-500"}`} />
+                                <span className={`text-[13px] font-medium ${isOpenSem ? "text-white" : "text-slate-300"}`}>{sem.label}</span>
                               </div>
                               <ChevronDown
                                 className={`w-3.5 h-3.5 text-slate-500 transition-transform duration-200 shrink-0 ${isOpenSem ? "rotate-180" : ""}`}

@@ -101,6 +101,20 @@ function ResourcesContent() {
     };
   }, [search, user]);
 
+  /**
+   * Bring results into view once a search is actually under way.
+   *
+   * Keyed on the deferred value so it fires when results have been computed,
+   * not on every keystroke, and only on the transition into searching — so it
+   * does not yank the page while someone is still refining a query.
+   */
+  const wasSearchingRef = useRef(false);
+  useEffect(() => {
+    const searching = deferredSearch.trim().length >= 2;
+    if (searching && !wasSearchingRef.current) scrollToResults();
+    wasSearchingRef.current = searching;
+  }, [deferredSearch, scrollToResults]);
+
   const activeFilters: ResourceFilters = { ...filters, search: deferredSearch };
 
   const hasActiveFilter =
@@ -161,6 +175,7 @@ function ResourcesContent() {
                   } else {
                     resetFilters();
                     setFilter(f.key as keyof ResourceFilters, f.val);
+                    scrollToResults();
                   }
                 }}
                 aria-pressed={isActive}

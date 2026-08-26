@@ -27,8 +27,6 @@ import {
   Resource,
   User,
   Comment,
-  Note,
-  Todo,
   WishlistItem,
   ResourceFilters,
   Moment,
@@ -314,84 +312,6 @@ export async function isInWishlist(uid: string, resourceId: string): Promise<boo
   return snap.exists();
 }
 
-// ─── Notes ────────────────────────────────────────────────────
-export async function getNotes(uid: string): Promise<Note[]> {
-  const q = query(
-    collection(db, "notes", uid, "items"),
-    orderBy("updatedAt", "desc")
-  );
-  const snap = await getDocs(q);
-  return snap.docs.map((d) => {
-    const data = d.data();
-    return {
-      id: d.id,
-      ...data,
-      updatedAt: data.updatedAt instanceof Timestamp
-        ? data.updatedAt.toDate().toISOString()
-        : data.updatedAt,
-      createdAt: data.createdAt instanceof Timestamp
-        ? data.createdAt.toDate().toISOString()
-        : data.createdAt,
-    } as Note;
-  });
-}
-
-export async function saveNote(uid: string, note: Omit<Note, "id" | "uid" | "createdAt" | "updatedAt">, noteId?: string): Promise<string> {
-  if (noteId) {
-    await updateDoc(doc(db, "notes", uid, "items", noteId), {
-      ...note,
-      updatedAt: serverTimestamp(),
-    });
-    return noteId;
-  }
-  const ref = await addDoc(collection(db, "notes", uid, "items"), {
-    ...note,
-    uid,
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-  });
-  return ref.id;
-}
-
-export async function deleteNote(uid: string, noteId: string) {
-  await deleteDoc(doc(db, "notes", uid, "items", noteId));
-}
-
-// ─── Todos ────────────────────────────────────────────────────
-export async function getTodos(uid: string): Promise<Todo[]> {
-  const q = query(
-    collection(db, "todos", uid, "items"),
-    orderBy("createdAt", "desc")
-  );
-  const snap = await getDocs(q);
-  return snap.docs.map((d) => {
-    const data = d.data();
-    return {
-      id: d.id,
-      ...data,
-      createdAt: data.createdAt instanceof Timestamp
-        ? data.createdAt.toDate().toISOString()
-        : data.createdAt,
-    } as Todo;
-  });
-}
-
-export async function saveTodo(uid: string, todo: Omit<Todo, "id" | "uid" | "createdAt">): Promise<string> {
-  const ref = await addDoc(collection(db, "todos", uid, "items"), {
-    ...todo,
-    uid,
-    createdAt: serverTimestamp(),
-  });
-  return ref.id;
-}
-
-export async function updateTodo(uid: string, todoId: string, data: Partial<Todo>) {
-  await updateDoc(doc(db, "todos", uid, "items", todoId), data);
-}
-
-export async function deleteTodo(uid: string, todoId: string) {
-  await deleteDoc(doc(db, "todos", uid, "items", todoId));
-}
 
 // ─── Admin Stats ──────────────────────────────────────────────
 export async function getAllResources(): Promise<Resource[]> {

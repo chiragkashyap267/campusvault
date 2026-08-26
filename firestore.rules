@@ -73,16 +73,6 @@ service cloud.firestore {
         (request.auth.uid == resource.data.uid || isAdmin());
     }
 
-    // ── Notes ─────────────────────────────────────────────────────────────────
-    match /notes/{uid}/items/{noteId} {
-      allow read, write: if isOwner(uid);
-    }
-
-    // ── Todos ─────────────────────────────────────────────────────────────────
-    match /todos/{uid}/items/{todoId} {
-      allow read, write: if isOwner(uid);
-    }
-
     // ── Newsletter search cooldowns (managed by serverless API) ───────────────
     match /newsletter_cooldowns/{docId} {
       allow read, write: if true;
