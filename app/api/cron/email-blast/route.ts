@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getEmailAppUrl } from "@/lib/email/app-url";
+import { WEEKLY_DIGEST } from "@/lib/email/campaigns";
 
 /**
  * GET /api/cron/email-blast
@@ -28,29 +30,13 @@ export async function GET(req: NextRequest) {
 
   console.log("[Cron] 🚀 Weekly email blast triggered at", new Date().toISOString());
 
-  // ── Build the weekly digest payload ────────────────────────────────────────
-  // Kept deliberately plain. Emoji in the subject, urgency phrasing
-  // ("Don't fall behind"), exclamation marks and all-caps are the wording
-  // patterns consumer spam filters score hardest against — and a Gmail SMTP
-  // sender has no domain reputation to absorb the penalty.
-  const subject = "CampusVault weekly update — new papers and notes";
-  const headline = "This week's new resources";
-  const message = `Students have uploaded new material to CampusVault this week.
-
-What's available:
-- PYQ and class test papers, sorted by subject and semester
-- Handwritten notes and study guides
-- Reference books and lab manuals
-
-You can browse everything by branch, semester and subject from the resource library.
-
-If you have papers or notes that aren't on the site yet, uploading them takes a minute and helps everyone in your batch.
-
-— The CampusVault team, GBPIET`;
+  // Copy lives in lib/email/campaigns so the admin UI and this cron cannot
+  // drift apart; see that file for why the wording is deliberately plain.
+  const { subject, headline, message } = WEEKLY_DIGEST;
 
   try {
     // Call our own blast API internally
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://campusvaultgbpiet.vercel.app";
+    const baseUrl = getEmailAppUrl();
 
     const response = await fetch(`${baseUrl}/api/marketing/blast`, {
       method: "POST",

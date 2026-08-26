@@ -161,8 +161,20 @@ async function sendViaGmail(opts: SendEmailOptions): Promise<SendResult> {
     // Stops Gmail from collapsing a campaign into one clipped thread.
     headers["X-Entity-Ref-ID"] = opts.entityRefId;
   }
-  headers["Precedence"] = "bulk";
-  headers["Auto-Submitted"] = "auto-generated";
+
+  // `Precedence: bulk` and `Auto-Submitted: auto-generated` used to be set here
+  // and have been removed on purpose.
+  //
+  // Neither is required. `Auto-Submitted` (RFC 3834) marks machine-generated
+  // mail like bounces and out-of-office replies, not newsletters, and
+  // `Precedence: bulk` is a legacy header some filters use to skip the inbox.
+  // Both announce "this is bulk mail from a robot".
+  //
+  // A message sent through a personal Gmail account has no domain reputation
+  // to trade on; the one asset it does have is that it looks like ordinary
+  // mail from a real person. Volunteering bulk markers throws that away.
+  // List-Unsubscribe stays — it is a genuine trust signal and is what Gmail
+  // actually asks bulk senders for.
 
   try {
     const info = await transport.sendMail({

@@ -14,6 +14,7 @@ import {
 import toast from "react-hot-toast";
 import { useAuthStore } from "@/lib/store/authStore";
 import { useRouter } from "next/navigation";
+import { WEEKLY_DIGEST } from "@/lib/email/campaigns";
 
 type Subscriber = {
   id?: string;
@@ -371,10 +372,12 @@ export default function MarketingPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          subject: "📚 New Study Resources Are Waiting — CampusVault GBPIET",
-          headline: "Don't Fall Behind — Check What's New on CampusVault!",
-          message: `Your batchmates have been busy uploading resources!\n\nHere's what's fresh on CampusVault GBPIET:\n📄 New PYQ & Class Test Papers — sorted by subject & semester\n📝 Handwritten Notes from toppers — ready to download\n📚 Reference books & lab manuals — uploaded by your seniors\n\nOpen CampusVault now to browse everything, or contribute your own notes. Every upload earns you leaderboard points and helps 100s of fellow students at GBPIET!\n\nSee you at the top of the leaderboard 🏆`,
-          templateStyle: "royal",
+          // Copy comes from lib/email/campaigns so this and the daily cron
+          // send the same message. The wording is deliberately plain — see
+          // that file for why.
+          subject: WEEKLY_DIGEST.subject,
+          headline: WEEKLY_DIGEST.headline,
+          message: WEEKLY_DIGEST.message,
           skipCooldown: false,
         }),
       });
@@ -383,7 +386,17 @@ export default function MarketingPage() {
       if (!res.ok) throw new Error(data.error || "Blast failed");
 
       setQuickBlastResult({ sent: data.sent, failed: data.failed, total: data.total });
-      toast.success(`Blast complete! Sent: ${data.sent} | Failed: ${data.failed} | Total: ${data.total}`, { id: "quick-blast", duration: 6000 });
+      // Report every bucket. Showing only sent/failed made a run where most
+      // recipients were skipped by the 7-day cooldown read as a full send.
+      const parts = [`Sent: ${data.sent}`];
+      if (data.skipped) parts.push(`Skipped (cooldown): ${data.skipped}`);
+      if (data.failed) parts.push(`Failed: ${data.failed}`);
+      if (data.unsubscribed) parts.push(`Opted out: ${data.unsubscribed}`);
+      if (data.notAttempted) parts.push(`Not attempted: ${data.notAttempted}`);
+      toast.success(`${parts.join(" | ")} — of ${data.total} recipients`, { id: "quick-blast", duration: 9000 });
+      if (data.hasMore) {
+        toast(`${data.notAttempted} recipient(s) not reached this run — run again, or the daily cron continues.`, { duration: 9000 });
+      }
       fetchMetrics();
     } catch (err: any) {
       toast.error(`Blast failed: ${err.message}`, { id: "quick-blast" });

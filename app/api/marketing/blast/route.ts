@@ -3,8 +3,9 @@ import { db } from "@/lib/firebase/config";
 import {
   collection, getDocs, doc, setDoc, getDoc, serverTimestamp, Timestamp
 } from "firebase/firestore";
-import { sendEmail, closeEmailTransport } from "@/lib/email/sender";
+import { sendEmail, closeEmailTransport, getActiveProvider } from "@/lib/email/sender";
 import { buildEmailHtml, buildEmailText, buildUnsubscribeUrl } from "@/lib/email/template";
+import { getEmailAppUrl } from "@/lib/email/app-url";
 
 // Ask the platform for the longest run it will allow. Vercel Hobby caps at
 // 60s regardless; Pro honours this.
@@ -121,7 +122,7 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://campusvaultgbpiet.vercel.app";
+    const appUrl = getEmailAppUrl();
 
     let sent = 0;
     let failed = 0;
@@ -130,6 +131,16 @@ export async function POST(req: NextRequest) {
     let outOfTime = false;
     const startedAt = Date.now();
     const errors: string[] = [];
+
+    // Per-recipient outcome, so "sent 16" can be checked against reality
+    // instead of taken on faith. Addresses are masked: this response is read
+    // in a browser and should not expose the whole mailing list.
+    const log: { to: string; status: string; id?: string; error?: string }[] = [];
+    const mask = (email: string) => {
+      const [user, domain] = email.split("@");
+      const head = user.slice(0, 2);
+      return `${head}${"*".repeat(Math.max(user.length - 2, 1))}@${domain}`;
+    };
 
     for (const recipient of recipients) {
       if (sent >= MAX_RECIPIENTS_PER_RUN) {
@@ -155,6 +166,7 @@ export async function POST(req: NextRequest) {
               if (daysSince < BLAST_COOLDOWN_DAYS) {
                 console.log(`[Blast] Skipping ${recipient.email} — cooldown active (${Math.ceil(BLAST_COOLDOWN_DAYS - daysSince)}d left)`);
                 skipped++;
+                log.push({ to: mask(recipient.email), status: "skipped-cooldown" });
                 continue;
               }
             }
@@ -189,6 +201,7 @@ export async function POST(req: NextRequest) {
       if (result.success) {
         console.log(`[Blast] ✓ Sent to ${recipient.email} via ${result.provider} (ID: ${result.messageId})`);
         sent++;
+        log.push({ to: mask(recipient.email), status: `accepted-by-${result.provider}`, id: result.messageId });
 
         if (!skipCooldown) {
           try {
@@ -204,6 +217,7 @@ export async function POST(req: NextRequest) {
         console.error(`[Blast] ✗ Failed ${recipient.email}: ${result.error}`);
         errors.push(`${recipient.email}: ${result.error}`);
         failed++;
+        log.push({ to: mask(recipient.email), status: "failed", error: result.error });
       }
 
       // Throttle so Gmail sees a steady trickle rather than a burst.
@@ -226,6 +240,12 @@ export async function POST(req: NextRequest) {
       skipped,
       unsubscribed,
       notAttempted: capped,
+      provider: getActiveProvider(),
+      appUrl,
+      // "accepted-by-gmail" means Gmail's SMTP server took the message. It is
+      // not proof of inbox placement: a message can be accepted and still be
+      // filtered into spam at the recipient's end.
+      log,
       // The caller (or tomorrow's cron run) should call again to finish.
       hasMore: capped > 0,
       stoppedReason: outOfTime ? "time-budget" : capped > 0 ? "daily-cap" : null,

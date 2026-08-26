@@ -5,6 +5,7 @@ import {
 } from "firebase/firestore";
 import { sendEmail, closeEmailTransport } from "@/lib/email/sender";
 import { buildEmailHtml, buildEmailText, buildUnsubscribeUrl } from "@/lib/email/template";
+import { getEmailAppUrl } from "@/lib/email/app-url";
 
 const COOLDOWN_HOURS = 24;
 
@@ -61,7 +62,7 @@ export async function POST(req: NextRequest) {
     }
 
     // ── Build the email ──────────────────────────────────────────────
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://campusvaultgbpiet.vercel.app";
+    const appUrl = getEmailAppUrl();
     const resourceUrl = `${appUrl}/resources?search=${encodeURIComponent(displayQuery)}`;
     const unsubscribeUrl = buildUnsubscribeUrl(appUrl, email);
 

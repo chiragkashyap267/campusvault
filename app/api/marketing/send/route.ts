@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendEmail, closeEmailTransport } from "@/lib/email/sender";
 import { buildEmailHtml, buildEmailText, buildUnsubscribeUrl } from "@/lib/email/template";
+import { getEmailAppUrl } from "@/lib/email/app-url";
 
 /**
  * POST /api/marketing/send
@@ -23,7 +24,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://campusvaultgbpiet.vercel.app";
+    const appUrl = getEmailAppUrl();
     const to = String(recipientEmail).trim().toLowerCase();
     const unsubscribeUrl = buildUnsubscribeUrl(appUrl, to);
 
