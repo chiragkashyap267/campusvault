@@ -1,5 +1,6 @@
 import { HeroSection } from "@/components/home/HeroSection";
 import { NewsTicker } from "@/components/home/NewsTicker";
+import { MomentsSection } from "@/components/home/MomentsSection";
 import { StatsSection } from "@/components/home/StatsSection";
 import { FeaturedSection } from "@/components/home/FeaturedSection";
 import { LeaderboardPreviewSection } from "@/components/home/LeaderboardPreviewSection";
@@ -21,6 +22,7 @@ export default function HomePage() {
     <>
       <HeroSection />
       <NewsTicker />
+      <MomentsSection />
       <StatsSection />
       <FeaturedSection />
       <LeaderboardPreviewSection />

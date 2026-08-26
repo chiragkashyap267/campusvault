@@ -150,3 +150,15 @@ export interface AdminStats {
   totalDownloads: number;
   totalLikes: number;
 }
+
+// ─── Moments (student photo wall) ─────────────────────────────
+export interface Moment {
+  id: string;
+  /** Cloudinary URL of the uploaded photo. */
+  imageUrl: string;
+  /** The one thing the uploader writes, e.g. "MCA batch 2026 group pic". */
+  caption: string;
+  uploaderId: string;
+  uploaderName: string;
+  createdAt: string;
+}

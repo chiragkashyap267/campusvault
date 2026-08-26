@@ -35,11 +35,14 @@ const SOCIAL_LINKS = [
 
 export function Footer() {
   return (
-    <footer className="relative bg-[#030712] mt-12 border-t border-white/5">
+    <footer className="relative bg-[#030712] border-t border-white/5">
+      {/* No top margin here on purpose: the footer's own padding provides the
+          separation. mt-12 stacked on pt-16 put 112px of dead space above the
+          first line of footer text. */}
 
-      <div className="container-app pt-16 pb-10">
+      <div className="container-app py-12 md:py-14">
         {/* Main grid */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 md:gap-6 mb-10">
           {/* Brand column */}
           <div className="col-span-2">
             <Link href="/" className="flex items-center gap-2 mb-4">
@@ -110,7 +113,7 @@ export function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-white/[0.06] pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="border-t border-white/[0.06] pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <motion.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}

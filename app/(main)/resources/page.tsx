@@ -86,7 +86,7 @@ function ResourcesContent() {
     <div className="min-h-screen bg-[#030712] pb-20">
       <div className="container-app pt-8 sm:pt-10">
         {/* ── Header ── */}
-        <div className="mb-5 sm:mb-6">
+        <div className="mb-6">
           <h1 className="section-title text-white">Resource Library</h1>
           <p className="section-subtitle">
             PYQs, class tests, notes and lab manuals for GBPIET — search by subject,
@@ -95,7 +95,7 @@ function ResourcesContent() {
         </div>
 
         {/* ── Search ── */}
-        <div className="flex gap-2 mb-3">
+        <div className="flex gap-2 mb-4">
           <div className="relative flex-1">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
             <input
@@ -164,12 +164,12 @@ function ResourcesContent() {
       </div>
 
       {/* ── Directory ── */}
-      <div className="container-app mt-5">
+      <div className="container-app mt-6">
         <ResourceFinder />
       </div>
 
       {/* ── Sidebar + grid ── */}
-      <div className="container-app flex gap-6 items-start mt-5 sm:mt-6">
+      <div className="container-app flex gap-6 items-start mt-6">
         <aside className="hidden lg:block w-56 shrink-0 sticky top-20 self-start">
           <div className="glass-card p-4">
             <ResourceFiltersPanel

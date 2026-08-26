@@ -31,6 +31,7 @@ import {
   Todo,
   WishlistItem,
   ResourceFilters,
+  Moment,
 } from "@/lib/types";
 
 // ─── Helpers ──────────────────────────────────────────────────
@@ -436,4 +437,49 @@ export async function incrementUserUploadCount(uid: string) {
   await updateDoc(doc(db, "users", uid), {
     uploadCount: increment(1),
   });
+}
+
+// ─── Moments ──────────────────────────────────────────────────
+/**
+ * Student photo wall shown on the home page.
+ *
+ * Readable by everyone, writable only by a signed-in user (enforced in
+ * firestore.rules, not here). Capped at a modest number because the whole set
+ * is rendered into a marquee — this is a wall of recent photos, not an archive.
+ */
+export async function getMoments(count = 24): Promise<Moment[]> {
+  const q = query(
+    collection(db, "moments"),
+    orderBy("createdAt", "desc"),
+    limit(count)
+  );
+  const snap = await getDocs(q);
+  return snap.docs.map((d) => {
+    const data = d.data();
+    return {
+      id: d.id,
+      imageUrl: data.imageUrl,
+      caption: data.caption || "",
+      uploaderId: data.uploaderId || "",
+      uploaderName: data.uploaderName || "Student",
+      createdAt: data.createdAt?.toDate?.().toISOString() || new Date().toISOString(),
+    } as Moment;
+  });
+}
+
+export async function createMoment(data: {
+  imageUrl: string;
+  caption: string;
+  uploaderId: string;
+  uploaderName: string;
+}): Promise<string> {
+  const ref = await addDoc(collection(db, "moments"), {
+    ...data,
+    createdAt: serverTimestamp(),
+  });
+  return ref.id;
+}
+
+export async function deleteMoment(id: string) {
+  await deleteDoc(doc(db, "moments", id));
 }

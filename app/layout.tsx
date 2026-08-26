@@ -1,20 +1,17 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
 import Script from "next/script";
 import { SITE_NAME, SITE_DESCRIPTION } from "@/lib/constants";
 
-const inter = Inter({
+const displayFont = Space_Grotesk({
   subsets: ["latin"],
-  variable: "--font-inter",
-  // Only the weights the app actually uses.
-  //   300 was loaded but never used anywhere.
-  //   900 is used by `font-black` in 11 places but was NOT loaded, so those
-  //   headings were being rendered with a browser-synthesised weight.
-  // The single `font-extrabold` (800) resolves to the nearest loaded weight.
-  weight: ["400", "500", "600", "700", "900"],
+  variable: "--font-app",
+  // Space Grotesk ships 300-700 only; there is no 900, so `font-black`
+  // resolves to 700 rather than a synthesised weight.
+  weight: ["400", "500", "600", "700"],
   display: "swap",
   preload: true,
 });
@@ -66,7 +63,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable}`}
+      className={`${displayFont.variable}`}
       suppressHydrationWarning
     >
       <body className="bg-background text-text-primary antialiased overflow-x-hidden">
