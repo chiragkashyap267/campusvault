@@ -73,5 +73,33 @@ console.log("  parseQuery('3rd sem cn mca') =", JSON.stringify(p2));
 if (p2.semester === 3 && p2.branch === "mca" && p2.rest === "cn") { pass++; console.log("  PASS  ordinal + branch"); }
 else { fail++; console.log("  FAIL  ordinal + branch"); }
 
-console.log(`\n═══ ${pass} passed, ${fail} failed ═══\n`);
-process.exit(fail > 0 ? 1 : 0);
+
+// ── BCA + tolerant subject matching ────────────────────────────────────────
+import { subjectMatches } from "../lib/search/engine";
+console.log("\n-- subject matching (the retrieval fix) --");
+const sm = (a: string, b: string, want: boolean, label: string) => {
+  const got = subjectMatches(a, b);
+  got === want ? (pass++, console.log(`  PASS  ${label}`))
+               : (fail++, console.log(`  FAIL  ${label} — got ${got}, want ${want}`));
+};
+sm("Data base management system", "Database Management System", true, "spacing/case differences match");
+sm("Data Structures & Algorithms", "Data Structures and Algorithms", true, "punctuation vs word");
+sm("DBMS", "Database Management System", true, "acronym vs full name");
+sm("Database Management System", "DBMS", true, "full name vs acronym");
+sm("Operating System", "Operating Systems", true, "singular vs plural");
+sm("Computer Networks", "Computer Organization", false, "shared word is NOT enough");
+sm("Cloud Computing", "Data Science", false, "unrelated subjects do not match");
+sm("", "DBMS", false, "empty subject never matches");
+
+console.log("\n-- BCA branch parsing --");
+const p3 = parseQuery("bca sem 2 dbms");
+console.log("  parseQuery('bca sem 2 dbms') =", JSON.stringify(p3));
+if (p3.branch === "bca" && p3.semester === 2 && p3.rest === "dbms") { pass++; console.log("  PASS  bca + sem parsed"); }
+else { fail++; console.log("  FAIL  bca parsing"); }
+const p4 = parseQuery("b tech 3rd sem cn");
+console.log("  parseQuery('b tech 3rd sem cn') =", JSON.stringify(p4));
+if (p4.branch === "btech" && p4.semester === 3) { pass++; console.log("  PASS  'b tech' two-token form"); }
+else { fail++; console.log("  FAIL  'b tech' parsing"); }
+
+console.log(`\n=== FINAL: ${pass} passed, ${fail} failed ===\n`);
+process.exit(fail ? 1 : 0);

@@ -24,6 +24,7 @@ const QUICK_FILTERS = [
   { label: "CT Papers", style: "type-ct", key: "type", val: "ct" },
   { label: "Notes", style: "type-notes", key: "type", val: "notes" },
   { label: "MCA", style: "type-other", key: "branch", val: "mca" },
+  { label: "BCA", style: "type-other", key: "branch", val: "bca" },
   { label: "B.Tech", style: "type-other", key: "branch", val: "btech" },
 ] as const;
 

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronRight, Folder, FileText, Book, PenTool, Search } from "lucide-react";
 import Link from "next/link";
-import { BRANCHES, SEMESTERS, MCA_SUBJECTS, BTECH_SUBJECTS } from "@/lib/constants";
+import { BRANCHES, SEMESTERS, SUBJECTS_BY_BRANCH, SEMESTER_COUNT, BTECH_SUBJECTS } from "@/lib/constants";
 
 /**
  * The four things you can open for a subject.
@@ -36,71 +36,26 @@ export function ResourceFinder({ onSelect }: ResourceFinderProps = {}) {
   const [openSemester, setOpenSemester] = useState<number | string | null>(null);
   const [openSubject, setOpenSubject] = useState<string | null>(null);
 
-  const getSubjects = (branch: string, semester: number | string) => {
-    if (branch === "mca") {
-      switch (semester) {
-        case "bridge":
-          return [
-            "Introduction of Information Technology",
-            "Programming Fundamentals With C",
-            "Fundamental of Web Technology",
-          ];
-        case 1:
-          return [
-            "Discrete Structures",
-            "Data base management system",
-            "Operating System",
-            "Computer Organization",
-            "Technical Communication Skills",
-            "Python Programming",
-          ];
-        case 2:
-          return [
-            "Computer based numerical and statistical techniques",
-            "Data Structures and analysis of algorithm",
-            "Object oriented programming with Java",
-            "Computer networks",
-            "Artificial intelligence",
-            "Accounting and Financial Management",
-          ];
-        case 3:
-          return [
-            "Big Data analytics",
-            "Cloud Computing",
-            "Compiler Design",
-            "Entrepreneurship",
-            "Graph Theory",
-            "Internet of Things",
-            "Multimedia",
-            "Principal of Management",
-            "Soft Computing",
-            "Software Engineering",
-            "Startup",
-            "Universal Human Values",
-          ];
-        case 4:
-          return [
-            "Data Science",
-            "Digital Marketing",
-            "Network Security",
-            "Software Testing & Quality Assurance",
-          ];
-        default:
-          return MCA_SUBJECTS;
-      }
-    }
+  /**
+   * Subjects come from the shared table rather than a copy inside this
+   * component, so the curriculum can be corrected in one place.
+   * B.Tech has no per-semester breakdown yet, so it falls back to its flat list.
+   */
+  const getSubjects = (branch: string, semester: number | string): string[] => {
+    const perSemester = SUBJECTS_BY_BRANCH[branch]?.[String(semester)];
+    if (perSemester) return perSemester;
     if (branch === "btech") return BTECH_SUBJECTS;
     return [];
   };
 
   const getSemesters = (branch: string) => {
+    const count = SEMESTER_COUNT[branch] ?? 8;
+    const semesters = SEMESTERS.slice(0, count);
+    // MCA runs a bridge course before semester 1.
     if (branch === "mca") {
-      return [
-        { value: "bridge", label: "Bridge Course" },
-        ...SEMESTERS.slice(0, 4)
-      ];
+      return [{ value: "bridge" as const, label: "Bridge Course" }, ...semesters];
     }
-    return SEMESTERS;
+    return semesters;
   };
 
   const toggleBranch = (val: string) => {
@@ -145,7 +100,9 @@ export function ResourceFinder({ onSelect }: ResourceFinderProps = {}) {
 
       {/* Branch list */}
       <div className="p-1.5 sm:p-2 space-y-1">
-        {BRANCHES.filter(b => b.value === 'mca' || b.value === 'btech').map((branch) => {
+        {/* Only branches the directory can actually drill into. Listing a
+            branch with no subject table gives an empty semester list. */}
+        {BRANCHES.filter((b) => b.value === "mca" || b.value === "bca" || b.value === "btech").map((branch) => {
           const isOpenBranch = openBranch === branch.value;
           return (
             <div

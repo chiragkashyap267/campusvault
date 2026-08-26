@@ -8,47 +8,13 @@ import { useDropzone } from "react-dropzone";
 import { useAuthStore } from "@/lib/store/authStore";
 import { uploadToCloudinary } from "@/lib/cloudinary/upload";
 import { createResource } from "@/lib/firebase/firestore";
-import { BRANCHES, RESOURCE_TYPES, SEMESTERS, MCA_SUBJECTS, BTECH_SUBJECTS } from "@/lib/constants";
+import { BRANCHES, RESOURCE_TYPES, SEMESTERS, SEMESTER_COUNT, SUBJECTS_BY_BRANCH, BTECH_SUBJECTS } from "@/lib/constants";
 import { UploadFormData, FileFormat } from "@/lib/types";
 import { getFileFormat, formatBytes, cn } from "@/lib/utils";
 import toast from "react-hot-toast";
 
 const STEPS = ["File", "Details", "Review", "Submit"];
 
-const MCA_SUBJECTS_BY_SEM: Record<string | number, string[]> = {
-  1: [
-    "Discrete Structures",
-    "Data base management system",
-    "Operating System",
-    "Computer Organization",
-    "Technical Communication Skills",
-    "Python Programming",
-  ],
-  2: [
-    "Computer based numerical and statistical techniques",
-    "Data Structures and analysis of algorithm",
-    "Object oriented programming with Java",
-    "Computer networks",
-    "Artificial intelligence",
-    "Accounting and Financial Management",
-  ],
-  3: [
-    "Big Data analytics",
-    "Cloud Computing",
-    "Compiler Design",
-    "Entrepreneurship",
-    "Graph Theory",
-    "Internet of Things",
-    "Multimedia",
-    "Principal of Management",
-  ],
-  4: [
-    "Data Science",
-    "Digital Marketing",
-    "Network Security",
-    "Software Testing & Quality Assurance",
-  ]
-};
 
 // Auto-detect semester from file name or title
 function detectSemester(name: string): number {
@@ -265,9 +231,18 @@ export default function UploadPage() {
     );
   }
 
-  const subjectList = formData.branch === "mca" 
-    ? (MCA_SUBJECTS_BY_SEM[formData.semester] || [])
-    : BTECH_SUBJECTS;
+  /*
+   * Uploaders must choose from exactly the same subject names the directory
+   * browses by — filtering compares the two, so a mismatch means the upload is
+   * never retrievable.
+   *
+   * This page previously kept its own copy of the MCA curriculum and gave
+   * every other branch the B.Tech list, so a BCA student tagging a paper was
+   * offered B.Tech subjects and their upload could never be found.
+   */
+  const subjectList =
+    SUBJECTS_BY_BRANCH[formData.branch]?.[String(formData.semester)] ??
+    (formData.branch === "btech" ? BTECH_SUBJECTS : []);
 
   return (
     <div className="min-h-screen py-8 px-4">
@@ -358,7 +333,12 @@ export default function UploadPage() {
                 <div>
                   <label className="block text-xs text-slate-400 mb-1">Semester</label>
                   <select className="input-field" value={formData.semester} onChange={(e) => setFormData((f) => ({ ...f, semester: Number(e.target.value) as typeof formData.semester }))}>
-                    {SEMESTERS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
+                    {/* Only the semesters the branch actually has: MCA runs 4
+                        and BCA 6, so offering 8 invites uploads tagged with a
+                        semester nobody will ever browse to. */}
+                    {SEMESTERS.slice(0, SEMESTER_COUNT[formData.branch] ?? 8).map((s) => (
+                      <option key={s.value} value={s.value}>{s.label}</option>
+                    ))}
                   </select>
                 </div>
               </div>

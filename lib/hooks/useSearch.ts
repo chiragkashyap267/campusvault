@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getAllApprovedResources } from "@/lib/firebase/firestore";
-import { buildIndex, searchResources, parseQuery, type IndexedResource } from "@/lib/search/engine";
+import { buildIndex, searchResources, parseQuery, subjectMatches, type IndexedResource } from "@/lib/search/engine";
 import type { Resource, ResourceFilters } from "@/lib/types";
 
 /**
@@ -79,9 +79,7 @@ export function useGlobalSearch(
         if (filters.type && r.type !== filters.type) return false;
         if (branch && r.branch !== branch) return false;
         if (semester && r.semester !== semester) return false;
-        if (filters.subject && (r.subject || "").toLowerCase() !== filters.subject.toLowerCase()) {
-          return false;
-        }
+        if (filters.subject && !subjectMatches(r.subject, filters.subject)) return false;
         return true;
       });
 

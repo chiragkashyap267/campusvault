@@ -36,6 +36,7 @@ export type ResourceType =
 
 export type Branch =
   | "mca"
+  | "bca"
   | "btech"
   | "mtech"
   | "phd"

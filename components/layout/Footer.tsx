@@ -23,6 +23,7 @@ const FOOTER_LINKS = {
   Institution: [
     { label: "About GBPIET", href: "/about" },
     { label: "MCA", href: "/resources?branch=mca" },
+    { label: "BCA", href: "/resources?branch=bca" },
     { label: "B.Tech", href: "/resources?branch=btech" },
     { label: "Contact", href: "/contact" },
   ],

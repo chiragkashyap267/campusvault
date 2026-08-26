@@ -154,6 +154,7 @@ export function indexResource(resource: Resource): IndexedResource {
     extras.push(normalize(resource.branch));
     if (resource.branch === "btech") extras.push("b tech btech bachelor of technology");
     if (resource.branch === "mca") extras.push("mca master of computer applications");
+    if (resource.branch === "bca") extras.push("bca bachelor of computer applications");
   }
 
   // Semester in every form a student might type.
@@ -350,6 +351,60 @@ export function searchResources(
 }
 
 /**
+ * Does a resource's subject correspond to the subject that was filtered on?
+ *
+ * This used to be strict lowercase equality, which is far too brittle for a
+ * field people type by hand. "Data base management system" from the directory
+ * and "Database Management System" on an upload are the same subject to every
+ * student, and matched as nothing at all — so drilling into a subject could
+ * show an empty library even when papers for it existed.
+ *
+ * Matching now succeeds when the names normalize the same, when one contains
+ * the other, or when their acronyms agree (DBMS === "Database Management
+ * System"). Still deliberately conservative: a shared word is not enough, so
+ * "Computer Networks" does not swallow "Computer Organization".
+ */
+export function subjectMatches(resourceSubject: string | undefined, filterSubject: string): boolean {
+  const a = normalize(resourceSubject || "");
+  const b = normalize(filterSubject);
+  if (!a || !b) return false;
+  if (a === b) return true;
+
+  // Spaces removed. Catches "Data base management system" against
+  // "Database Management System", which differ only in where a word breaks.
+  const squash = (v: string) => v.replace(/\s+/g, "");
+  if (squash(a) === squash(b)) return true;
+
+  // Ignore stop words, so "Data Structures and Algorithms" matches
+  // "Data Structures & Algorithms".
+  const significant = (v: string) => v.split(" ").filter((w) => w && !STOP_WORDS.has(w));
+  if (squash(significant(a).join("")) === squash(significant(b).join(""))) return true;
+
+  // One is a fuller spelling of the other.
+  if (a.includes(b) || b.includes(a)) return true;
+
+  /*
+   * Fall back to the alias table.
+   *
+   * Deriving an acronym from initials does not work for the names that matter
+   * here: "DBMS" comes from "DataBase Management System", whose word initials
+   * are D-M-S. The alias table already records these pairings by hand, so use
+   * it rather than guessing.
+   */
+  const aliasHit = (short: string, long: string) => {
+    const expansions = SUBJECT_ALIASES[squash(short)];
+    if (!expansions) return false;
+    return expansions.some((e) => {
+      const n = normalize(e);
+      return squash(n) === squash(long) || long.includes(n) || n.includes(long);
+    });
+  };
+  if (aliasHit(a, b) || aliasHit(b, a)) return true;
+
+  return false;
+}
+
+/**
  * Pull inline filters out of a query string.
  * "dbms sem 3 pyq" → { semester: 3, type: "pyq", rest: "dbms" }
  *
@@ -390,8 +445,13 @@ export function parseQuery(query: string): ParsedQuery {
     }
 
     // Branch
-    if (t === "mca" || t === "btech") {
+    if (t === "mca" || t === "bca" || t === "btech") {
       parsed.branch = t;
+      continue;
+    }
+    if (t === "b" && next === "tech") {
+      parsed.branch = "btech";
+      i++;
       continue;
     }
 

@@ -6,6 +6,7 @@ import { useInView } from "react-intersection-observer";
 import { ResourceCard, ResourceCardSkeleton } from "./ResourceCard";
 import { useResources } from "@/lib/hooks/useResources";
 import { useGlobalSearch } from "@/lib/hooks/useSearch";
+import { subjectMatches } from "@/lib/search/engine";
 import { Resource, ResourceFilters } from "@/lib/types";
 
 interface ResourceGridProps {
@@ -24,8 +25,7 @@ function applyFilters(list: Resource[], filters: ResourceFilters): Resource[] {
   if (filters.branch) out = out.filter((r) => r.branch === filters.branch);
   if (filters.semester) out = out.filter((r) => r.semester === Number(filters.semester));
   if (filters.subject) {
-    const s = filters.subject.toLowerCase();
-    out = out.filter((r) => (r.subject || "").toLowerCase() === s);
+    out = out.filter((r) => subjectMatches(r.subject, filters.subject!));
   }
   return out;
 }

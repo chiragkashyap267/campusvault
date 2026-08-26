@@ -8,6 +8,7 @@ export const RESOURCE_TYPES: { value: ResourceType; label: string; icon: string 
 
 export const BRANCHES: { value: Branch; label: string }[] = [
   { value: "mca", label: "MCA" },
+  { value: "bca", label: "BCA" },
   { value: "btech", label: "B.Tech" },
   { value: "mtech", label: "M.Tech" },
   { value: "phd", label: "Ph.D" },
@@ -128,3 +129,113 @@ export const SORT_OPTIONS = [
   { value: "downloads", label: "Most Downloaded" },
   { value: "likes", label: "Most Liked" },
 ];
+
+/**
+ * Subjects offered per branch, per semester.
+ *
+ * These strings are matched against the `subject` field on uploaded resources,
+ * so they need to read the way people actually tag their uploads. They were
+ * previously hardcoded inside ResourceFinder; keeping them here means the
+ * curriculum can be corrected in one place without touching the UI.
+ *
+ * NOTE: the BCA lists below are a standard three-year BCA structure, not
+ * GBPIET's confirmed syllabus. Replace any that differ — a subject name that
+ * does not match what students upload will retrieve nothing.
+ */
+export const SUBJECTS_BY_BRANCH: Record<string, Record<string, string[]>> = {
+  mca: {
+    bridge: [
+      "Introduction of Information Technology",
+      "Programming Fundamentals With C",
+      "Fundamental of Web Technology",
+    ],
+    "1": [
+      "Discrete Structures",
+      "Data base management system",
+      "Operating System",
+      "Computer Organization",
+      "Technical Communication Skills",
+      "Python Programming",
+    ],
+    "2": [
+      "Computer based numerical and statistical techniques",
+      "Data Structures and analysis of algorithm",
+      "Object oriented programming with Java",
+      "Computer networks",
+      "Artificial intelligence",
+      "Accounting and Financial Management",
+    ],
+    "3": [
+      "Big Data analytics",
+      "Cloud Computing",
+      "Compiler Design",
+      "Entrepreneurship",
+      "Graph Theory",
+      "Internet of Things",
+      "Multimedia",
+      "Principal of Management",
+      "Soft Computing",
+      "Software Engineering",
+      "Startup",
+      "Universal Human Values",
+    ],
+    "4": [
+      "Data Science",
+      "Digital Marketing",
+      "Network Security",
+      "Software Testing & Quality Assurance",
+    ],
+  },
+
+  bca: {
+    "1": [
+      "Computer Fundamentals",
+      "Programming in C",
+      "Mathematics I",
+      "Digital Electronics",
+      "Communication Skills",
+    ],
+    "2": [
+      "Data Structures",
+      "Object Oriented Programming with C++",
+      "Mathematics II",
+      "Computer Organization",
+      "Environmental Studies",
+    ],
+    "3": [
+      "Database Management System",
+      "Operating System",
+      "Java Programming",
+      "Computer Networks",
+      "Numerical Methods",
+    ],
+    "4": [
+      "Web Technology",
+      "Software Engineering",
+      "Python Programming",
+      "Design and Analysis of Algorithms",
+      "Statistics",
+    ],
+    "5": [
+      "Cloud Computing",
+      "Artificial Intelligence",
+      "Mobile Application Development",
+      "Computer Graphics",
+      "E-Commerce",
+    ],
+    "6": [
+      "Cyber Security",
+      "Data Science",
+      "Internet of Things",
+      "Project Work",
+      "Management Information System",
+    ],
+  },
+};
+
+/** How many semesters each branch runs for. */
+export const SEMESTER_COUNT: Record<string, number> = {
+  mca: 4,
+  bca: 6,
+  btech: 8,
+};
