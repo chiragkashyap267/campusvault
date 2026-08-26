@@ -99,7 +99,7 @@ export function ResourceFinder({ onSelect }: ResourceFinderProps = {}) {
       </div>
 
       {/* Branch list */}
-      <div className="p-1.5 sm:p-2 space-y-1">
+      <div className="p-2.5 sm:p-3 space-y-2">
         {/* Only branches the directory can actually drill into. Listing a
             branch with no subject table gives an empty semester list. */}
         {BRANCHES.filter((b) => b.value === "mca" || b.value === "bca" || b.value === "btech").map((branch) => {
@@ -143,7 +143,7 @@ export function ResourceFinder({ onSelect }: ResourceFinderProps = {}) {
                     transition={{ duration: 0.18, ease: "easeInOut" }}
                     className="overflow-hidden"
                   >
-                    <div className="px-1.5 pb-1.5 space-y-1 border-t border-white/[0.05]">
+                    <div className="px-2 pt-2 pb-2 space-y-1.5 border-t border-white/[0.06]">
                       {getSemesters(branch.value).map((sem) => {
                         const isOpenSem = openSemester === sem.value;
                         return (
@@ -172,7 +172,7 @@ export function ResourceFinder({ onSelect }: ResourceFinderProps = {}) {
                                   transition={{ duration: 0.15, ease: "easeInOut" }}
                                   className="overflow-hidden"
                                 >
-                                  <div className="px-1.5 pb-1.5 border-t border-white/[0.04] space-y-0.5">
+                                  <div className="px-2 pt-1.5 pb-2 border-t border-white/[0.05] space-y-1">
                                     {getSubjects(branch.value, sem.value).map((sub) => {
                                       const isOpenSub = openSubject === sub;
                                       return (
@@ -199,7 +199,7 @@ export function ResourceFinder({ onSelect }: ResourceFinderProps = {}) {
                                                 transition={{ duration: 0.15 }}
                                                 className="overflow-hidden"
                                               >
-                                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 px-2 pt-1 pb-2">
+                                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 px-2 pt-2 pb-3">
                                                   {SUBJECT_LINKS.map((link) => (
                                                     <Link
                                                       key={link.type}

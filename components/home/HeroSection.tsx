@@ -17,7 +17,7 @@ export function HeroSection() {
     /* Height excludes the navbar. At a flat 100svh the hero was a full
        viewport tall *below* a 64px nav, so it always overflowed the screen and
        pushed the call to action under the fold. */
-    <section className="relative min-h-[calc(100svh-var(--nav-height))] flex items-center justify-center overflow-hidden hero-gradient">
+    <section className="relative min-h-[calc(100svh-var(--nav-height)-var(--quick-actions-height))] flex items-center justify-center overflow-hidden hero-gradient">
       <ParticleBackground />
 
       {/* Ambient orbs.

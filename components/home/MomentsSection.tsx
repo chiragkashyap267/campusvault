@@ -120,18 +120,32 @@ export function MomentsSection() {
   }
 
   /**
-   * A marquee needs the row rendered twice so translating it -50% lands on a
-   * seamless loop point. With only a handful of photos that duplication is
-   * plainly visible — one upload showed the same picture twice, which reads as
-   * a bug rather than as a loop.
+   * Build a track that always scrolls, whatever the photo count.
    *
-   * So the wall only scrolls once there is genuinely more than a screenful.
-   * Below that it is a plain centred row: no duplicates, no animation, and
-   * nothing to misread.
+   * A marquee loops by translating the track -50%, which only lands seamlessly
+   * if the first half is at least as wide as the screen — otherwise the end of
+   * the strip appears before it wraps. So the set is repeated enough times to
+   * cover a wide viewport, and always an even number of times so the two
+   * halves are identical.
+   *
+   * With very few photos this means the same picture appears more than once.
+   * That is inherent to an infinite marquee — there is nothing else to show —
+   * but the repetition reads as a continuous strip rather than as duplicates
+   * because it fills the width, which is how one upload previously looked like
+   * two.
    */
-  const SCROLL_THRESHOLD = 7;
-  const shouldScroll = moments.length >= SCROLL_THRESHOLD;
-  const track = shouldScroll ? [...moments, ...moments] : moments;
+  const TILES_TO_FILL_HALF = 12;
+  const setsPerHalf = Math.max(1, Math.ceil(TILES_TO_FILL_HALF / Math.max(moments.length, 1)));
+  const track =
+    moments.length > 0
+      ? Array.from({ length: setsPerHalf * 2 }, () => moments).flat()
+      : [];
+
+  // Constant speed regardless of how many photos there are: without this a
+  // longer strip would travel the same distance in the same time and appear
+  // to race.
+  const secondsPerTile = 4.5;
+  const durationSeconds = Math.round(setsPerHalf * Math.max(moments.length, 1) * secondsPerTile);
 
   return (
     <section className="section-tight relative border-y border-white/5 bg-[#060b18]">
@@ -238,21 +252,24 @@ export function MomentsSection() {
           </div>
         </div>
       ) : (
-        <div className={shouldScroll ? "moments-marquee" : "moments-static"}>
-          <div className={shouldScroll ? "moments-track" : "moments-row"}>
+        <div className="moments-marquee">
+          <div
+            className="moments-track"
+            style={{ animationDuration: `${durationSeconds}s` }}
+          >
             {track.map((m: Moment, i) => (
               <figure
                 key={`${m.id}-${i}`}
                 className="moments-item group"
                 // The duplicated half is decorative; hide it from screen readers.
-                aria-hidden={shouldScroll && i >= moments.length}
+                aria-hidden={i >= moments.length}
               >
                 {/* A duplicated tile must open the original, not its copy. */}
                 <button
                   type="button"
                   onClick={() => setLightboxIndex(i % moments.length)}
                   aria-label={`Open photo: ${m.caption || "campus moment"}`}
-                  tabIndex={shouldScroll && i >= moments.length ? -1 : 0}
+                  tabIndex={i >= moments.length ? -1 : 0}
                   className="absolute inset-0 z-10 cursor-zoom-in"
                 />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
