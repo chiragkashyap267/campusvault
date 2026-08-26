@@ -42,7 +42,7 @@ export function MomentsSection() {
   const upload = useMutation({
     mutationFn: async () => {
       if (!pendingFile || !user) throw new Error("Nothing to upload");
-      const result = await uploadToCloudinary(pendingFile);
+      const result = await uploadToCloudinary(pendingFile, undefined, "moment");
       return createMoment({
         imageUrl: result.secure_url,
         caption: caption.trim().slice(0, CAPTION_LIMIT),

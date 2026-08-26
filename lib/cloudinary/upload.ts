@@ -10,9 +10,15 @@ export interface CloudinaryUploadResult {
   height?: number;
 }
 
+/**
+ * @param kind Which upload profile to sign against. "moment" restricts to
+ *   images under 8MB and stores them in their own folder, keeping the photo
+ *   wall separate from academic files.
+ */
 export async function uploadToCloudinary(
   file: File,
-  onProgress?: (percent: number) => void
+  onProgress?: (percent: number) => void,
+  kind: "resource" | "moment" = "resource"
 ): Promise<CloudinaryUploadResult> {
   // 1. Get signed params from our API route
   const sigRes = await fetch("/api/upload", {
@@ -22,6 +28,7 @@ export async function uploadToCloudinary(
       fileName: file.name,
       fileType: file.type,
       fileSize: file.size,
+      kind,
     }),
   });
 
