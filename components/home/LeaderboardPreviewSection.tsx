@@ -39,7 +39,7 @@ export function LeaderboardPreviewSection() {
   const restList = leaders.slice(3, 5);
 
   return (
-    <section className="section section-defer relative overflow-hidden bg-[#030712]">
+    <section className="section relative overflow-hidden bg-[#030712]">
       <div className="absolute top-0 left-1/4 w-[500px] h-[300px] rounded-full blur-[140px] bg-yellow-500/4 pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-[400px] h-[200px] rounded-full blur-[140px] bg-cyan-500/4 pointer-events-none" />
 

@@ -35,7 +35,7 @@ const STEPS = [
 
 export function HowItWorksSection() {
   return (
-    <section className="section section-defer relative overflow-hidden bg-[#030712]">
+    <section className="section relative overflow-hidden bg-[#030712]">
       <div className="divider mb-0" />
       <div className="container-app relative z-10">
         <div className="section-head text-center">

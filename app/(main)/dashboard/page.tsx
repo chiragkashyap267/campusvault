@@ -96,7 +96,7 @@ export default function DashboardPage() {
             </div>
           ) : uploads && uploads.length > 0 ? (
             <div className="resource-grid">
-              {uploads.map((r, i) => <ResourceCard key={r.id} resource={r} showStatus index={i} />)}
+              {uploads.map((r) => <ResourceCard key={r.id} resource={r} showStatus />)}
             </div>
           ) : (
             <div className="glass-card p-10 text-center">

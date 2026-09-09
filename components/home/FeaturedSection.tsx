@@ -10,7 +10,7 @@ export function FeaturedSection() {
   const { data: trending, isLoading: loadingTrending } = useTrendingResources(3);
 
   return (
-    <section className="section section-defer bg-radial-blue relative">
+    <section className="section bg-radial-blue relative">
       <div className="container-app space-y-20">
 
         {/* Trending */}
@@ -33,7 +33,7 @@ export function FeaturedSection() {
             </div>
           ) : trending && trending.length > 0 ? (
             <div className="resource-grid">
-              {trending.map((r, i) => <ResourceCard key={r.id} resource={r} index={i} />)}
+              {trending.map((r) => <ResourceCard key={r.id} resource={r} />)}
             </div>
           ) : (
             <div className="glass-card p-12 text-center">

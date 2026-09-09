@@ -70,7 +70,7 @@ export default function WishlistPage() {
       ) : resources.length > 0 ? (
         <div className="resource-grid">
           {resources.map((resource, i) => (
-            <ResourceCard key={resource.id} resource={resource} index={i} />
+            <ResourceCard key={resource.id} resource={resource} />
           ))}
         </div>
       ) : (

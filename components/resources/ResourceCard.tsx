@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Download, Heart, BookmarkPlus, Share2, FileText, Image as ImageIcon, Archive, File } from "lucide-react";
 import { Resource, ResourceType } from "@/lib/types";
 import { getResourceTypeLabel, formatRelativeTime, cn } from "@/lib/utils";
@@ -57,11 +57,9 @@ function StatusBadge({ status }: { status: string }) {
 interface ResourceCardProps {
   resource: Resource;
   showStatus?: boolean;
-  index?: number;
 }
 
-export function ResourceCard({ resource, showStatus = false, index = 0 }: ResourceCardProps) {
-  const router = useRouter();
+export function ResourceCard({ resource, showStatus = false }: ResourceCardProps) {
   const { user } = useAuthStore();
   const { data: inWishlist } = useIsInWishlist(user?.uid, resource.id);
   const toggleWishlist = useToggleWishlist();
@@ -129,10 +127,24 @@ export function ResourceCard({ resource, showStatus = false, index = 0 }: Resour
        the library did — it delayed the first paper being readable by up to
        150ms and made scrolling stutter while the animations were in flight.
        Papers now appear the instant they arrive. */
-    <div
-      onClick={() => router.push(`/resources/${resource.id}`)}
-      className="glass-card resource-card group cursor-pointer hover:border-cyan-400/25 hover:bg-white/[0.055]"
-    >
+    <div className="glass-card resource-card group relative hover:border-cyan-400/25 hover:bg-white/[0.055] active:bg-white/[0.075]">
+      {/* A real link covering the whole card, rather than onClick + router.push
+          on the wrapper div.
+
+          The div version was genuinely unreliable on a phone: a plain div is
+          not a link, so any slight finger movement during the tap cancelled the
+          synthetic click and nothing happened. It also could not be prefetched,
+          long-pressed, opened in a new tab, focused with a keyboard or
+          announced by a screen reader.
+
+          Next prefetches this as it scrolls into view, so the paper is already
+          loading before the tap lands. The action buttons below sit above it on
+          z-20 so they still work. */}
+      <Link
+        href={`/resources/${resource.id}`}
+        aria-label={`Open ${resource.title}`}
+        className="absolute inset-0 z-10 rounded-[inherit] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400"
+      />
       {/* Preview — first page of the PDF, or the format icon as a fallback */}
       <div className="resource-thumb">
         {thumbnailUrl ? (
@@ -184,7 +196,7 @@ export function ResourceCard({ resource, showStatus = false, index = 0 }: Resour
             <span className="truncate">{formatRelativeTime(resource.createdAt)}</span>
           </div>
 
-          <div className="flex items-center gap-1 shrink-0">
+          <div className="relative z-20 flex items-center gap-1 shrink-0">
             {/* Given the accent colour rather than the muted grey of the other
                 two: sharing a paper into a class group is how most students
                 here actually find one, so it is worth more than a like. */}
@@ -200,7 +212,7 @@ export function ResourceCard({ resource, showStatus = false, index = 0 }: Resour
               onClick={handleLike}
               aria-label={isLiked ? "Unlike" : "Like"}
               className={cn(
-                "p-1.5 rounded-md transition-colors",
+                "p-2 rounded-md transition-colors",
                 isLiked ? "text-red-400 bg-red-400/10" : "text-slate-500 hover:text-red-400 hover:bg-red-400/10"
               )}
             >
@@ -210,7 +222,7 @@ export function ResourceCard({ resource, showStatus = false, index = 0 }: Resour
               onClick={handleWishlist}
               aria-label={inWishlist ? "Remove from saved" : "Save for later"}
               className={cn(
-                "p-1.5 rounded-md transition-colors",
+                "p-2 rounded-md transition-colors",
                 inWishlist ? "text-cyan-400 bg-cyan-400/10" : "text-slate-500 hover:text-cyan-400 hover:bg-cyan-400/10"
               )}
             >

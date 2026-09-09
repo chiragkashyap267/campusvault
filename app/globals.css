@@ -191,10 +191,8 @@ html.light .glass {
   background: rgba(255, 255, 255, 0.035);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--card-radius);
-  /* `transform` is deliberately not transitioned here.
-     Framer Motion writes the inline transform on these same elements; a CSS
-     transition on the same property fights every inline write and produces the
-     visible stutter on hover. Motion owns transform, CSS owns the rest. */
+  /* Colour only. A card that moves on hover also moves under a finger on a
+     phone, where `:hover` sticks after a tap. */
   transition: border-color 0.18s ease, background-color 0.18s ease;
 }
 
@@ -204,14 +202,19 @@ html.light .glass-card {
   box-shadow: 0 4px 20px rgba(30, 64, 175, 0.06) !important;
 }
 
-.glass-card:hover {
-  border-color: rgba(56, 189, 248, 0.3);
-  box-shadow: 0 0 30px rgba(56, 189, 248, 0.1), 0 8px 32px rgba(0, 0, 0, 0.2);
-}
+/* Only where a real pointer exists. A touch device leaves `:hover` stuck on
+   the last card tapped, so a phone ended up with one permanently glowing card
+   that looked selected and was not. */
+@media (hover: hover) {
+  .glass-card:hover {
+    border-color: rgba(56, 189, 248, 0.3);
+    box-shadow: 0 0 30px rgba(56, 189, 248, 0.1), 0 8px 32px rgba(0, 0, 0, 0.2);
+  }
 
-html.light .glass-card:hover {
-  border-color: rgba(37, 99, 235, 0.3) !important;
-  box-shadow: 0 8px 40px rgba(30, 64, 175, 0.12) !important;
+  html.light .glass-card:hover {
+    border-color: rgba(37, 99, 235, 0.3) !important;
+    box-shadow: 0 8px 40px rgba(30, 64, 175, 0.12) !important;
+  }
 }
 
 /* ─── Glow Effects ────────────────────────────────────────── */
@@ -873,27 +876,12 @@ html.dark .newsletter-gradient {
   .ticker-track { animation: none; }
 }
 
-/* ─── Offscreen section skipping ──────────────────────────────
-   `content-visibility: auto` lets the browser skip layout, paint and
-   compositing for a section while it is outside the viewport, and do that work
-   only as it scrolls into range. On a homepage this long that removes most of
-   the per-frame work during a scroll.
-
-   `contain-intrinsic-size` supplies a placeholder height so skipped sections
-   still contribute a sensible scroll height — without it the scrollbar jumps
-   as sections are rendered for the first time.
-
-   Deliberately NOT applied to `.section` globally: the hero and the first
-   section below it are visible immediately, and skipping work for something
-   already on screen just costs an extra pass. Opt in per section instead. */
-.section-defer {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 600px;
-}
-
-@media (max-width: 640px) {
-  .section-defer { contain-intrinsic-size: auto 800px; }
-}
+/* No `content-visibility: auto` on sections any more.
+   `contain-intrinsic-size` is only ever a guess at a section's real height, so
+   every section corrected its own height the first time it scrolled into
+   range, moving everything below it. On a phone that is enough to cancel a tap
+   already in progress — a card would highlight and then simply not open. The
+   render work it saved is small now that the mount animations are gone. */
 
 /* ─── Resource type accents ───────────────────────────────────
    One colour per resource type, used everywhere that type appears. Finding a
@@ -955,6 +943,9 @@ html.light .meta-chip {
   flex-direction: row;
   gap: 0.75rem;
   align-items: flex-start;
+  /* The default grey flash is the wrong shape on a rounded card and lands a
+     beat late. The card paints its own :active state instead. */
+  -webkit-tap-highlight-color: transparent;
 }
 
 @media (min-width: 640px) {

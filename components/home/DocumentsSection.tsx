@@ -11,7 +11,7 @@ export function DocumentsSection() {
   const displayResources = resources.slice(0, 6);
 
   return (
-    <section className="section section-defer bg-[#0a0f1e] relative border-y border-white/5">
+    <section className="section bg-[#0a0f1e] relative border-y border-white/5">
       <div className="absolute top-0 right-0 w-full max-w-2xl h-64 bg-cyan-500/5 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="container-app relative z-10 space-y-12">
@@ -46,8 +46,8 @@ export function DocumentsSection() {
           </div>
         ) : displayResources.length > 0 ? (
           <div className="resource-grid">
-            {displayResources.map((r, i) => (
-              <ResourceCard key={r.id} resource={r} index={i} />
+            {displayResources.map((r) => (
+              <ResourceCard key={r.id} resource={r} />
             ))}
           </div>
         ) : (

@@ -169,7 +169,7 @@ export function ResourceGrid({ filters = {} }: ResourceGridProps) {
 
       <div className={GRID_CLASS}>
         {resources.map((resource, i) => (
-          <ResourceCard key={resource.id} resource={resource} index={i} />
+          <ResourceCard key={resource.id} resource={resource} />
         ))}
       </div>
 
