@@ -105,9 +105,11 @@ export function Navbar() {
     ? "text-xs text-slate-500 truncate"
     : "text-xs text-slate-400 truncate";
 
+  // Set like the reference wordmark — 800 with the tracking pulled in. A
+  // logotype is the one place on a page that should be tighter than its text.
   const logoTextClass = isLight
-    ? "font-display font-bold text-base md:text-lg text-slate-900 group-hover:text-blue-700 transition-colors"
-    : "font-display font-bold text-base md:text-lg text-white group-hover:text-cyan-400 transition-colors";
+    ? "font-display font-extrabold tracking-[-0.03em] text-base md:text-lg text-slate-900 group-hover:text-blue-700 transition-colors"
+    : "font-display font-extrabold tracking-[-0.03em] text-base md:text-lg text-white group-hover:text-cyan-400 transition-colors";
 
   const logoBadgeClass = isLight ? "text-blue-600" : "text-cyan-400";
 

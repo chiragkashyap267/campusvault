@@ -1,17 +1,27 @@
 import type { Metadata, Viewport } from "next";
-import { Space_Grotesk } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
 import Script from "next/script";
 import { SITE_NAME, SITE_DESCRIPTION } from "@/lib/constants";
 
-const displayFont = Space_Grotesk({
+/**
+ * One family for the whole site.
+ *
+ * Inter is a neutral grotesque built on the same skeleton as Helvetica — which
+ * is what the reference wordmark is set in — and unlike the Space Grotesk it
+ * replaces it is not quirky, so it disappears into the page instead of
+ * announcing itself.
+ *
+ * No `weight` array on purpose: that loads the variable font, giving every
+ * weight from 100 to 900 in a single file. Space Grotesk only shipped 300-700,
+ * so `font-black` silently rendered at 700 and there was no light or thin at
+ * all — the reason headings never looked as heavy as intended.
+ */
+const appFont = Inter({
   subsets: ["latin"],
   variable: "--font-app",
-  // Space Grotesk ships 300-700 only; there is no 900, so `font-black`
-  // resolves to 700 rather than a synthesised weight.
-  weight: ["400", "500", "600", "700"],
   display: "swap",
   preload: true,
 });
@@ -63,7 +73,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${displayFont.variable}`}
+      className={appFont.variable}
       suppressHydrationWarning
     >
       <body className="bg-background text-text-primary antialiased overflow-x-hidden">

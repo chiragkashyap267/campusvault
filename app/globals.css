@@ -145,12 +145,18 @@ html.light ::selection {
 }
 
 /* ─── Typography ──────────────────────────────────────────── */
+/* Tracking tightens as type gets bigger. A grotesque set at its default
+   spacing looks loose at display sizes and cramped at caption sizes, so the
+   headings pull in and body copy is left alone. */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
   font-weight: 700;
   line-height: 1.2;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.022em;
 }
+
+h1 { letter-spacing: -0.035em; }
+h2 { letter-spacing: -0.03em; }
 
 html.light h1,
 html.light h2,
@@ -597,8 +603,9 @@ html.light .badge-red {
    occupies the same space instead of each choosing its own margins. */
 .section-title {
   font-family: var(--font-display);
-  font-weight: 700;
-  letter-spacing: -0.025em;
+  /* The family carries a real 800 now; under Space Grotesk this capped at 700. */
+  font-weight: 800;
+  letter-spacing: -0.032em;
   line-height: 1.15;
   /* Fluid, so every section heading on the site is the same size at any
      viewport. They previously ranged from text-xl to text-5xl across adjacent
@@ -607,6 +614,7 @@ html.light .badge-red {
   font-size: clamp(1.5rem, 1.15rem + 1.5vw, 2.25rem);
   color: #f8fafc;
 }
+
 
 html.light .section-title { color: #0f172a; }
 

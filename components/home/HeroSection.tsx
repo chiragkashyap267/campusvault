@@ -52,12 +52,16 @@ export function HeroSection() {
 
         {/* Main heading */}
         <div className="mb-8">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold text-white leading-tight mb-2">
+          {/* Set the way the reference wordmark is: heaviest weight the family
+              has, tracking pulled in hard, lines close together. At display
+              sizes a grotesque needs all three or it reads as merely large
+              rather than deliberately set. */}
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-black text-white tracking-[-0.045em] leading-[1.05] mb-2">
             One Vault for{" "}
             <br className="hidden sm:block" />
             <span className="gradient-text glow-text">All Your Academic</span>
           </h1>
-          <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold leading-tight">
+          <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-black tracking-[-0.045em] leading-[1.05]">
             <AnimatedWord words={WORDS} />
           </div>
         </div>

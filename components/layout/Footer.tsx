@@ -56,7 +56,7 @@ export function Footer() {
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center">
                 <BookOpen className="w-4 h-4 text-black" />
               </div>
-              <span className="font-display font-bold text-white">
+              <span className="font-display font-extrabold tracking-[-0.03em] text-white">
                 CampusVault <span className="text-cyan-400">GBPIET</span>
               </span>
             </Link>
