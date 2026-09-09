@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { BookOpen, Globe, Link2, Heart, ExternalLink } from "lucide-react";
 import { CREATOR_LINKS, CREATOR_NAME, NAV_LINKS, SITE_NAME } from "@/lib/constants";
 
@@ -122,21 +121,14 @@ export function Footer() {
 
         {/* Bottom bar */}
         <div className="border-t border-white/[0.06] pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            className="text-sm text-slate-500 flex items-center gap-1.5"
-          >
+          <p className="text-sm text-slate-500 flex items-center gap-1.5">
             Made with{" "}
-            <motion.span
-              animate={{ scale: [1, 1.3, 1] }}
-              transition={{ repeat: Infinity, duration: 1.5 }}
-            >
+            <span>
               <Heart className="w-3.5 h-3.5 text-red-400 fill-red-400" />
-            </motion.span>{" "}
+            </span>{" "}
             by{" "}
             <span className="text-cyan-400 font-medium">{CREATOR_NAME}</span>
-          </motion.p>
+          </p>
           <p className="text-xs text-slate-600">
             © {new Date().getFullYear()} {SITE_NAME}. All rights reserved.
           </p>

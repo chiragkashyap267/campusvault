@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Link from "next/link";
 import { useAuthStore } from "@/lib/store/authStore";
 import { useUserResources } from "@/lib/hooks/useResources";
@@ -28,10 +27,10 @@ export default function DashboardPage() {
   const totalLikes = approved.reduce((sum, r) => sum + r.likes, 0);
 
   return (
-    <div className="min-h-screen py-8 px-4">
-      <div className="max-w-5xl mx-auto space-y-8">
+    <div className="page-container min-h-screen">
+      <div className="max-w-5xl mx-auto page-stack">
         {/* Header */}
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-6 flex items-center gap-4">
+        <div className="glass-card p-6 flex items-center gap-4">
           {user?.photoURL ? (
             <Image src={user.photoURL} alt="" width={56} height={56} className="rounded-full border-2 border-cyan-400/30" />
           ) : (
@@ -48,7 +47,7 @@ export default function DashboardPage() {
           <Link href="/profile" className="btn-ghost px-4 py-2 rounded-xl text-sm hidden sm:flex items-center gap-2">
             Edit Profile
           </Link>
-        </motion.div>
+        </div>
 
         {/* Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -58,11 +57,14 @@ export default function DashboardPage() {
             { icon: <Download className="w-4 h-4" />, label: "Downloads", value: totalDownloads, color: "text-blue-400" },
             { icon: <Star className="w-4 h-4" />, label: "Likes", value: totalLikes, color: "text-yellow-400" },
           ].map((stat, i) => (
-            <motion.div key={stat.label} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} className="glass-card p-4 text-center">
+            <div
+              key={stat.label}
+              className="glass-card p-4 text-center"
+            >
               <div className={`flex justify-center mb-2 ${stat.color}`}>{stat.icon}</div>
               <p className="text-2xl font-bold text-white font-display">{stat.value}</p>
               <p className="text-xs text-slate-500">{stat.label}</p>
-            </motion.div>
+            </div>
           ))}
         </div>
 

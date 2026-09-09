@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { MonitorPlay, ArrowRight, Network, PenTool } from "lucide-react";
 
 const POPULAR_TOOLS = [
@@ -39,12 +38,8 @@ export function SoftwaresSection() {
 
         <div className="flex flex-wrap items-center justify-center gap-6">
           {POPULAR_TOOLS.map((tool, i) => (
-            <motion.div
+            <div
               key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
               className="relative glass-card p-6 w-[280px] flex items-center gap-4 hover:border-cyan-500/30 hover:bg-white/[0.03] transition-all group"
             >
               <div className={`w-14 h-14 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0 ${tool.color} group-hover:scale-110 transition-transform`}>
@@ -57,7 +52,7 @@ export function SoftwaresSection() {
               {tool.link && (
                 <Link href={tool.link} target="_blank" className="absolute inset-0 z-10" aria-label={`Download ${tool.name}`} />
               )}
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

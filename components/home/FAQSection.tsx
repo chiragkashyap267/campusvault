@@ -54,15 +54,11 @@ export function FAQSection() {
           {FAQS.map((faq, i) => {
             const isOpen = openIndex === i;
             return (
-              <motion.div
+              <div
                 key={i}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "0px 0px -80px 0px" }}
-                transition={{ duration: 0.35, ease: "easeOut", delay: Math.min(i, 4) * 0.06 }}
                 className={`glass-card rounded-2xl overflow-hidden transition-colors ${
-                  isOpen ? "border-cyan-500/30 bg-white/[0.04]" : "border-white/5 hover:border-white/10"
-                }`}
+                                  isOpen ? "border-cyan-500/30 bg-white/[0.04]" : "border-white/5 hover:border-white/10"
+                                }`}
               >
                 <button
                   onClick={() => setOpenIndex(isOpen ? null : i)}
@@ -91,7 +87,7 @@ export function FAQSection() {
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </motion.div>
+              </div>
             );
           })}
         </div>

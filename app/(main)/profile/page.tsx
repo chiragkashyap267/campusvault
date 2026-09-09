@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { useAuthStore } from "@/lib/store/authStore";
 import { updateUserProfile } from "@/lib/firebase/firestore";
 import { uploadToCloudinary } from "@/lib/cloudinary/upload";
@@ -68,14 +67,14 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen py-8 px-4">
-      <div className="max-w-3xl mx-auto space-y-6">
-        <motion.h1 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="font-display text-2xl font-bold text-white">
+    <div className="page-container min-h-screen">
+      <div className="max-w-3xl mx-auto page-stack">
+        <h1 className="font-display text-2xl font-bold text-white">
           My Profile
-        </motion.h1>
+        </h1>
 
         {/* Avatar + Basic Info */}
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="glass-card p-6">
+        <div className="glass-card p-6">
           <div className="flex items-start gap-5 flex-wrap">
             {/* Avatar */}
             <div className="relative group" {...getRootProps()}>
@@ -107,10 +106,10 @@ export default function ProfilePage() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Social Links */}
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="glass-card p-6">
+        <div className="glass-card p-6">
           <h2 className="font-semibold text-white mb-4 text-sm">Social Links</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {[
@@ -129,7 +128,7 @@ export default function ProfilePage() {
               </div>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         <button onClick={handleSave} disabled={saving} className="btn-primary w-full py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2">
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}

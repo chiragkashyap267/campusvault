@@ -3,7 +3,6 @@
 import { useState, useEffect, Suspense, useRef, useDeferredValue, useCallback } from "react";
 import { useLenis } from "lenis/react";
 import { Search, SlidersHorizontal, X } from "lucide-react";
-import { motion } from "framer-motion";
 import { ResourceGrid } from "@/components/resources/ResourceGrid";
 import { ResourceFiltersPanel } from "@/components/resources/ResourceFilters";
 import { ResourceFinder } from "@/components/home/ResourceFinder";
@@ -123,7 +122,7 @@ function ResourcesContent() {
 
   return (
     <div className="min-h-screen bg-[#030712] pb-20">
-      <div className="container-app pt-7 sm:pt-10">
+      <div className="container-app pt-8 sm:pt-10 lg:pt-12">
         {/* ── Header ── */}
         <div className="mb-6">
           <h1 className="section-title text-white">Resource Library</h1>
@@ -234,10 +233,7 @@ function ResourcesContent() {
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => setMobileFiltersOpen(false)}
           />
-          <motion.div
-            initial={{ x: "-100%" }}
-            animate={{ x: 0 }}
-            transition={{ type: "spring", damping: 30, stiffness: 300 }}
+          <div
             className="absolute left-0 top-0 bottom-0 w-72 glass border-r border-white/10 p-4 overflow-y-auto"
           >
             <div className="flex items-center justify-between mb-4">
@@ -254,7 +250,7 @@ function ResourcesContent() {
                 setMobileFiltersOpen(false);
               }}
             />
-          </motion.div>
+          </div>
         </div>
       )}
     </div>
@@ -265,10 +261,10 @@ export default function ResourcesPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
-        </div>
-      }
+              <div className="min-h-screen flex items-center justify-center">
+                <div className="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+              </div>
+            }
     >
       <ResourcesContent />
     </Suspense>

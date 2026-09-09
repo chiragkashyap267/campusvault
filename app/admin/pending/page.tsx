@@ -32,13 +32,13 @@ export default function AdminPendingPage() {
 
   return (
     <div className="space-y-6">
-      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
+      <div>
         <div className="flex items-center gap-2 mb-1">
           <Clock className="w-5 h-5 text-yellow-400" />
           <h1 className="font-display text-2xl font-bold text-white">Pending Uploads</h1>
         </div>
         <p className="text-slate-400 text-sm">{pending?.length ?? 0} resources waiting for review.</p>
-      </motion.div>
+      </div>
 
       {isLoading ? (
         <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 text-cyan-400 animate-spin" /></div>

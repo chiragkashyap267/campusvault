@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
 import { BookOpen, Mail, Lock, User, Loader2, Globe } from "lucide-react";
 import { signUpWithEmail, signInWithGoogle } from "@/lib/firebase/auth";
 import toast from "react-hot-toast";
@@ -43,7 +42,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-6 sm:p-8">
+    <div className="glass-card p-6 sm:p-8">
       <div className="flex items-center gap-2 mb-6 justify-center">
         <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center">
           <BookOpen className="w-4 h-4 text-black" />
@@ -88,6 +87,6 @@ export default function RegisterPage() {
         Already have an account?{" "}
         <Link href="/login" className="text-cyan-400 hover:underline font-medium">Sign in</Link>
       </p>
-    </motion.div>
+    </div>
   );
 }

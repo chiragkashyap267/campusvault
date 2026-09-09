@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { Mail, Send, CheckCircle, Sparkles, BookOpen, Bell } from "lucide-react";
 import { db } from "@/lib/firebase/config";
 import { collection, addDoc, serverTimestamp, query, where, getDocs } from "firebase/firestore";
@@ -68,13 +67,7 @@ export function NewsletterSection() {
     <section className={cn("section-padding", isLight ? "bg-white" : "bg-transparent")}>
       <div className="container-app">
         <div className="max-w-5xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="relative overflow-hidden rounded-3xl"
-          >
+          <div className="relative overflow-hidden rounded-3xl">
             {/* Background */}
             <div className="newsletter-gradient absolute inset-0 z-0" />
             <div className="absolute inset-0 z-0 opacity-30"
@@ -108,19 +101,15 @@ export function NewsletterSection() {
                 {/* Benefits */}
                 <div className="space-y-3">
                   {benefits.map((b, i) => (
-                    <motion.div
+                    <div
                       key={i}
-                      initial={{ opacity: 0, x: -16 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: i * 0.1 + 0.3 }}
                       className="flex items-center gap-3"
                     >
                       <div className="w-8 h-8 rounded-lg bg-white/15 flex items-center justify-center shrink-0">
                         <b.icon className="w-4 h-4 text-white" />
                       </div>
                       <span className="text-sm text-blue-100 font-medium">{b.text}</span>
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -128,9 +117,7 @@ export function NewsletterSection() {
               {/* Right: Form */}
               <div>
                 {subscribed ? (
-                  <motion.div
-                    initial={{ scale: 0.9, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
+                  <div
                     className="bg-white/15 backdrop-blur-md border border-white/25 rounded-2xl p-8 text-center"
                   >
                     <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-4">
@@ -140,14 +127,10 @@ export function NewsletterSection() {
                     <p className="text-blue-100 text-sm leading-relaxed">
                       We&apos;ll send you personalized academic updates based on what you search and browse on CampusVault.
                     </p>
-                  </motion.div>
+                  </div>
                 ) : (
-                  <motion.form
+                  <form
                     onSubmit={handleSubmit}
-                    initial={{ opacity: 0, y: 16 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.2 }}
                     className="bg-white/12 backdrop-blur-md border border-white/20 rounded-2xl p-6 space-y-4 shadow-2xl"
                   >
                     <h3 className="text-lg font-bold text-white mb-1">Subscribe for free</h3>
@@ -198,11 +181,11 @@ export function NewsletterSection() {
                     <p className="text-[11px] text-blue-200 text-center leading-relaxed">
                       No spam ever. Unsubscribe anytime from your profile settings.
                     </p>
-                  </motion.form>
+                  </form>
                 )}
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

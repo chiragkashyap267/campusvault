@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { useAuthStore } from "@/lib/store/authStore";
 import { redirect } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
@@ -36,10 +35,10 @@ export default function AdminResourcesPage() {
 
   return (
     <div className="space-y-6">
-      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
+      <div>
         <h1 className="font-display text-2xl font-bold text-white mb-1">Resource Manager</h1>
         <p className="text-slate-400 text-sm">{resources?.length ?? 0} total resources.</p>
-      </motion.div>
+      </div>
 
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
@@ -51,7 +50,10 @@ export default function AdminResourcesPage() {
       ) : (
         <div className="space-y-2">
           {filtered.map((r) => (
-            <motion.div key={r.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="glass-card p-4 flex items-center gap-3">
+            <div
+              key={r.id}
+              className="glass-card p-4 flex items-center gap-3"
+            >
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap mb-1">
                   <span className={cn("badge text-[10px]",
@@ -70,7 +72,7 @@ export default function AdminResourcesPage() {
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
-            </motion.div>
+            </div>
           ))}
           {filtered.length === 0 && (
             <div className="glass-card p-10 text-center text-slate-500 text-sm">No resources found.</div>

@@ -1,9 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import { Download, Heart, BookmarkPlus, FileText, Image as ImageIcon, Archive, File } from "lucide-react";
+import { Download, Heart, BookmarkPlus, Share2, FileText, Image as ImageIcon, Archive, File } from "lucide-react";
 import { Resource, ResourceType } from "@/lib/types";
 import { getResourceTypeLabel, formatRelativeTime, cn } from "@/lib/utils";
 import { useAuthStore } from "@/lib/store/authStore";
@@ -84,6 +82,40 @@ export function ResourceCard({ resource, showStatus = false, index = 0 }: Resour
     toast.success(inWishlist ? "Removed from saved" : "Saved to wishlist!");
   };
 
+  /**
+   * Share the paper itself, not the file. A Cloudinary URL is unguessable and
+   * carries no title, semester or subject — sending a friend the resource page
+   * means they land somewhere they can also see what it is and find related
+   * papers.
+   *
+   * Uses the native share sheet where there is one (every phone), which is the
+   * only way to reach WhatsApp directly. Falls back to copying the link.
+   */
+  const handleShare = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const url = `${window.location.origin}/resources/${resource.id}`;
+    const title = resource.subject ? `${resource.title} — ${resource.subject}` : resource.title;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({ title, text: `${title} on CampusVault`, url });
+        return;
+      } catch (err) {
+        // The user dismissing the sheet throws AbortError; that is not a
+        // failure and must not fall through to a "link copied" toast.
+        if ((err as Error)?.name === "AbortError") return;
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(url);
+      toast.success("Link copied");
+    } catch {
+      toast.error("Could not copy the link");
+    }
+  };
+
   const handleLike = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -92,11 +124,13 @@ export function ResourceCard({ resource, showStatus = false, index = 0 }: Resour
   };
 
   return (
-    <motion.div
+    /* Deliberately not animated on mount. A results page renders 20+ of these,
+       and a staggered JS fade on each one is the single most expensive thing
+       the library did — it delayed the first paper being readable by up to
+       150ms and made scrolling stutter while the animations were in flight.
+       Papers now appear the instant they arrive. */
+    <div
       onClick={() => router.push(`/resources/${resource.id}`)}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.22, ease: "easeOut", delay: Math.min(index, 6) * 0.025 }}
       className="glass-card resource-card group cursor-pointer hover:border-cyan-400/25 hover:bg-white/[0.055]"
     >
       {/* Preview — first page of the PDF, or the format icon as a fallback */}
@@ -150,7 +184,18 @@ export function ResourceCard({ resource, showStatus = false, index = 0 }: Resour
             <span className="truncate">{formatRelativeTime(resource.createdAt)}</span>
           </div>
 
-          <div className="flex items-center gap-0.5 shrink-0">
+          <div className="flex items-center gap-1 shrink-0">
+            {/* Given the accent colour rather than the muted grey of the other
+                two: sharing a paper into a class group is how most students
+                here actually find one, so it is worth more than a like. */}
+            <button
+              onClick={handleShare}
+              aria-label="Share this resource"
+              className="flex items-center gap-1 px-2 py-1.5 rounded-md text-[11px] font-semibold text-cyan-400 bg-cyan-400/10 hover:bg-cyan-400/20 transition-colors"
+            >
+              <Share2 className="w-3.5 h-3.5" />
+              <span>Share</span>
+            </button>
             <button
               onClick={handleLike}
               aria-label={isLiked ? "Unlike" : "Like"}
@@ -174,7 +219,7 @@ export function ResourceCard({ resource, showStatus = false, index = 0 }: Resour
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
 

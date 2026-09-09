@@ -66,14 +66,12 @@ export default function FormsPage() {
   };
 
   return (
-    <div className="min-h-screen py-12 px-4 bg-[#030712]">
-      <div className="max-w-4xl mx-auto space-y-8">
+    <div className="min-h-screen bg-[#030712]">
+      {/* Background stays full-bleed; the padding lives on the container so
+          the gutters match every other page. */}
+      <div className="page-container max-w-4xl page-stack">
         {/* Header */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }} 
-          animate={{ opacity: 1, y: 0 }} 
-          className="text-center space-y-3"
-        >
+        <div className="text-center space-y-3">
           <div className="inline-flex items-center gap-2 badge badge-cyan py-1 px-3">
             <BookOpen className="w-3.5 h-3.5" />
             Forms & Syllabuses
@@ -84,15 +82,10 @@ export default function FormsPage() {
           <p className="text-slate-400 text-sm max-w-lg mx-auto leading-relaxed">
             Download standard front pages, index pages, syllabuses, and hostel/mess outpass forms for GBPIET students.
           </p>
-        </motion.div>
+        </div>
 
         {/* Search Filter */}
-        <motion.div 
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="relative max-w-md mx-auto"
-        >
+        <div className="relative max-w-md mx-auto">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
           <input
             type="text"
@@ -101,7 +94,7 @@ export default function FormsPage() {
             placeholder="Search academic forms..."
             className="input-field pl-9 pr-4"
           />
-        </motion.div>
+        </div>
 
         {/* Loading / Error States */}
         {isLoading ? (
@@ -122,12 +115,7 @@ export default function FormsPage() {
           </div>
         ) : (
           /* Accordion Category Container */
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.15 }}
-            className="space-y-3"
-          >
+          <div className="space-y-3">
             {CATEGORIES.map((category) => {
               const forms = groupedForms[category] || [];
               if (forms.length === 0 && search) return null; // Hide empty category on filter
@@ -231,7 +219,7 @@ export default function FormsPage() {
                 </div>
               );
             })}
-          </motion.div>
+          </div>
         )}
       </div>
     </div>

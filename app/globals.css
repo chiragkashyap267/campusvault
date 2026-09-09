@@ -252,17 +252,7 @@ html.light .gradient-text {
   background-clip: text;
 }
 
-.gradient-text-warm {
-  background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
 /* ─── Background Gradients ────────────────────────────────── */
-.bg-radial-cyan {
-  background: radial-gradient(ellipse at top, rgba(56, 189, 248, 0.08) 0%, transparent 60%);
-}
 
 .bg-radial-blue {
   background: radial-gradient(ellipse at bottom right, rgba(59, 130, 246, 0.08) 0%, transparent 60%);
@@ -290,25 +280,10 @@ html.light .hero-gradient {
 }
 
 /* ─── Animated Background ─────────────────────────────────── */
-@keyframes float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  33% { transform: translateY(-20px) rotate(2deg); }
-  66% { transform: translateY(-10px) rotate(-1deg); }
-}
-
-@keyframes pulse-glow {
-  0%, 100% { opacity: 0.4; transform: scale(1); }
-  50% { opacity: 0.8; transform: scale(1.05); }
-}
 
 @keyframes shimmer {
   0% { background-position: -200% center; }
   100% { background-position: 200% center; }
-}
-
-@keyframes gradient-x {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
 }
 
 @keyframes spin-slow {
@@ -316,31 +291,7 @@ html.light .hero-gradient {
   to { transform: rotate(360deg); }
 }
 
-@keyframes slide-up {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.animate-float { animation: float 6s ease-in-out infinite; }
-.animate-float-delay { animation: float 8s ease-in-out infinite 2s; }
-.animate-pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
-.animate-shimmer {
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
-  background-size: 200% 100%;
-  animation: shimmer 2s infinite;
-}
-.animate-gradient-x {
-  background-size: 200% 200%;
-  animation: gradient-x 4s ease infinite;
-}
 .animate-spin-slow { animation: spin-slow 20s linear infinite; }
-.animate-slide-up { animation: slide-up 0.5s ease-out; }
-.animate-fade-in { animation: fade-in 0.3s ease-out; }
 
 /* ─── Skeleton Loader ─────────────────────────────────────── */
 .skeleton {
@@ -605,38 +556,42 @@ html.light .badge-red {
   }
 }
 
-.section {
-  padding-top: var(--section-y);
-  padding-bottom: var(--section-y);
-}
+@layer components {
+  .section {
+    padding-top: var(--section-y);
+    padding-bottom: var(--section-y);
+  }
 
-.section-tight {
-  padding-top: var(--section-y-sm);
-  padding-bottom: var(--section-y-sm);
-}
+  .section-tight {
+    padding-top: var(--section-y-sm);
+    padding-bottom: var(--section-y-sm);
+  }
 
-/* Kept for existing callers; now aligned to the same scale. */
-.section-padding {
-  padding: var(--section-y) 1rem;
-}
-
-@media (min-width: 768px) {
+  /* Kept for existing callers; now aligned to the same scale. */
   .section-padding {
-    padding: var(--section-y) 2rem;
+    padding: var(--section-y) 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .section-padding {
+      padding: var(--section-y) 2rem;
+    }
+  }
+
+  /* A section that wants a different heading gap says so with `mb-*`; that
+     only works from inside the layer. */
+  .section-head {
+    margin-bottom: 2rem;
+  }
+
+  @media (min-width: 768px) {
+    .section-head { margin-bottom: 2.75rem; }
   }
 }
 
 /* ─── Section heading block ───────────────────────────────────
    One consistent title + subtitle treatment, so every section's header
    occupies the same space instead of each choosing its own margins. */
-.section-head {
-  margin-bottom: 2rem;
-}
-
-@media (min-width: 768px) {
-  .section-head { margin-bottom: 2.75rem; }
-}
-
 .section-title {
   font-family: var(--font-display);
   font-weight: 700;
@@ -661,19 +616,25 @@ html.light .section-title { color: #0f172a; }
 }
 
 /* ─── Container ───────────────────────────────────────────── */
-.container-app {
-  width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
+/* In `components` so a call site can still override the gutters or add its own
+   vertical padding. Outside a layer this `padding` shorthand beat every
+   Tailwind padding utility placed alongside it — `container-app pt-10` on the
+   resources page silently resolved to padding-top: 0. */
+@layer components {
+  .container-app {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
 
-@media (min-width: 640px) {
-  .container-app { padding: 0 1.5rem; }
-}
+  @media (min-width: 640px) {
+    .container-app { padding: 0 1.5rem; }
+  }
 
-@media (min-width: 1024px) {
-  .container-app { padding: 0 2rem; }
+  @media (min-width: 1024px) {
+    .container-app { padding: 0 2rem; }
+  }
 }
 
 /* ─── Divider ─────────────────────────────────────────────── */
@@ -691,113 +652,33 @@ html.light .divider {
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
 /* ─── Animations ──────────────────────────────────────────── */
-@keyframes border-glow {
-  0%, 100% { border-color: rgba(0, 212, 255, 0.15); box-shadow: 0 0 10px rgba(0,212,255,0.05); }
-  50% { border-color: rgba(0, 212, 255, 0.5); box-shadow: 0 0 25px rgba(0,212,255,0.2); }
-}
-
-@keyframes text-shimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
-}
-
-@keyframes slide-in-left {
-  from { opacity: 0; transform: translateX(-30px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
-@keyframes bounce-in {
-  0% { transform: scale(0.8); opacity: 0; }
-  60% { transform: scale(1.05); opacity: 1; }
-  100% { transform: scale(1); }
-}
-
-@keyframes aurora {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-.animate-border-glow { animation: border-glow 3s ease-in-out infinite; }
-.animate-slide-in-left { animation: slide-in-left 0.5s ease-out; }
-.animate-bounce-in { animation: bounce-in 0.5s cubic-bezier(.36,.07,.19,.97); }
-
-.text-shimmer {
-  background: linear-gradient(90deg, #00d4ff, #8b5cf6, #00d4ff);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: text-shimmer 4s linear infinite;
-}
-
-html.light .text-shimmer {
-  background: linear-gradient(90deg, #1d4ed8, #7c3aed, #1d4ed8);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: text-shimmer 4s linear infinite;
-}
 
 /* ─── Card premium hover ──────────────────────────────────── */
-.card-premium {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 1rem;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-}
-
-.card-premium::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(0,212,255,0.03) 0%, transparent 60%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
-}
-
-.card-premium:hover::before { opacity: 1; }
-
-.card-premium:hover {
-  border-color: rgba(0, 212, 255, 0.25);
-  box-shadow: 0 0 0 1px rgba(0,212,255,0.1), 0 8px 40px rgba(0,0,0,0.4), 0 0 30px rgba(0,212,255,0.08);
-  transform: translateY(-3px);
-}
-
-html.light .card-premium {
-  background: #ffffff;
-  border: 1px solid rgba(30, 64, 175, 0.1);
-  box-shadow: 0 4px 16px rgba(30, 64, 175, 0.06);
-}
-
-html.light .card-premium::before {
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.04) 0%, transparent 60%);
-}
-
-html.light .card-premium:hover {
-  border-color: rgba(37, 99, 235, 0.3);
-  box-shadow: 0 0 0 1px rgba(37,99,235,0.1), 0 12px 40px rgba(30, 64, 175, 0.12);
-}
 
 /* ─── Page spacing ────────────────────────────────────────── */
-.page-container {
-  width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem 1rem 4rem;
-}
+@layer components {
+  .page-container {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem 1rem 4rem;
+  }
 
-@media (min-width: 640px) {
-  .page-container { padding: 2.5rem 1.5rem 5rem; }
-}
+  @media (min-width: 640px) {
+    .page-container { padding: 2.5rem 1.5rem 5rem; }
+  }
 
-@media (min-width: 1024px) {
-  .page-container { padding: 3rem 2rem 6rem; }
+  @media (min-width: 1024px) {
+    .page-container { padding: 3rem 2rem 6rem; }
+  }
+
+  /* Layered for the same reason: pages narrow it with `max-w-3xl`, and a
+     `max-width` outside a layer would win over that utility. */
+  .page-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--section-y-sm);
+  }
 }
 
 /* ─── Status pills ────────────────────────────────────────── */
@@ -935,7 +816,6 @@ html.light .bg-black\/40 {
 }
 
 /* ─── Light mode — marketing blast overlay (handled per-component) ─────── */
-
 
 /* ─── Light mode page header ─────────────────────────────── */
 html.light .min-h-screen.bg-\[\#030712\] {
@@ -1180,7 +1060,6 @@ html.light .resource-title { color: #0f172a; }
 
 .type-tile:hover { filter: brightness(1.35); }
 
-
 /* ─── Default padding for component classes ───────────────────
    These live in the `components` layer on purpose.
 
@@ -1296,7 +1175,6 @@ html.light .resource-title { color: #0f172a; }
   text-align: left;
   background: linear-gradient(to top, rgba(3, 7, 18, 0.92), rgba(3, 7, 18, 0.55) 55%, transparent);
 }
-
 
 /* Hide the scrollbar on horizontal chip strips. The row is short and clearly
    scrollable from its cut-off last chip; a visible bar under it on mobile just

@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useAuthStore } from "@/lib/store/authStore";
 import { redirect } from "next/navigation";
 import { usePendingResources } from "@/lib/hooks/useResources";
@@ -37,36 +36,36 @@ export default function AdminPage() {
 
   return (
     <div className="space-y-8">
-      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
+      <div>
         <div className="flex items-center gap-2 mb-1">
           <Shield className="w-5 h-5 text-cyan-400" />
           <h1 className="font-display text-2xl font-bold text-white">Admin Overview</h1>
         </div>
         <p className="text-slate-400 text-sm">Manage uploads, users, and platform content.</p>
-      </motion.div>
+      </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((s, i) => (
-          <motion.div key={s.label} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}>
+          <div key={s.label}>
             <Link href={s.href} className="glass-card p-5 block text-center hover:border-cyan-400/20 transition-all">
               <div className={`flex justify-center mb-2 ${s.color}`}>{s.icon}</div>
               <p className="text-2xl font-bold text-white font-display">{s.value.toLocaleString()}</p>
               <p className="text-xs text-slate-500 mt-0.5">{s.label}</p>
             </Link>
-          </motion.div>
+          </div>
         ))}
       </div>
 
       {/* Quick Action */}
       {pending && pending.length > 0 && (
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="glass-card p-5 border border-yellow-400/20">
+        <div className="glass-card p-5 border border-yellow-400/20">
           <p className="text-yellow-400 font-semibold text-sm mb-2">
             🔔 {pending.length} upload{pending.length > 1 ? "s" : ""} awaiting review
           </p>
           <Link href="/admin/pending" className="btn-primary px-5 py-2 rounded-xl text-sm inline-block">
             Review Now →
           </Link>
-        </motion.div>
+        </div>
       )}
     </div>
   );

@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Search, Download, UploadCloud, CheckCircle } from "lucide-react";
 
 const STEPS = [
@@ -51,12 +50,8 @@ export function HowItWorksSection() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 relative">
           <div className="hidden md:block absolute top-12 left-[10%] right-[10%] h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
           {STEPS.map((step, i) => (
-            <motion.div
+            <div
               key={step.title}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "0px 0px -80px 0px" }}
-              transition={{ duration: 0.35, ease: "easeOut", delay: i * 0.08 }}
               className="relative flex flex-col items-center text-center p-6 glass-card rounded-2xl group"
             >
               <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6 border ${step.bg} ${step.color} relative z-10 group-hover:scale-110 transition-transform duration-300`}>
@@ -64,7 +59,7 @@ export function HowItWorksSection() {
               </div>
               <h3 className="text-xl font-bold text-white mb-2">{step.title}</h3>
               <p className="text-sm text-slate-400 leading-relaxed">{step.desc}</p>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

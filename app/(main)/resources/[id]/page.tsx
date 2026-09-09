@@ -1,7 +1,6 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { motion } from "framer-motion";
 import { Download, Heart, BookmarkPlus, ArrowLeft, FileText, ExternalLink, MessageSquare, Loader2, AlertTriangle } from "lucide-react";
 import { useResource, useDownloadResource, useLikeResource } from "@/lib/hooks/useResources";
 import { useToggleWishlist, useIsInWishlist } from "@/lib/hooks/useWishlist";
@@ -172,7 +171,7 @@ export default function ResourceViewerPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen py-8 px-4 max-w-3xl mx-auto space-y-4">
+      <div className="page-container min-h-screen max-w-3xl space-y-4">
         <div className="skeleton h-8 w-24 rounded-lg" />
         <div className="skeleton h-48 rounded-xl" />
         <div className="skeleton h-10 rounded-xl" />
@@ -192,15 +191,15 @@ export default function ResourceViewerPage() {
   }
 
   return (
-    <div className="min-h-screen py-8 px-4">
-      <div className="max-w-3xl mx-auto space-y-6">
+    <div className="page-container min-h-screen">
+      <div className="max-w-3xl mx-auto page-stack">
         {/* Back */}
         <Link href="/resources" className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors">
           <ArrowLeft className="w-4 h-4" /> Back to Resources
         </Link>
 
         {/* Resource Info */}
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-6">
+        <div className="glass-card p-6">
           <div className="flex items-start gap-4 mb-4">
             <div className="w-12 h-12 rounded-xl bg-cyan-400/10 border border-cyan-400/20 flex items-center justify-center shrink-0">
               <FileText className="w-6 h-6 text-cyan-400" />
@@ -280,11 +279,11 @@ export default function ResourceViewerPage() {
               </button>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* PDF Preview */}
         {resource.fileFormat === "pdf" && (
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="glass-card overflow-hidden rounded-xl">
+          <div className="glass-card overflow-hidden rounded-xl">
             <div className="p-4 border-b border-white/[0.06] flex items-center justify-between">
               <p className="text-sm font-medium text-slate-300">Preview</p>
               {pdfStatus.code !== "CLOUDINARY_PDF_RESTRICTED" && (
@@ -395,18 +394,18 @@ export default function ResourceViewerPage() {
                 </>
               )}
             </div>
-          </motion.div>
+          </div>
         )}
 
         {/* Image preview */}
         {resource.fileFormat === "image" && (
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="glass-card overflow-hidden rounded-xl">
+          <div className="glass-card overflow-hidden rounded-xl">
             <Image src={resource.fileUrl} alt={resource.title} width={800} height={600} className="w-full object-contain max-h-[500px]" />
-          </motion.div>
+          </div>
         )}
 
         {/* Comments */}
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="glass-card p-6">
+        <div className="glass-card p-6">
           <h2 className="font-display font-bold text-white mb-4 flex items-center gap-2">
             <MessageSquare className="w-5 h-5 text-cyan-400" />
             Comments ({comments.length})
@@ -449,7 +448,7 @@ export default function ResourceViewerPage() {
               <p className="text-center text-slate-600 text-sm py-4">No comments yet. Be the first!</p>
             )}
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );

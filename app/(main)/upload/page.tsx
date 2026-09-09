@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { Upload, CheckCircle, Loader2, ChevronRight, File, X } from "lucide-react";
 import { useDropzone } from "react-dropzone";
@@ -206,11 +205,7 @@ export default function UploadPage() {
   if (done) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          className="glass-card p-12 text-center max-w-md"
-        >
+        <div className="glass-card p-12 text-center max-w-md">
           <div className="w-16 h-16 rounded-full bg-green-400/10 border border-green-400/30 flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="w-8 h-8 text-green-400" />
           </div>
@@ -226,7 +221,7 @@ export default function UploadPage() {
               View Dashboard
             </a>
           </div>
-        </motion.div>
+        </div>
       </div>
     );
   }
@@ -245,13 +240,13 @@ export default function UploadPage() {
     (formData.branch === "btech" ? BTECH_SUBJECTS : []);
 
   return (
-    <div className="min-h-screen py-8 px-4">
+    <div className="page-container min-h-screen">
       <div className="max-w-2xl mx-auto">
         {/* Header */}
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="mb-8 text-center">
+        <div className="mb-8 text-center">
           <h1 className="font-display text-2xl sm:text-3xl font-bold text-white mb-2">Upload Resource</h1>
           <p className="text-slate-400 text-sm">Share your knowledge with GBPIET students</p>
-        </motion.div>
+        </div>
 
         {/* Step Progress */}
         <div className="flex items-center gap-2 mb-8">
@@ -274,7 +269,7 @@ export default function UploadPage() {
         <div className="glass-card p-6">
           {/* Step 0: File */}
           {step === 0 && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <div>
               <h2 className="font-semibold text-white mb-4">Select File</h2>
               <div
                 {...getRootProps()}
@@ -308,12 +303,12 @@ export default function UploadPage() {
               >
                 Continue <ChevronRight className="w-4 h-4" />
               </button>
-            </motion.div>
+            </div>
           )}
 
           {/* Step 1: Details */}
           {step === 1 && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
+            <div className="space-y-4">
               <h2 className="font-semibold text-white mb-4">Resource Details</h2>
               <div>
                 <label className="block text-xs text-slate-400 mb-1">Title *</label>
@@ -377,12 +372,12 @@ export default function UploadPage() {
                 <button onClick={() => setStep(0)} className="btn-ghost flex-1 py-3 rounded-xl text-sm">Back</button>
                 <button disabled={!formData.title} onClick={() => setStep(2)} className="btn-primary flex-1 py-3 rounded-xl text-sm disabled:opacity-40">Review</button>
               </div>
-            </motion.div>
+            </div>
           )}
 
           {/* Step 2: Review */}
           {step === 2 && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <div>
               <h2 className="font-semibold text-white mb-4">Review Upload</h2>
               <div className="space-y-3 mb-6">
                 <ReviewRow label="Title" value={formData.title} />
@@ -400,19 +395,22 @@ export default function UploadPage() {
                 <button onClick={() => setStep(1)} className="btn-ghost flex-1 py-3 rounded-xl text-sm">Back</button>
                 <button onClick={() => { setStep(3); handleSubmit(); }} className="btn-primary flex-1 py-3 rounded-xl text-sm">Submit</button>
               </div>
-            </motion.div>
+            </div>
           )}
 
           {/* Step 3: Uploading */}
           {step === 3 && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-8">
+            <div className="text-center py-8">
               <Loader2 className="w-10 h-10 text-cyan-400 animate-spin mx-auto mb-4" />
               <p className="text-white font-semibold mb-2">Uploading...</p>
               <div className="w-full bg-white/5 rounded-full h-2 mb-2">
-                <motion.div className="h-2 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500" style={{ width: `${progress}%` }} />
+                <div
+                  className="h-2 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500"
+                  style={{ width: `${progress}%` }}
+                />
               </div>
               <p className="text-xs text-slate-500">{progress}% complete</p>
-            </motion.div>
+            </div>
           )}
         </div>
       </div>

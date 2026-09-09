@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, TrendingUp, Sparkles, Trophy, Crown } from "lucide-react";
 import { ResourceCard, ResourceCardSkeleton } from "@/components/resources/ResourceCard";
@@ -37,13 +36,13 @@ export function FeaturedSection() {
               {trending.map((r, i) => <ResourceCard key={r.id} resource={r} index={i} />)}
             </div>
           ) : (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="glass-card p-12 text-center">
+            <div className="glass-card p-12 text-center">
               <Sparkles className="w-8 h-8 text-slate-600 mx-auto mb-3" />
               <p className="text-slate-500 text-sm">No trending resources yet. Be the first to upload!</p>
               <Link href="/upload" className="inline-flex items-center gap-1.5 mt-4 text-cyan-400 text-sm hover:text-cyan-300 transition-colors font-medium">
                 Upload now <ArrowRight className="w-3.5 h-3.5" />
               </Link>
-            </motion.div>
+            </div>
           )}
         </div>
 
@@ -52,10 +51,7 @@ export function FeaturedSection() {
 
         {/* Dual CTA */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} whileHover={{ y: -3 }}
-            className="glass-card p-8 text-center relative overflow-hidden group"
-          >
+          <div className="glass-card p-8 text-center relative overflow-hidden group">
             <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/5 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
             <div className="relative">
               <div className="w-12 h-12 rounded-2xl bg-cyan-400/10 border border-cyan-400/20 flex items-center justify-center mx-auto mb-4">
@@ -69,10 +65,9 @@ export function FeaturedSection() {
                 Start Uploading <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} viewport={{ once: true }} whileHover={{ y: -3 }}
+          <div
             className="glass-card p-8 text-center relative overflow-hidden group border border-yellow-400/10"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/5 via-transparent to-amber-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -89,7 +84,7 @@ export function FeaturedSection() {
                 View Leaderboard
               </Link>
             </div>
-          </motion.div>
+          </div>
         </div>
 
       </div>

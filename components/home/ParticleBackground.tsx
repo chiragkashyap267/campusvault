@@ -36,6 +36,13 @@ export function ParticleBackground() {
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
+    // Phones and tablets never run this. Even optimised, it is a
+    // requestAnimationFrame loop competing with scrolling on the one thread
+    // that matters, on the exact screen a visitor lands on — and it is pure
+    // decoration behind text. Desktop has the headroom to spare; a phone
+    // trying to open a past paper does not.
+    if (window.matchMedia("(pointer: coarse), (max-width: 1023px)").matches) return;
+
     let animId = 0;
     let running = false;
     let visible = true;

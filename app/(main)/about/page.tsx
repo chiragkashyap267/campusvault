@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Link from "next/link";
 import { BookOpen, Globe, Link2, ExternalLink, Code2, Cpu, Zap, Shield, Heart } from "lucide-react";
 import { CREATOR_LINKS, CREATOR_NAME, SITE_NAME } from "@/lib/constants";
@@ -25,10 +24,10 @@ const FEATURES = [
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen py-16 px-4">
-      <div className="max-w-4xl mx-auto space-y-20">
+    <div className="page-container min-h-screen">
+      <div className="max-w-4xl mx-auto page-stack">
         {/* Hero */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
+        <div className="text-center">
           <div className="inline-flex items-center gap-2 badge badge-cyan mb-6">
             <BookOpen className="w-3.5 h-3.5" />
             About CampusVault GBPIET
@@ -41,19 +40,15 @@ export default function AboutPage() {
             CampusVault is a centralized academic collaboration platform that makes sharing and
             discovering study materials effortless for all MCA and B.Tech students.
           </p>
-        </motion.div>
+        </div>
 
         {/* Features */}
         <section>
           <h2 className="font-display text-2xl font-bold text-white text-center mb-8">Why CampusVault?</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {FEATURES.map((f, i) => (
-              <motion.div
+              <div
                 key={f.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-                viewport={{ once: true }}
                 className="glass-card p-6"
               >
                 <div className="w-10 h-10 rounded-xl bg-cyan-400/10 text-cyan-400 flex items-center justify-center mb-4">
@@ -61,7 +56,7 @@ export default function AboutPage() {
                 </div>
                 <h3 className="font-semibold text-white mb-1">{f.title}</h3>
                 <p className="text-slate-400 text-sm">{f.desc}</p>
-              </motion.div>
+              </div>
             ))}
           </div>
         </section>
@@ -71,29 +66,20 @@ export default function AboutPage() {
           <h2 className="font-display text-2xl font-bold text-white text-center mb-8">Tech Stack</h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {TECH_STACK.map((t, i) => (
-              <motion.div
+              <div
                 key={t.name}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ delay: i * 0.05 }}
-                viewport={{ once: true }}
                 className="glass-card p-4 text-center"
               >
                 <span className="text-2xl mb-2 block">{t.icon}</span>
                 <p className="text-sm font-semibold text-white">{t.name}</p>
                 <p className="text-xs text-slate-500">{t.desc}</p>
-              </motion.div>
+              </div>
             ))}
           </div>
         </section>
 
         {/* Creator */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="glass-card p-8 sm:p-10 text-center relative overflow-hidden"
-        >
+        <section className="glass-card p-8 sm:p-10 text-center relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/5 via-transparent to-purple-500/5" />
           <div className="relative">
             <div className="relative w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border-2 border-cyan-400/40 shadow-lg shadow-cyan-400/10 bg-gradient-to-br from-cyan-400 to-purple-500">
@@ -128,7 +114,7 @@ export default function AboutPage() {
               Made with <Heart className="w-3 h-3 text-red-400 fill-red-400" /> for GBPIET students
             </p>
           </div>
-        </motion.section>
+        </section>
 
         {/* CTA */}
         <div className="text-center">

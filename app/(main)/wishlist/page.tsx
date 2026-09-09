@@ -5,7 +5,6 @@ import { useWishlist } from "@/lib/hooks/useWishlist";
 import { ResourceCard, ResourceCardSkeleton } from "@/components/resources/ResourceCard";
 import { BookOpen, BookmarkPlus, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Resource } from "@/lib/types";
 import { getResourceById } from "@/lib/firebase/firestore";
@@ -51,7 +50,7 @@ export default function WishlistPage() {
   }
 
   return (
-    <div className="page-container pt-24">
+    <div className="page-container">
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-display font-bold text-white flex items-center gap-3">
@@ -75,11 +74,7 @@ export default function WishlistPage() {
           ))}
         </div>
       ) : (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="glass-card p-12 text-center max-w-lg mx-auto mt-12"
-        >
+        <div className="glass-card p-12 text-center max-w-lg mx-auto mt-12">
           <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center mx-auto mb-4 border border-white/10">
             <BookOpen className="w-8 h-8 text-slate-500" />
           </div>
@@ -93,7 +88,7 @@ export default function WishlistPage() {
           >
             Explore Resources <ArrowRight className="w-4 h-4" />
           </Link>
-        </motion.div>
+        </div>
       )}
     </div>
   );

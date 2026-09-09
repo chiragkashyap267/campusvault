@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Link from "next/link";
 import { Trophy, Crown, ArrowRight, Upload, Flame } from "lucide-react";
 import Image from "next/image";
@@ -46,10 +45,7 @@ export function LeaderboardPreviewSection() {
 
       <div className="container-app relative z-10">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-          className="section-head text-center"
-        >
+        <div className="section-head text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-yellow-400/10 border border-yellow-400/20 text-yellow-400 text-xs font-semibold mb-4">
             <Trophy className="w-3.5 h-3.5" /> Hall of Fame
           </div>
@@ -59,7 +55,7 @@ export function LeaderboardPreviewSection() {
           <p className="section-subtitle mx-auto">
             Students who shared the most. Upload more — could be you next!
           </p>
-        </motion.div>
+        </div>
 
         {isLoading ? (
           <div className="flex flex-col items-center gap-6">
@@ -84,17 +80,12 @@ export function LeaderboardPreviewSection() {
 
             {/* Podium — only if we have at least 2 */}
             {top3.length >= 2 && (
-              <motion.div
-                initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}
-                className="flex items-end justify-center gap-3 sm:gap-6 w-full max-w-xl"
-              >
+              <div className="flex items-end justify-center gap-3 sm:gap-6 w-full max-w-xl">
                 {podiumOrder.map((user, idx) => {
                   const cfg = PODIUM_CONFIG[idx];
                   return (
-                    <motion.div
+                    <div
                       key={user.uid}
-                      whileHover={{ y: -6, scale: 1.02 }}
-                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
                       className={`flex-1 flex flex-col items-center text-center rounded-2xl px-3 py-5 border transition-all cursor-default bg-gradient-to-b ${cfg.bg} border-white/10 ring-1 ${cfg.ring} ${cfg.glow} ${cfg.offset}`}
                     >
                       {cfg.rank === 1 && <Crown className="w-5 h-5 text-yellow-400 mb-2 animate-bounce" style={{ animationDuration: "2s" }} />}
@@ -108,19 +99,18 @@ export function LeaderboardPreviewSection() {
                       </div>
                       {/* Platform bar */}
                       <div className={`w-full mt-3 rounded-lg ${cfg.barH} bg-gradient-to-t ${cfg.bg} border border-white/5`} />
-                    </motion.div>
+                    </div>
                   );
                 })}
-              </motion.div>
+              </div>
             )}
 
             {/* 4th & 5th */}
             {restList.length > 0 && (
               <div className="w-full max-w-lg space-y-3">
                 {restList.map((user, i) => (
-                  <motion.div
+                  <div
                     key={user.uid}
-                    initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}
                     className="glass-card flex items-center gap-4 p-4 hover:border-white/15 transition-all"
                   >
                     <div className="w-8 h-8 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center font-bold text-sm text-slate-500 shrink-0">
@@ -135,14 +125,13 @@ export function LeaderboardPreviewSection() {
                       <p className="text-[10px] text-slate-500">Uploads</p>
                       <p className="text-sm font-bold text-cyan-400">{user.uploadCount ?? 0}</p>
                     </div>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             )}
 
             {/* CTA */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+            <div
               className="w-full max-w-lg glass-card p-6 text-center border-cyan-400/10 relative overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/5 via-blue-500/5 to-purple-500/5 pointer-events-none" />
@@ -164,7 +153,7 @@ export function LeaderboardPreviewSection() {
                   </Link>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
           </div>
         )}

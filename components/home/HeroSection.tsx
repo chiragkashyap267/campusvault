@@ -42,26 +42,16 @@ export function HeroSection() {
 
       <div className="container-app relative z-10 text-center py-12 sm:py-16">
         {/* Announcement badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45 }}
-          className="flex justify-center mb-5"
-        >
+        <div className="flex justify-center mb-5">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-cyan-400/20 text-sm text-cyan-400">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Academic Resource Hub for GBPIET</span>
             <Zap className="w-3.5 h-3.5" />
           </div>
-        </motion.div>
+        </div>
 
         {/* Main heading */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.08 }}
-          className="mb-8"
-        >
+        <div className="mb-8">
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold text-white leading-tight mb-2">
             One Vault for{" "}
             <br className="hidden sm:block" />
@@ -70,25 +60,15 @@ export function HeroSection() {
           <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold leading-tight">
             <AnimatedWord words={WORDS} />
           </div>
-        </motion.div>
+        </div>
 
         {/* Tagline */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: 0.22 }}
-          className="text-base sm:text-lg text-slate-400 max-w-xl mx-auto mb-8 leading-relaxed"
-        >
+        <p className="text-base sm:text-lg text-slate-400 max-w-xl mx-auto mb-8 leading-relaxed">
           {SITE_TAGLINE} — Share notes, access PYQs, collaborate with your batchmates, all in one premium platform.
-        </motion.p>
+        </p>
 
         {/* CTA Buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: 0.3 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-10"
-        >
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-10">
           <Link
             href="/resources"
             className="group flex items-center gap-2 btn-primary px-8 py-3.5 rounded-xl text-base font-semibold w-full sm:w-auto justify-center"
@@ -106,39 +86,29 @@ export function HeroSection() {
               Join & Upload
             </Link>
           )}
-        </motion.div>
+        </div>
 
         {/* Glassmorphism Preview Cards */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.35 }}
-          className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-w-2xl mx-auto"
-        >
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-w-2xl mx-auto">
           {PREVIEW_CARDS.map((card, i) => (
-            <motion.div
+            <div
               key={card.label}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.45 + Math.min(i, 5) * 0.05 }}
               className="glass-card text-left group cursor-pointer relative overflow-hidden flex flex-col justify-between"
             >
               <div className="p-4 pb-4">
                 <div className="mb-3">
-                  <motion.div
-                    whileHover={{ scale: 1.15, rotate: [-5, 5, -5, 0] }}
-                    transition={{ duration: 0.3 }}
+                  <div
                     className={`inline-flex p-2 rounded-xl bg-white/5 border border-white/10 ${card.color}`}
                   >
                     <card.icon className="w-5 h-5" />
-                  </motion.div>
+                  </div>
                 </div>
                 <p className="text-xs font-semibold text-white">{card.label}</p>
                 <p className="text-xs text-slate-500 mt-0.5">{card.count}</p>
               </div>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       </div>
 
       {/* Bottom fade */}

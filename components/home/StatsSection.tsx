@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import { useInView } from "framer-motion";
 import { FileText, Users, Download, Star } from "lucide-react";
 
 const STATS = [
@@ -39,12 +39,8 @@ export function StatsSection() {
       <div className="container-app">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
           {STATS.map((stat, i) => (
-            <motion.div
+            <div
               key={stat.label}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              viewport={{ once: true }}
               className="glass-card p-6 text-center group"
             >
               <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-cyan-400/10 text-cyan-400 mb-3 group-hover:bg-cyan-400/20 transition-all">
@@ -54,7 +50,7 @@ export function StatsSection() {
                 <Counter value={stat.value} suffix={stat.suffix} />
               </p>
               <p className="text-sm text-slate-500">{stat.label}</p>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

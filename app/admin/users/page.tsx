@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { useAuthStore } from "@/lib/store/authStore";
 import { redirect } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
@@ -28,10 +27,10 @@ export default function AdminUsersPage() {
 
   return (
     <div className="space-y-6">
-      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
+      <div>
         <h1 className="font-display text-2xl font-bold text-white mb-1">User Manager</h1>
         <p className="text-slate-400 text-sm">{users?.length ?? 0} registered users.</p>
-      </motion.div>
+      </div>
 
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
@@ -43,7 +42,10 @@ export default function AdminUsersPage() {
       ) : (
         <div className="space-y-2">
           {filtered.map((u) => (
-            <motion.div key={u.uid} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="glass-card p-4 flex items-center gap-3">
+            <div
+              key={u.uid}
+              className="glass-card p-4 flex items-center gap-3"
+            >
               {u.photoURL ? (
                 <Image src={u.photoURL} alt="" width={36} height={36} className="rounded-full border border-white/10 shrink-0" />
               ) : (
@@ -59,7 +61,7 @@ export default function AdminUsersPage() {
                 <p className="text-xs text-slate-500">{u.uploadCount ?? 0} uploads</p>
                 {u.createdAt && <p className="text-[10px] text-slate-700">{formatDate(u.createdAt)}</p>}
               </div>
-            </motion.div>
+            </div>
           ))}
           {filtered.length === 0 && (
             <div className="glass-card p-10 text-center text-slate-500 text-sm">No users found.</div>

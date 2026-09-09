@@ -23,10 +23,13 @@ export function QuickActions() {
 
   return (
     <div className="border-b border-white/[0.06] bg-[#070d1a]">
-      <div className="container-app py-3">
-        {/* Side by side and equal width on a phone, so neither button is a
-            stray full-width block when the other is hidden. */}
-        <div className="flex items-stretch gap-2.5">
+      <div className="container-app py-3 sm:py-3.5">
+        {/* Phone: side by side and equal width, so neither is a stray
+            full-width block when the other is hidden.
+            Desktop: centred. Left-aligned they sat under the logo and read as
+            a layout mistake rather than a deliberate action bar — the header
+            above and the hero below are both balanced across the full width. */}
+        <div className="flex items-stretch justify-center gap-2.5 sm:gap-3">
           {!onResources && (
             <Link
               href="/resources"

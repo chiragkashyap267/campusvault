@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, FileText, Sparkles, Upload } from "lucide-react";
 import { ResourceCard, ResourceCardSkeleton } from "@/components/resources/ResourceCard";
@@ -52,7 +51,7 @@ export function DocumentsSection() {
             ))}
           </div>
         ) : (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="glass-card p-12 text-center">
+          <div className="glass-card p-12 text-center">
             <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-4">
               <Sparkles className="w-6 h-6 text-slate-500" />
             </div>
@@ -64,7 +63,7 @@ export function DocumentsSection() {
               <Upload className="w-4 h-4" />
               Upload First Form
             </Link>
-          </motion.div>
+          </div>
         )}
       </div>
     </section>

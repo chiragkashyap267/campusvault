@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { Mail, MessageSquare, Send, Loader2, Globe, MapPin, CheckCircle, ExternalLink } from "lucide-react";
 import { CREATOR_LINKS, CREATOR_LINK_LABELS } from "@/lib/constants";
 import toast from "react-hot-toast";
@@ -30,21 +29,21 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen py-16 px-4">
-      <div className="max-w-4xl mx-auto space-y-12">
+    <div className="page-container min-h-screen">
+      <div className="max-w-4xl mx-auto page-stack">
         {/* Header */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
+        <div className="text-center">
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-white mb-3">
             Get in <span className="gradient-text">Touch</span>
           </h1>
           <p className="text-slate-400 max-w-lg mx-auto text-sm">
             Have feedback, want to report an issue, or want to become a contributor? Drop us a message!
           </p>
-        </motion.div>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Contact Form */}
-          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }} className="glass-card p-6">
+          <div className="glass-card p-6">
             <h2 className="font-display font-bold text-white mb-4 flex items-center gap-2">
               <MessageSquare className="w-5 h-5 text-cyan-400" /> Send Message
             </h2>
@@ -75,10 +74,10 @@ export default function ContactPage() {
                 </button>
               </form>
             )}
-          </motion.div>
+          </div>
 
           {/* Info + FAQ */}
-          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.15 }} className="space-y-4">
+          <div className="space-y-4">
             <div className="glass-card p-5 space-y-3">
               <h3 className="font-semibold text-white text-sm">Contact Info</h3>
               <div className="flex items-center gap-3 text-sm text-slate-400">
@@ -120,7 +119,7 @@ export default function ContactPage() {
                 ))}
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </div>
