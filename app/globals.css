@@ -67,7 +67,7 @@ html {
      what makes scrolling feel like it stutters and overshoots.
      Next.js 16 also stopped neutralising this during route changes, so leaving
      it on additionally makes every navigation animate instead of jumping. */
-  scroll-padding-top: 80px;
+  scroll-padding-top: 100px; /* marquee (28px) + navbar (64px) + breathing room */
 }
 
 /* Honour the OS "reduce motion" setting everywhere, including Lenis. */
@@ -1183,3 +1183,26 @@ html.light .resource-title { color: #0f172a; }
   -ms-overflow-style: none;
 }
 .no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* ─── Tools Marquee ─────────────────────────────────────────── */
+@keyframes tools-scroll {
+  0%   { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+
+.tools-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: tools-scroll 60s linear infinite;
+  will-change: transform;
+}
+
+.tools-marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tools-marquee-track {
+    animation: none;
+  }
+}

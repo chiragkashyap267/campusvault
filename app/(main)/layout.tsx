@@ -2,15 +2,19 @@ import { Navbar } from "@/components/layout/Navbar";
 import { QuickActions } from "@/components/layout/QuickActions";
 import { Footer } from "@/components/layout/Footer";
 import { NewsletterPopup } from "@/components/shared/NewsletterPopup";
+import { ToolsMarquee } from "@/components/layout/ToolsMarquee";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col">
+      {/* Tools marquee banner — fixed at the very top (z-[60]) */}
+      <div className="fixed top-0 left-0 right-0 z-[60]">
+        <ToolsMarquee />
+      </div>
+      {/* Navbar is fixed at top-[28px] (marquee height) — see Navbar.tsx */}
       <Navbar />
-      {/* Exactly the navbar's height (h-16). It was pt-24/md:pt-28, which
-          left 32-48px of dead space under the nav on every single page.
-          Sections own their own breathing room via the .section scale. */}
-      <main className="flex-1 pt-16">
+      {/* pt = marquee (28px) + navbar (64px) = 92px */}
+      <main className="flex-1 pt-[92px]">
         <QuickActions />
         {children}
       </main>
@@ -19,3 +23,4 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     </div>
   );
 }
+
