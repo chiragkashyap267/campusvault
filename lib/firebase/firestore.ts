@@ -95,6 +95,46 @@ export async function isAdmin(uid: string): Promise<boolean> {
   }
 }
 
+/**
+ * Every uid currently holding admin.
+ *
+ * Only an admin can read the whole collection — the rules let anyone else read
+ * only their own doc — so this is for the admin panel, not general use.
+ */
+export async function getAdminUids(): Promise<string[]> {
+  const snap = await getDocs(collection(db, "admins"));
+  return snap.docs.map((d) => d.id);
+}
+
+/**
+ * Grant or revoke admin access.
+ *
+ * Writes both of the places the system reads. `admins/{uid}` is what the app's
+ * own isAdmin() check looks at; `users/{uid}.role` is the other branch the
+ * Firestore rules accept. They were free to drift apart before, which would
+ * have meant someone counting as an admin to the rules but not to the UI, or
+ * the reverse. Set together, they cannot.
+ *
+ * Refuses to demote the caller: an admin who removes their own access has no
+ * way back in through the app, only through the Firebase console.
+ */
+export async function setUserAdmin(uid: string, makeAdmin: boolean, actingUid: string) {
+  if (!makeAdmin && uid === actingUid) {
+    throw new Error("You can't remove your own admin access.");
+  }
+
+  if (makeAdmin) {
+    await setDoc(doc(db, "admins", uid), {
+      grantedAt: serverTimestamp(),
+      grantedBy: actingUid,
+    });
+    await updateDoc(doc(db, "users", uid), { role: "admin" });
+  } else {
+    await deleteDoc(doc(db, "admins", uid));
+    await updateDoc(doc(db, "users", uid), { role: "user" });
+  }
+}
+
 // ─── Resources ────────────────────────────────────────────────
 export async function getResources(
   filters: ResourceFilters = {},

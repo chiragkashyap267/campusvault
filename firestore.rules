@@ -11,7 +11,9 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == uid;
     }
 
-    // Checks the users/{uid}.role field (your existing role system)
+    // Checks the users/{uid}.role field (your existing role system).
+    // Safe only because the rule on /users below stops anyone but an admin
+    // from setting this field — see the note there.
     function hasRole(role) {
       return isSignedIn() &&
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == role;
@@ -21,6 +23,11 @@ service cloud.firestore {
     function isAdmin() {
       return hasRole('admin') ||
         (isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid)));
+    }
+
+    // Missing role means an ordinary user; older docs predate the field.
+    function roleOf(data) {
+      return 'role' in data ? data.role : 'user';
     }
 
     // ── Admins collection ─────────────────────────────────────────────────────
@@ -41,9 +48,28 @@ service cloud.firestore {
     }
 
     // ── Users ─────────────────────────────────────────────────────────────────
+    // `role` is deliberately not self-writable.
+    //
+    // This was `allow write: if isOwner(userId) || isAdmin()`, while isAdmin()
+    // above trusts users/{uid}.role. Together those meant any signed-in
+    // student could write {role: "admin"} to their own profile from the
+    // browser console and become a full admin — able to approve and delete any
+    // upload, read the subscriber list, send blasts, and appoint other admins.
+    // The app's own UI check reads the `admins` collection so nothing would
+    // have looked different, but every rule in this file would have let them
+    // through.
+    //
+    // An owner may still edit their own profile; they just cannot change the
+    // one field that grants power. On an update `request.resource.data` is the
+    // whole document after the merge, so an edit that does not mention `role`
+    // still compares equal and passes.
     match /users/{userId} {
       allow read: if true;
-      allow write: if isOwner(userId) || isAdmin();
+      allow create: if isAdmin() ||
+        (isOwner(userId) && roleOf(request.resource.data) == 'user');
+      allow update: if isAdmin() ||
+        (isOwner(userId) && roleOf(request.resource.data) == roleOf(resource.data));
+      allow delete: if isOwner(userId) || isAdmin();
     }
 
     // ── Subscribers (newsletter sign-ups) ─────────────────────────────────────
