@@ -28,7 +28,13 @@ export default function AdminUsersPage() {
     enabled: isAdmin,
   });
 
-  const admins = new Set(adminUids ?? []);
+  // Admin means either source, the same as isAdmin() and the Firestore rules.
+  // Reading only the collection here would show someone promoted via
+  // `role: "admin"` as an ordinary user, and offer to "Make admin" an account
+  // that already is one.
+  const adminUidSet = new Set(adminUids ?? []);
+  const isUserAdmin = (u: { uid: string; role?: string }) =>
+    adminUidSet.has(u.uid) || u.role === "admin";
 
   const toggleAdmin = useMutation({
     mutationFn: ({ uid, makeAdmin }: { uid: string; makeAdmin: boolean }) =>
@@ -41,6 +47,8 @@ export default function AdminUsersPage() {
     onError: (err: Error) => toast.error(err.message || "Could not change admin access"),
   });
 
+  const adminCount = (users ?? []).filter(isUserAdmin).length;
+
   const [search, setSearch] = useState("");
 
   const filtered = users?.filter((u) =>
@@ -50,7 +58,7 @@ export default function AdminUsersPage() {
 
   // Admins first, so the people with access are visible without searching.
   const sorted = [...filtered].sort((a, b) => {
-    const diff = Number(admins.has(b.uid)) - Number(admins.has(a.uid));
+    const diff = Number(isUserAdmin(b)) - Number(isUserAdmin(a));
     return diff !== 0 ? diff : (a.displayName || a.email || "").localeCompare(b.displayName || b.email || "");
   });
 
@@ -67,7 +75,7 @@ export default function AdminUsersPage() {
       <div>
         <h1 className="font-display text-2xl font-bold text-white mb-1">User Manager</h1>
         <p className="text-slate-400 text-sm">
-          {users?.length ?? 0} registered users · {admins.size} admin{admins.size === 1 ? "" : "s"}.
+          {users?.length ?? 0} registered users · {adminCount} admin{adminCount === 1 ? "" : "s"}.
         </p>
       </div>
 
@@ -81,7 +89,7 @@ export default function AdminUsersPage() {
       ) : (
         <div className="space-y-2">
           {sorted.map((u) => {
-            const userIsAdmin = admins.has(u.uid);
+            const userIsAdmin = isUserAdmin(u);
             const isSelf = u.uid === user?.uid;
             const pending = toggleAdmin.isPending && toggleAdmin.variables?.uid === u.uid;
 

@@ -85,14 +85,30 @@ export async function updateUserProfile(uid: string, data: Partial<User>) {
   await updateDoc(doc(db, "users", uid), { ...data });
 }
 
+/**
+ * Is this account an admin?
+ *
+ * Checks both places, because firestore.rules accepts both and this did not.
+ * Setting `role: "admin"` on a user in the Firebase console — the obvious
+ * thing to do, and what the rules call an admin — granted every permission at
+ * the database level while this function still returned false, so the admin
+ * panel stayed hidden and the person looked locked out of an account that
+ * already had full access. One definition now, matching the rules.
+ *
+ * Each read is caught on its own: the two have different permissions, and a
+ * denial on one must not mask a positive from the other.
+ */
 export async function isAdmin(uid: string): Promise<boolean> {
-  try {
-    const snap = await getDoc(doc(db, "admins", uid));
-    return snap.exists();
-  } catch {
-    // Firestore rules may deny read access for non-admins — that's fine, just return false
-    return false;
-  }
+  const [inAdminsCollection, hasAdminRole] = await Promise.all([
+    getDoc(doc(db, "admins", uid))
+      .then((snap) => snap.exists())
+      .catch(() => false),
+    getDoc(doc(db, "users", uid))
+      .then((snap) => snap.data()?.role === "admin")
+      .catch(() => false),
+  ]);
+
+  return inAdminsCollection || hasAdminRole;
 }
 
 /**
