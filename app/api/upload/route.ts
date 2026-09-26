@@ -12,14 +12,14 @@ const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 /**
  * Upload profiles.
  *
- * A Campus Moments photo and a 50MB lab manual have nothing in common, so they
+ * A Campus Moments photo and a 25MB lab manual have nothing in common, so they
  * do not share limits or a destination folder. Signing a moments upload with
  * the resource profile would let a photo post carry a 50MB zip.
  */
 const PROFILES = {
   resource: {
     folder: "campusvault/resources",
-    maxSize: 50 * 1024 * 1024,
+    maxSize: 25 * 1024 * 1024,
     allowed: [
       "application/pdf",
       ...IMAGE_TYPES,

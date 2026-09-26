@@ -113,7 +113,7 @@ export default function UploadPage() {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     maxFiles: 1,
-    maxSize: 50 * 1024 * 1024,
+    maxSize: 25 * 1024 * 1024,
     accept: {
       "application/pdf": [".pdf"],
       "image/*": [".jpg", ".jpeg", ".png", ".webp"],
