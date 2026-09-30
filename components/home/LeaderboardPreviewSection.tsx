@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { Trophy, Crown, ArrowRight, Upload, Flame } from "lucide-react";
+import { Trophy, Crown, ArrowRight, Upload, Flame, FileText } from "lucide-react";
 import Image from "next/image";
 import { useQuery } from "@tanstack/react-query";
-import { getLeaderboard } from "@/lib/firebase/firestore";
+import { getLeaderboard, getLatestUploadsByUsers } from "@/lib/firebase/firestore";
+import { formatRelativeTime } from "@/lib/utils";
 
 const PODIUM_CONFIG = [
   { rank: 2, offset: "mt-6",  barH: "h-20", emoji: "🥈", glow: "shadow-[0_0_30px_rgba(148,163,184,0.2)]",  ring: "ring-slate-400/40", bg: "from-slate-400/20 to-slate-500/10",  text: "text-ink-soft" },
@@ -34,6 +35,17 @@ export function LeaderboardPreviewSection() {
   });
 
   const top3 = leaders.slice(0, 3);
+  const topUids = top3.map((u) => u.uid);
+
+  // What the podium has actually contributed lately. A rank with no evidence
+  // behind it is just a number; the paper they added is the thing a student
+  // can open.
+  const { data: latestUploads = {} } = useQuery({
+    queryKey: ["leaderboard-latest", topUids],
+    queryFn: () => getLatestUploadsByUsers(topUids),
+    enabled: topUids.length > 0,
+    staleTime: 5 * 60 * 1000,
+  });
   // Podium order: 2nd | 1st | 3rd
   const podiumOrder = top3.length >= 3 ? [top3[1], top3[0], top3[2]] : top3;
   const restList = leaders.slice(3, 5);
@@ -102,6 +114,49 @@ export function LeaderboardPreviewSection() {
                     </div>
                   );
                 })}
+              </div>
+            )}
+
+            {/* What the podium uploaded most recently. Rendered only for the
+                people who actually have a recent upload, so this never claims
+                activity that is not there. */}
+            {top3.some((u) => latestUploads[u.uid]) && (
+              <div className="w-full max-w-lg">
+                <p className="text-[11px] font-semibold uppercase tracking-widest text-muted mb-3 text-center">
+                  Latest from the podium
+                </p>
+                <div className="space-y-2">
+                  {top3.map((user) => {
+                    const upload = latestUploads[user.uid];
+                    if (!upload) return null;
+                    return (
+                      <Link
+                        key={user.uid}
+                        href={`/resources/${upload.id}`}
+                        className="glass-card flex items-center gap-3 p-3 hover:border-brand/40 transition-colors group"
+                      >
+                        <Avatar name={user.displayName} photo={user.photoURL} size={32} />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs text-muted truncate">
+                            <span className="font-semibold text-ink">
+                              {user.displayName?.split(" ")[0] || "A student"}
+                            </span>{" "}
+                            uploaded
+                          </p>
+                          <p className="text-sm font-semibold text-ink truncate group-hover:text-brand transition-colors">
+                            {upload.title}
+                          </p>
+                        </div>
+                        <div className="shrink-0 text-right">
+                          <FileText className="w-3.5 h-3.5 text-brand ml-auto mb-1" />
+                          <p className="text-[10px] text-muted whitespace-nowrap">
+                            {formatRelativeTime(upload.createdAt)}
+                          </p>
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
               </div>
             )}
 

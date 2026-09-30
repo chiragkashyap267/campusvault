@@ -405,6 +405,45 @@ export async function getAllUsers(): Promise<User[]> {
 }
 
 // ─── Leaderboard ──────────────────────────────────────────────
+/**
+ * The most recent approved upload for each of the given users.
+ *
+ * One query, not one per person: it walks back through the newest approved
+ * resources and keeps the first hit per uid. Asking Firestore directly —
+ * `where uploadedBy == uid` alongside the status filter and a createdAt sort —
+ * would need a composite index that does not exist yet, for an answer this
+ * already has.
+ *
+ * Anyone whose latest upload is older than `pool` documents simply has no
+ * entry, which the caller renders as nothing rather than as a wrong claim.
+ */
+export async function getLatestUploadsByUsers(
+  uids: string[],
+  pool = 150
+): Promise<Record<string, Resource>> {
+  const wanted = uids.filter(Boolean);
+  if (wanted.length === 0) return {};
+
+  const q = query(
+    collection(db, "resources"),
+    where("status", "==", "approved"),
+    orderBy("createdAt", "desc"),
+    limit(pool)
+  );
+  const snap = await getDocs(q);
+
+  const latest: Record<string, Resource> = {};
+  for (const d of snap.docs) {
+    const resource = toResource(d);
+    const uid = resource.uploadedBy;
+    if (uid && wanted.includes(uid) && !latest[uid]) {
+      latest[uid] = resource;
+      if (Object.keys(latest).length === wanted.length) break;
+    }
+  }
+  return latest;
+}
+
 export async function getLeaderboard(count = 20): Promise<User[]> {
   const q = query(
     collection(db, "users"),
