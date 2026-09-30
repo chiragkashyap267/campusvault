@@ -121,11 +121,11 @@ function ResourcesContent() {
     !!(filters.type || filters.branch || filters.semester || filters.subject);
 
   return (
-    <div className="min-h-screen bg-[#030712] pb-20">
+    <div className="min-h-screen bg-white pb-20">
       <div className="container-app pt-8 sm:pt-10 lg:pt-12">
         {/* ── Header ── */}
         <div className="mb-6">
-          <h1 className="section-title text-white">Resource Library</h1>
+          <h1 className="section-title text-ink">Resource Library</h1>
           <p className="section-subtitle">
             Search by subject, code or paper type.
           </p>
@@ -134,7 +134,7 @@ function ResourcesContent() {
         {/* ── Search ── */}
         <div className="flex gap-2 mb-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none" />
             <input
               type="text"
               value={search}
@@ -147,7 +147,7 @@ function ResourcesContent() {
               <button
                 onClick={() => setSearch("")}
                 aria-label="Clear search"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-ink transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -196,7 +196,7 @@ function ResourcesContent() {
                 resetFilters();
                 setSearch("");
               }}
-              className="text-xs text-slate-500 hover:text-slate-300 transition-colors shrink-0 ml-1 underline underline-offset-2 whitespace-nowrap"
+              className="text-xs text-muted hover:text-ink-soft transition-colors shrink-0 ml-1 underline underline-offset-2 whitespace-nowrap"
             >
               Clear all
             </button>
@@ -234,12 +234,12 @@ function ResourcesContent() {
             onClick={() => setMobileFiltersOpen(false)}
           />
           <div
-            className="absolute left-0 top-0 bottom-0 w-72 glass border-r border-white/10 p-4 overflow-y-auto"
+            className="absolute left-0 top-0 bottom-0 w-72 glass border-r border-line p-4 overflow-y-auto"
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-white">Filters</h3>
+              <h3 className="font-semibold text-ink">Filters</h3>
               <button onClick={() => setMobileFiltersOpen(false)} aria-label="Close filters">
-                <X className="w-5 h-5 text-slate-400" />
+                <X className="w-5 h-5 text-muted" />
               </button>
             </div>
             <ResourceFiltersPanel

@@ -35,18 +35,18 @@ export default function AdminPendingPage() {
       <div>
         <div className="flex items-center gap-2 mb-1">
           <Clock className="w-5 h-5 text-yellow-400" />
-          <h1 className="font-display text-2xl font-bold text-white">Pending Uploads</h1>
+          <h1 className="font-display text-2xl font-bold text-ink">Pending Uploads</h1>
         </div>
-        <p className="text-slate-400 text-sm">{pending?.length ?? 0} resources waiting for review.</p>
+        <p className="text-muted text-sm">{pending?.length ?? 0} resources waiting for review.</p>
       </div>
 
       {isLoading ? (
-        <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 text-cyan-400 animate-spin" /></div>
+        <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 text-brand animate-spin" /></div>
       ) : pending?.length === 0 ? (
         <div className="glass-card p-12 text-center">
           <CheckCircle className="w-10 h-10 text-green-400 mx-auto mb-3" />
-          <p className="text-white font-semibold">All caught up!</p>
-          <p className="text-slate-500 text-sm">No pending uploads.</p>
+          <p className="text-ink font-semibold">All caught up!</p>
+          <p className="text-muted text-sm">No pending uploads.</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -65,9 +65,9 @@ export default function AdminPendingPage() {
                     <FileText className="w-5 h-5 text-yellow-400" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-white text-sm mb-1">{resource.title}</h3>
-                    <p className="text-xs text-slate-500 mb-2 line-clamp-2">{resource.description}</p>
-                    <div className="flex flex-wrap gap-2 text-xs text-slate-500">
+                    <h3 className="font-semibold text-ink text-sm mb-1">{resource.title}</h3>
+                    <p className="text-xs text-muted mb-2 line-clamp-2">{resource.description}</p>
+                    <div className="flex flex-wrap gap-2 text-xs text-muted">
                       <span className="badge badge-purple">{resource.branch.toUpperCase()}</span>
                       <span className="badge badge-cyan">{getResourceTypeLabel(resource.type)}</span>
                       <span>Sem {resource.semester}</span>

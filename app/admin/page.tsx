@@ -29,7 +29,7 @@ export default function AdminPage() {
 
   const stats = [
     { icon: <Clock className="w-5 h-5" />, label: "Pending Review", value: pending?.length ?? 0, color: "text-yellow-400", href: "/admin/pending" },
-    { icon: <FileText className="w-5 h-5" />, label: "Total Resources", value: allResources?.length ?? 0, color: "text-cyan-400", href: "/admin/resources" },
+    { icon: <FileText className="w-5 h-5" />, label: "Total Resources", value: allResources?.length ?? 0, color: "text-brand", href: "/admin/resources" },
     { icon: <Users className="w-5 h-5" />, label: "Total Users", value: allUsers?.length ?? 0, color: "text-blue-400", href: "/admin/users" },
     { icon: <Download className="w-5 h-5" />, label: "Total Downloads", value: totalDownloads, color: "text-green-400", href: "#" },
   ];
@@ -38,19 +38,19 @@ export default function AdminPage() {
     <div className="space-y-8">
       <div>
         <div className="flex items-center gap-2 mb-1">
-          <Shield className="w-5 h-5 text-cyan-400" />
-          <h1 className="font-display text-2xl font-bold text-white">Admin Overview</h1>
+          <Shield className="w-5 h-5 text-brand" />
+          <h1 className="font-display text-2xl font-bold text-ink">Admin Overview</h1>
         </div>
-        <p className="text-slate-400 text-sm">Manage uploads, users, and platform content.</p>
+        <p className="text-muted text-sm">Manage uploads, users, and platform content.</p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((s, i) => (
           <div key={s.label}>
-            <Link href={s.href} className="glass-card p-5 block text-center hover:border-cyan-400/20 transition-all">
+            <Link href={s.href} className="glass-card p-5 block text-center hover:border-brand/30 transition-all">
               <div className={`flex justify-center mb-2 ${s.color}`}>{s.icon}</div>
-              <p className="text-2xl font-bold text-white font-display">{s.value.toLocaleString()}</p>
-              <p className="text-xs text-slate-500 mt-0.5">{s.label}</p>
+              <p className="text-2xl font-bold text-ink font-display">{s.value.toLocaleString()}</p>
+              <p className="text-xs text-muted mt-0.5">{s.label}</p>
             </Link>
           </div>
         ))}

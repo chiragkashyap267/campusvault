@@ -14,8 +14,6 @@ import { NAV_LINKS, SITE_NAME } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
 import Image from "next/image";
-import { ThemeToggle } from "./ThemeToggle";
-import { useTheme } from "next-themes";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -26,8 +24,6 @@ export function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const { resolvedTheme } = useTheme();
-  const isLight = resolvedTheme === "light";
 
   useEffect(() => {
     // Lenis emits a scroll event every frame, so this handler runs ~60x/sec.
@@ -77,80 +73,60 @@ export function Navbar() {
   };
 
   // Theme-adaptive class helpers
-  const navLinkBase = "px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200";
-  const navLinkActive = isLight
-    ? "text-blue-700 bg-blue-50 font-semibold"
-    : "text-cyan-400 bg-cyan-400/10";
-  const navLinkInactive = isLight
-    ? "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-    : "text-slate-400 hover:text-white hover:bg-white/5";
+  // The header is the one blue surface on the site, so everything sitting on
+  // it is white and the contrast rules invert: a link is emphasised by gaining
+  // opacity, not by darkening.
+  const navLinkBase = "px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200";
+  const navLinkActive = "text-white bg-white/20 font-semibold";
+  const navLinkInactive = "text-white/75 hover:text-white hover:bg-white/12";
 
-  const iconBtnClass = isLight
-    ? "p-2 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-all"
-    : "p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-all";
+  const iconBtnClass = "p-2 rounded-lg text-white/85 hover:text-white hover:bg-white/15 transition-colors";
 
-  const dropdownClass = isLight
-    ? "absolute right-0 mt-2 w-52 bg-white rounded-xl border border-slate-200 shadow-[0_8px_32px_rgba(15,23,42,0.12)] overflow-hidden"
-    : "absolute right-0 mt-2 w-52 glass rounded-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] overflow-hidden";
+  const dropdownClass = "absolute right-0 mt-2 w-52 bg-white rounded-xl border border-slate-200 shadow-[0_8px_32px_rgba(15,23,42,0.12)] overflow-hidden";
 
-  const dropdownHeaderClass = isLight
-    ? "p-3 border-b border-slate-100"
-    : "p-3 border-b border-white/10";
+  const dropdownHeaderClass = "p-3 border-b border-slate-100";
 
-  const dropdownNameClass = isLight
-    ? "text-sm font-semibold text-slate-900 truncate"
-    : "text-sm font-semibold text-white truncate";
+  const dropdownNameClass = "text-sm font-semibold text-slate-900 truncate";
 
-  const dropdownEmailClass = isLight
-    ? "text-xs text-slate-500 truncate"
-    : "text-xs text-slate-400 truncate";
+  const dropdownEmailClass = "text-xs text-slate-500 truncate";
 
   // Set like the reference wordmark — 800 with the tracking pulled in. A
   // logotype is the one place on a page that should be tighter than its text.
-  const logoTextClass = isLight
-    ? "font-display font-extrabold tracking-[-0.03em] text-base md:text-lg text-slate-900 group-hover:text-blue-700 transition-colors"
-    : "font-display font-extrabold tracking-[-0.03em] text-base md:text-lg text-white group-hover:text-cyan-400 transition-colors";
+  const logoTextClass = "font-display font-extrabold tracking-[-0.03em] text-base md:text-lg text-white transition-colors";
 
-  const logoBadgeClass = isLight ? "text-blue-600" : "text-cyan-400";
+  const logoBadgeClass = "text-sky-200";
 
-  const headerScrolledClass = isLight
-    ? "bg-white/90 border-b border-slate-200 shadow-[0_2px_16px_rgba(15,23,42,0.06)] backdrop-blur-md"
-    : "glass border-b border-white/10 shadow-[0_4px_32px_rgba(0,0,0,0.4)]";
+  // Solid at every scroll position. A header that is transparent at the top
+  // and blue further down changes the colour of the logo and every control
+  // under it as you scroll, which is exactly the flicker this revamp is
+  // meant to remove.
+  const headerBandClass = "bg-[linear-gradient(90deg,#0284c7,#0369a1)]";
 
-  const mobileDrawerClass = isLight
-    ? "fixed right-0 top-0 bottom-0 z-50 w-72 bg-white border-l border-slate-200 lg:hidden overflow-y-auto shadow-2xl"
-    : "fixed right-0 top-0 bottom-0 z-50 w-72 glass border-l border-white/10 lg:hidden overflow-y-auto";
+  const mobileDrawerClass = "fixed right-0 top-0 bottom-0 z-50 w-72 bg-white border-l border-slate-200 lg:hidden overflow-y-auto shadow-2xl";
 
-  const mobileHeaderClass = isLight
-    ? "p-4 flex items-center justify-between border-b border-slate-100"
-    : "p-4 flex items-center justify-between border-b border-white/10";
+  const mobileHeaderClass = "p-4 flex items-center justify-between border-b border-slate-100";
 
   const mobileMenuLinkBase = "block px-4 py-3 rounded-xl text-sm font-medium transition-all";
-  const mobileMenuLinkActive = isLight ? "text-blue-700 bg-blue-50 font-semibold" : "text-cyan-400 bg-cyan-400/10";
-  const mobileMenuLinkInactive = isLight
-    ? "text-slate-700 hover:text-slate-900 hover:bg-slate-100"
-    : "text-slate-300 hover:text-white hover:bg-white/5";
+  const mobileMenuLinkActive = "text-blue-700 bg-blue-50 font-semibold";
+  const mobileMenuLinkInactive = "text-slate-700 hover:text-slate-900 hover:bg-slate-100";
 
-  const searchFormClass = isLight
-    ? "bg-white rounded-2xl border border-slate-200 shadow-[0_8px_32px_rgba(15,23,42,0.12)] p-4"
-    : "glass rounded-2xl border border-white/10 p-4";
+  const searchFormClass = "bg-white rounded-2xl border border-slate-200 shadow-[0_8px_32px_rgba(15,23,42,0.12)] p-4";
 
-  const searchInputClass = isLight
-    ? "flex-1 bg-transparent text-slate-900 placeholder-slate-400 outline-none text-base"
-    : "flex-1 bg-transparent text-white placeholder-slate-500 outline-none text-base";
+  const searchInputClass = "flex-1 bg-transparent text-slate-900 placeholder-slate-400 outline-none text-base";
 
   return (
     <>
       <header
         className={cn(
-          "fixed top-[28px] left-0 right-0 z-50 transition-all duration-300",
-          scrolled ? headerScrolledClass : "bg-transparent"
+          "fixed top-[28px] left-0 right-0 z-50 transition-shadow duration-300",
+          headerBandClass,
+          scrolled && "shadow-[0_2px_18px_rgba(3,105,161,0.28)]"
         )}
       >
         <nav className="container-app flex items-center justify-between h-16 gap-2">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group min-w-0 shrink">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center shadow-[0_0_16px_rgba(56,189,248,0.35)] group-hover:shadow-[0_0_24px_rgba(56,189,248,0.55)] transition-all duration-300 shrink-0">
+            <div className="w-8 h-8 rounded-lg bg-white/18 flex items-center justify-center shrink-0">
               <BookOpen className="w-4 h-4 text-white" />
             </div>
             {/* "GBPIET" is dropped on a phone rather than letting the whole
@@ -189,12 +165,10 @@ export function Navbar() {
               <Search className="w-5 h-5" />
             </button>
 
-            <ThemeToggle />
-
             {/* Upload CTA */}
             <Link
               href="/upload"
-              className="hidden sm:flex items-center gap-1.5 btn-primary text-sm py-2 px-4 rounded-lg"
+              className="hidden sm:flex items-center gap-1.5 bg-white text-[#0369a1] hover:bg-sky-50 font-semibold text-sm py-2 px-4 rounded-lg transition-colors"
             >
               <Upload className="w-4 h-4" />
               <span>Upload</span>
@@ -207,7 +181,7 @@ export function Navbar() {
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
                   className={cn(
                     "flex items-center gap-2 p-1 rounded-full transition-all",
-                    isLight ? "hover:bg-slate-100" : "hover:bg-white/5"
+                    "hover:bg-slate-100"
                   )}
                 >
                   {user.photoURL ? (
@@ -241,12 +215,12 @@ export function Navbar() {
                         <p className={dropdownEmailClass}>{user.email}</p>
                       </div>
                       <div className="p-1">
-                        <MenuLink href="/dashboard" icon={<LayoutDashboard className="w-4 h-4" />} label="Dashboard" isLight={isLight} />
-                        <MenuLink href="/profile" icon={<User className="w-4 h-4" />} label="Profile" isLight={isLight} />
-                        <MenuLink href="/wishlist" icon={<BookmarkPlus className="w-4 h-4" />} label="Wishlist" isLight={isLight} />
-                        <MenuLink href="/upload" icon={<Upload className="w-4 h-4" />} label="Upload" isLight={isLight} />
+                        <MenuLink href="/dashboard" icon={<LayoutDashboard className="w-4 h-4" />} label="Dashboard" />
+                        <MenuLink href="/profile" icon={<User className="w-4 h-4" />} label="Profile" />
+                        <MenuLink href="/wishlist" icon={<BookmarkPlus className="w-4 h-4" />} label="Wishlist" />
+                        <MenuLink href="/upload" icon={<Upload className="w-4 h-4" />} label="Upload" />
                         {isAdmin && (
-                          <MenuLink href="/admin" icon={<Shield className="w-4 h-4" />} label="Admin Panel" isLight={isLight} className={isLight ? "text-blue-600 font-semibold" : "text-cyan-400"} />
+                          <MenuLink href="/admin" icon={<Shield className="w-4 h-4" />} label="Admin Panel" className={"text-blue-600 font-semibold"} />
                         )}
                         <button
                           onClick={handleSignOut}
@@ -263,10 +237,7 @@ export function Navbar() {
             ) : (
               <Link
                 href="/login"
-                className={cn(
-                  "btn-ghost text-sm py-2 px-4 rounded-lg",
-                  isLight && "border-slate-300 text-slate-700 hover:text-slate-900 hover:border-blue-400"
-                )}
+                className="text-sm font-semibold py-2 px-4 rounded-lg bg-white/15 text-white hover:bg-white/25 transition-colors"
               >
                 Login
               </Link>
@@ -295,7 +266,7 @@ export function Navbar() {
               onClick={() => setMobileOpen(false)}
               className={cn(
                 "fixed inset-0 z-40 backdrop-blur-sm lg:hidden",
-                isLight ? "bg-slate-900/30" : "bg-black/60"
+                "bg-slate-900/30"
               )}
             />
             <motion.div
@@ -306,7 +277,7 @@ export function Navbar() {
               className={mobileDrawerClass}
             >
               <div className={mobileHeaderClass}>
-                <span className={isLight ? "font-display font-bold text-slate-900" : "font-display font-bold text-white"}>Menu</span>
+                <span className={"font-display font-bold text-slate-900"}>Menu</span>
                 <button
                   onClick={() => setMobileOpen(false)}
                   className={iconBtnClass}
@@ -316,7 +287,7 @@ export function Navbar() {
               </div>
 
               {user && (
-                <div className={cn("p-4 flex items-center gap-3", isLight ? "border-b border-slate-100" : "border-b border-white/10")}>
+                <div className={cn("p-4 flex items-center gap-3", "border-b border-slate-100")}>
                   {user.photoURL ? (
                     <Image src={user.photoURL} alt="" width={40} height={40} className="rounded-full border border-blue-400/30" />
                   ) : (
@@ -325,8 +296,8 @@ export function Navbar() {
                     </div>
                   )}
                   <div>
-                    <p className={isLight ? "text-sm font-semibold text-slate-900" : "text-sm font-semibold text-white"}>{user.displayName}</p>
-                    <p className={isLight ? "text-xs text-slate-500" : "text-xs text-slate-400"}>{user.email}</p>
+                    <p className={"text-sm font-semibold text-slate-900"}>{user.displayName}</p>
+                    <p className={"text-xs text-slate-500"}>{user.email}</p>
                   </div>
                 </div>
               )}
@@ -350,11 +321,11 @@ export function Navbar() {
                     <Link href="/profile" className={cn(mobileMenuLinkBase, mobileMenuLinkInactive)}>Profile</Link>
                     <Link href="/wishlist" className={cn(mobileMenuLinkBase, mobileMenuLinkInactive)}>Wishlist</Link>
                     {isAdmin && (
-                      <Link href="/admin" className={cn(mobileMenuLinkBase, isLight ? "text-blue-600 bg-blue-50 font-semibold" : "text-cyan-400 bg-cyan-400/5 hover:bg-cyan-400/10")}>Admin Panel</Link>
+                      <Link href="/admin" className={cn(mobileMenuLinkBase, "text-blue-600 bg-blue-50 font-semibold")}>Admin Panel</Link>
                     )}
                     <button
                       onClick={handleSignOut}
-                      className={cn(mobileMenuLinkBase, "w-full text-left text-red-500", isLight ? "hover:bg-red-50" : "hover:bg-red-400/10")}
+                      className={cn(mobileMenuLinkBase, "w-full text-left text-red-500", "hover:bg-red-50")}
                     >
                       Sign Out
                     </button>
@@ -384,7 +355,7 @@ export function Navbar() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSearchOpen(false)}
-              className={cn("fixed inset-0 z-50 backdrop-blur-md", isLight ? "bg-slate-900/30" : "bg-black/70")}
+              className={cn("fixed inset-0 z-50 backdrop-blur-md", "bg-slate-900/30")}
             />
             <motion.div
               initial={{ opacity: 0, y: -20, scale: 0.95 }}
@@ -394,7 +365,7 @@ export function Navbar() {
             >
               <form onSubmit={handleSearch} className={searchFormClass}>
                 <div className="flex items-center gap-3">
-                  <Search className={cn("w-5 h-5 shrink-0", isLight ? "text-blue-600" : "text-cyan-400")} />
+                  <Search className={cn("w-5 h-5 shrink-0", "text-blue-600")} />
                   <input
                     autoFocus
                     type="text"
@@ -415,9 +386,7 @@ export function Navbar() {
                       onClick={() => setSearchQuery(tag)}
                       className={cn(
                         "badge text-xs cursor-pointer transition-all",
-                        isLight
-                          ? "bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100"
-                          : "badge-cyan hover:bg-cyan-400/20"
+                        "bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100"
                       )}
                     >
                       {tag}
@@ -434,22 +403,19 @@ export function Navbar() {
 }
 
 function MenuLink({
-  href, icon, label, className, isLight,
+  href, icon, label, className,
 }: {
   href: string;
   icon: React.ReactNode;
   label: string;
   className?: string;
-  isLight: boolean;
 }) {
   return (
     <Link
       href={href}
       className={cn(
         "flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-all",
-        isLight
-          ? "text-slate-700 hover:text-slate-900 hover:bg-slate-100"
-          : "text-slate-300 hover:text-white hover:bg-white/5",
+        "text-slate-700 hover:text-slate-900 hover:bg-slate-100",
         className
       )}
     >

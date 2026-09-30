@@ -7,8 +7,8 @@ const STEPS = [
     icon: Search,
     title: "1. Search",
     desc: "Find PYQs, Notes, and Softwares using powerful filters and instant search.",
-    color: "text-cyan-400",
-    bg: "bg-cyan-500/10 border-cyan-500/20",
+    color: "text-brand",
+    bg: "bg-brand-soft border-brand/30",
   },
   {
     icon: Download,
@@ -35,7 +35,7 @@ const STEPS = [
 
 export function HowItWorksSection() {
   return (
-    <section className="section relative overflow-hidden bg-[#030712]">
+    <section className="section relative overflow-hidden bg-white">
       <div className="divider mb-0" />
       <div className="container-app relative z-10">
         <div className="section-head text-center">
@@ -57,8 +57,8 @@ export function HowItWorksSection() {
               <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6 border ${step.bg} ${step.color} relative z-10 group-hover:scale-110 transition-transform duration-300`}>
                 <step.icon className="w-8 h-8" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-2">{step.title}</h3>
-              <p className="text-sm text-slate-400 leading-relaxed">{step.desc}</p>
+              <h3 className="text-xl font-bold text-ink mb-2">{step.title}</h3>
+              <p className="text-sm text-muted leading-relaxed">{step.desc}</p>
             </div>
           ))}
         </div>

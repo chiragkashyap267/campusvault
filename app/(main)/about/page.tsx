@@ -32,11 +32,11 @@ export default function AboutPage() {
             <BookOpen className="w-3.5 h-3.5" />
             About CampusVault GBPIET
           </div>
-          <h1 className="font-display text-3xl sm:text-5xl font-bold text-white mb-4 leading-tight">
+          <h1 className="font-display text-3xl sm:text-5xl font-bold text-ink mb-4 leading-tight">
             Built for <span className="gradient-text">GBPIET Students</span>,
             <br />by a GBPIET Student
           </h1>
-          <p className="text-slate-400 max-w-xl mx-auto leading-relaxed">
+          <p className="text-muted max-w-xl mx-auto leading-relaxed">
             CampusVault is a centralized academic collaboration platform that makes sharing and
             discovering study materials effortless for all MCA and B.Tech students.
           </p>
@@ -44,18 +44,18 @@ export default function AboutPage() {
 
         {/* Features */}
         <section>
-          <h2 className="font-display text-2xl font-bold text-white text-center mb-8">Why CampusVault?</h2>
+          <h2 className="font-display text-2xl font-bold text-ink text-center mb-8">Why CampusVault?</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {FEATURES.map((f, i) => (
               <div
                 key={f.title}
                 className="glass-card p-6"
               >
-                <div className="w-10 h-10 rounded-xl bg-cyan-400/10 text-cyan-400 flex items-center justify-center mb-4">
+                <div className="w-10 h-10 rounded-xl bg-brand-soft text-brand flex items-center justify-center mb-4">
                   {f.icon}
                 </div>
-                <h3 className="font-semibold text-white mb-1">{f.title}</h3>
-                <p className="text-slate-400 text-sm">{f.desc}</p>
+                <h3 className="font-semibold text-ink mb-1">{f.title}</h3>
+                <p className="text-muted text-sm">{f.desc}</p>
               </div>
             ))}
           </div>
@@ -63,7 +63,7 @@ export default function AboutPage() {
 
         {/* Tech Stack */}
         <section>
-          <h2 className="font-display text-2xl font-bold text-white text-center mb-8">Tech Stack</h2>
+          <h2 className="font-display text-2xl font-bold text-ink text-center mb-8">Tech Stack</h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {TECH_STACK.map((t, i) => (
               <div
@@ -71,8 +71,8 @@ export default function AboutPage() {
                 className="glass-card p-4 text-center"
               >
                 <span className="text-2xl mb-2 block">{t.icon}</span>
-                <p className="text-sm font-semibold text-white">{t.name}</p>
-                <p className="text-xs text-slate-500">{t.desc}</p>
+                <p className="text-sm font-semibold text-ink">{t.name}</p>
+                <p className="text-xs text-muted">{t.desc}</p>
               </div>
             ))}
           </div>
@@ -80,18 +80,18 @@ export default function AboutPage() {
 
         {/* Creator */}
         <section className="glass-card p-8 sm:p-10 text-center relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/5 via-transparent to-purple-500/5" />
+          <div className="absolute inset-0 bg-gradient-to-br from-brand-soft via-transparent to-purple-500/5" />
           <div className="relative">
-            <div className="relative w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border-2 border-cyan-400/40 shadow-lg shadow-cyan-400/10 bg-gradient-to-br from-cyan-400 to-purple-500">
+            <div className="relative w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border-2 border-brand/30 shadow-lg shadow-cyan-400/10 bg-gradient-to-br from-cyan-400 to-purple-500">
               <img
                 src="/chirag.png"
                 alt={CREATOR_NAME}
                 className="w-full h-full object-cover"
               />
             </div>
-            <h2 className="font-display text-xl font-bold text-white mb-1">{CREATOR_NAME}</h2>
-            <p className="text-slate-400 text-sm mb-2">MCA Student · GBPIET, Pauri Garhwal</p>
-            <p className="text-slate-500 text-sm max-w-md mx-auto mb-6 leading-relaxed">
+            <h2 className="font-display text-xl font-bold text-ink mb-1">{CREATOR_NAME}</h2>
+            <p className="text-muted text-sm mb-2">MCA Student · GBPIET, Pauri Garhwal</p>
+            <p className="text-muted text-sm max-w-md mx-auto mb-6 leading-relaxed">
               Passionate about building tools that make student life easier. CampusVault was born
               from frustration with scattered resources and inaccessible study materials.
             </p>
@@ -105,12 +105,12 @@ export default function AboutPage() {
                    for screen readers and for the hover tooltip. */
                 <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer"
                   aria-label={s.label} title={s.label}
-                  className="p-3 glass rounded-xl text-slate-400 hover:text-cyan-400 hover:border-cyan-400/20 border border-white/10 transition-all">
+                  className="p-3 glass rounded-xl text-muted hover:text-brand hover:border-brand/30 border border-line transition-all">
                   {s.icon}
                 </a>
               ))}
             </div>
-            <p className="text-slate-600 text-xs flex items-center justify-center gap-1.5">
+            <p className="text-slate-400 text-xs flex items-center justify-center gap-1.5">
               Made with <Heart className="w-3 h-3 text-red-400 fill-red-400" /> for GBPIET students
             </p>
           </div>

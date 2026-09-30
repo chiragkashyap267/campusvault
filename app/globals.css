@@ -5,38 +5,43 @@
   --font-sans: var(--font-app), system-ui, sans-serif;
   --font-display: var(--font-app), system-ui, sans-serif;
 
-  /* ── Dark Mode Tokens (default) ── */
-  --color-background: #0a0f1e;
-  --color-surface: #111827;
-  --color-surface-2: #1e2940;
-  --color-border: rgba(56, 189, 248, 0.18);
-  --color-border-hover: rgba(56, 189, 248, 0.45);
+  /* ── Palette ────────────────────────────────────
+     White paper, sky blue, near-black ink. Three colours doing all the work:
+     the page is white so the papers are what you look at, blue marks the one
+     thing on screen you can act on, and ink is for reading.
 
-  --color-cyan: #38bdf8;
-  --color-cyan-dim: #0284c7;
-  --color-cyan-glow: rgba(56, 189, 248, 0.15);
-  --color-blue: #3b82f6;
-  --color-blue-glow: rgba(59, 130, 246, 0.15);
-  --color-purple: #8b5cf6;
+     There is no second theme now. The site was dark with a half-finished light
+     override bolted on that never activated, because nothing ever set the
+     class — 63 rules of dead CSS, removed. */
+  --color-background: #ffffff;
+  --color-surface: #ffffff;
+  --color-surface-2: #f4f8fc;
+  --color-border: #e3eaf3;
+  --color-border-hover: #b9dcf6;
 
-  --color-text-primary: #e2e8f0;
-  --color-text-secondary: #60a5fa;
-  --color-text-muted: #475569;
+  /* `cyan` and `blue` keep their names because around 120 call sites use them;
+     they point at the sky scale now instead of neon. */
+  --color-brand: #0284c7;
+  --color-brand-strong: #0369a1;
+  --color-brand-soft: #e9f4fe;
+  --color-cyan: #0284c7;
+  --color-cyan-dim: #0369a1;
+  --color-cyan-glow: rgba(2, 132, 199, 0.12);
+  --color-blue: #0369a1;
+  --color-blue-glow: rgba(3, 105, 161, 0.12);
+  --color-purple: #6d5ae0;
 
-  /* ── Light Mode Tokens ── */
-  --light-background: #ffffff;
-  --light-surface: #f8fafc;
-  --light-surface-2: #f1f5f9;
-  --light-border: rgba(30, 64, 175, 0.1);
-  --light-border-hover: rgba(30, 64, 175, 0.3);
-  --light-text-primary: #0f172a;
-  --light-text-secondary: #1d4ed8;
-  --light-text-muted: #64748b;
-  --light-cyan: #2563eb;
-  --light-blue: #1e40af;
-  --light-shadow-sm: 0 2px 12px rgba(30, 64, 175, 0.06);
-  --light-shadow: 0 8px 32px rgba(30, 64, 175, 0.08);
-  --light-shadow-lg: 0 20px 60px rgba(30, 64, 175, 0.1);
+  --color-text-primary: #0b1220;
+  --color-text-secondary: #0369a1;
+  --color-text-muted: #5b6b80;
+
+  /* Semantic aliases, so components say what a colour is for rather than
+     naming a shade. These are what the sweep across the .tsx files targets:
+     `text-ink`, `text-muted`, `border-line`, `bg-surface-2`, `text-brand`. */
+  --color-ink: #0b1220;
+  --color-ink-soft: #33415a;
+  --color-muted: #5b6b80;
+  --color-line: #e3eaf3;
 
   --color-success: #10b981;
   --color-warning: #f59e0b;
@@ -50,9 +55,10 @@
   --radius-2xl: 2rem;
 
   /* Shadows */
-  --shadow-cyan: 0 0 20px rgba(56, 189, 248, 0.25);
-  --shadow-cyan-lg: 0 0 60px rgba(56, 189, 248, 0.15);
-  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.25);
+  /* Soft and close to the surface. On white a heavy shadow reads as dirt. */
+  --shadow-cyan: 0 2px 10px rgba(2, 132, 199, 0.18);
+  --shadow-cyan-lg: 0 10px 30px rgba(2, 132, 199, 0.16);
+  --shadow-card: 0 1px 2px rgba(11, 18, 32, 0.04), 0 6px 20px rgba(11, 18, 32, 0.06);
 }
 
 /* ─── Global Base ─────────────────────────────────────────── */
@@ -94,54 +100,19 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* ─────────────────────────────────────────────────────────── */
-/*  LIGHT MODE — Full Premium Override                        */
-/* ─────────────────────────────────────────────────────────── */
-html.light {
-  --color-background:    #ffffff;
-  --color-surface:       #f8fafc;
-  --color-surface-2:     #f1f5f9;
-  --color-border:        rgba(30, 64, 175, 0.1);
-  --color-border-hover:  rgba(30, 64, 175, 0.28);
-  --color-text-primary:  #0f172a;
-  --color-text-secondary:#1d4ed8;
-  --color-text-muted:    #64748b;
-  --color-cyan:          #2563eb;
-  --color-blue:          #1e40af;
-  --shadow-card:         0 4px 24px rgba(30, 64, 175, 0.06);
-  --btn-text:            #ffffff;
-  color-scheme: light;
-}
-
-html.dark { color-scheme: dark; }
-
-/* ─── Body light background ───────────────────────────────── */
-html.light body {
-  background-color: #ffffff;
-  color: #0f172a;
-}
-
 /* ─── Custom Scrollbar ────────────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--color-background); }
 ::-webkit-scrollbar-thumb {
-  background: rgba(56, 189, 248, 0.3);
+  background: #c8d6e5;
   border-radius: 99px;
 }
-::-webkit-scrollbar-thumb:hover { background: rgba(56, 189, 248, 0.6); }
-
-html.light ::-webkit-scrollbar-track { background: #f1f5f9; }
-html.light ::-webkit-scrollbar-thumb { background: rgba(37, 99, 235, 0.3); }
-html.light ::-webkit-scrollbar-thumb:hover { background: rgba(37, 99, 235, 0.5); }
+::-webkit-scrollbar-thumb:hover { background: var(--color-brand); }
 
 /* ─── Selection ───────────────────────────────────────────── */
 ::selection {
-  background: rgba(56, 189, 248, 0.25);
-  color: #bae6fd;
-}
-html.light ::selection {
-  background: rgba(37, 99, 235, 0.15);
-  color: #1e40af;
+  background: rgba(2, 132, 199, 0.16);
+  color: var(--color-text-primary);
 }
 
 /* ─── Typography ──────────────────────────────────────────── */
@@ -158,31 +129,14 @@ h1, h2, h3, h4, h5, h6 {
 h1 { letter-spacing: -0.035em; }
 h2 { letter-spacing: -0.03em; }
 
-html.light h1,
-html.light h2,
-html.light h3,
-html.light h4,
-html.light h5,
-html.light h6 {
-  color: #0f172a;
-}
-
 /* ─────────────────────────────────────────────────────────── */
 /*  GLASSMORPHISM — Dark + Light                              */
 /* ─────────────────────────────────────────────────────────── */
 .glass {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-}
-
-html.light .glass {
-  background: rgba(255, 255, 255, 0.95) !important;
-  backdrop-filter: blur(24px) saturate(200%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(200%) !important;
-  border: 1px solid rgba(30, 64, 175, 0.1) !important;
-  box-shadow: 0 8px 40px rgba(30, 64, 175, 0.08) !important;
+  background: rgba(255, 255, 255, 0.86);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid var(--color-border);
 }
 
 .glass-card {
@@ -194,18 +148,15 @@ html.light .glass {
      jittery to scroll on a phone.
      `.glass` (navbar, drawers) keeps its blur, because those genuinely sit
      over page content where the effect is visible. */
-  background: rgba(255, 255, 255, 0.035);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--color-surface);
+  /* On white a card cannot be a lighter shade of the page, so the border and a
+     shadow sitting close to the surface do the separating instead. */
+  border: 1px solid var(--color-border);
   border-radius: var(--card-radius);
+  box-shadow: var(--shadow-card);
   /* Colour only. A card that moves on hover also moves under a finger on a
      phone, where `:hover` sticks after a tap. */
   transition: border-color 0.18s ease, background-color 0.18s ease;
-}
-
-html.light .glass-card {
-  background: #ffffff !important;
-  border: 1px solid rgba(30, 64, 175, 0.1) !important;
-  box-shadow: 0 4px 20px rgba(30, 64, 175, 0.06) !important;
 }
 
 /* Only where a real pointer exists. A touch device leaves `:hover` stuck on
@@ -213,14 +164,10 @@ html.light .glass-card {
    that looked selected and was not. */
 @media (hover: hover) {
   .glass-card:hover {
-    border-color: rgba(56, 189, 248, 0.3);
-    box-shadow: 0 0 30px rgba(56, 189, 248, 0.1), 0 8px 32px rgba(0, 0, 0, 0.2);
+    border-color: var(--color-border-hover);
+    box-shadow: 0 1px 2px rgba(11, 18, 32, 0.05), 0 10px 28px rgba(2, 132, 199, 0.12);
   }
 
-  html.light .glass-card:hover {
-    border-color: rgba(37, 99, 235, 0.3) !important;
-    box-shadow: 0 8px 40px rgba(30, 64, 175, 0.12) !important;
-  }
 }
 
 /* ─── Glow Effects ────────────────────────────────────────── */
@@ -228,12 +175,11 @@ html.light .glass-card {
   box-shadow: 0 0 20px rgba(56, 189, 248, 0.3), 0 0 60px rgba(56, 189, 248, 0.1);
 }
 
+/* No glow. A halo behind type only works when the page is darker than the
+   type; on white it just blurs the edges. Kept as a no-op so the ~6 call
+   sites do not need touching. */
 .glow-text {
-  text-shadow: 0 0 30px rgba(56, 189, 248, 0.4), 0 0 60px rgba(56, 189, 248, 0.2);
-}
-
-html.light .glow-text {
-  text-shadow: 0 2px 16px rgba(30, 64, 175, 0.25);
+  text-shadow: none;
 }
 
 .neon-border {
@@ -241,21 +187,9 @@ html.light .glow-text {
   box-shadow: 0 0 10px rgba(56, 189, 248, 0.15), inset 0 0 10px rgba(56, 189, 248, 0.05);
 }
 
-html.light .neon-border {
-  border: 1px solid rgba(37, 99, 235, 0.3);
-  box-shadow: 0 4px 20px rgba(30, 64, 175, 0.1);
-}
-
 /* ─── Gradient Text ───────────────────────────────────────── */
 .gradient-text {
-  background: linear-gradient(135deg, #38bdf8 0%, #3b82f6 50%, #8b5cf6 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-html.light .gradient-text {
-  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 50%, #7c3aed 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 50%, #0369a1 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -268,25 +202,15 @@ html.light .gradient-text {
 }
 
 .hero-gradient {
+  /* A single wash falling from the blue header into white, so the top of the
+     page reads as one piece. Three coloured orbs over near-black became three
+     grey smudges over white. */
   background:
-    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(56, 189, 248, 0.08) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 80% 50%, rgba(59, 130, 246, 0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 60% at 20% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 60%),
+    linear-gradient(180deg, #eaf5fd 0%, rgba(234, 245, 253, 0) 62%),
     var(--color-background);
 }
 
-html.light .hero-gradient {
-  background:
-    radial-gradient(ellipse 100% 70% at 50% -10%, rgba(37, 99, 235, 0.12) 0%, transparent 65%),
-    radial-gradient(ellipse 70% 50% at 90% 50%, rgba(99, 102, 241, 0.07) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 80% at 10% 90%, rgba(14, 165, 233, 0.06) 0%, transparent 60%),
-    #ffffff !important;
-}
-
 /* ─── Theme-adaptive hero fade ────────────────────────────── */
-.hero-bottom-fade {
-  background: linear-gradient(to top, var(--color-background) 0%, transparent 100%) !important;
-}
 
 /* ─── Animated Background ─────────────────────────────────── */
 
@@ -305,31 +229,21 @@ html.light .hero-gradient {
 /* ─── Skeleton Loader ─────────────────────────────────────── */
 .skeleton {
   background: linear-gradient(90deg,
-    rgba(255,255,255,0.04) 25%,
-    rgba(255,255,255,0.08) 50%,
-    rgba(255,255,255,0.04) 75%
+    #eef3f9 25%,
+    #f7fafd 50%,
+    #eef3f9 75%
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
   border-radius: 0.5rem;
 }
 
-html.light .skeleton {
-  background: linear-gradient(90deg,
-    #f1f5f9 25%,
-    #e2e8f0 50%,
-    #f1f5f9 75%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-}
-
 /* ─────────────────────────────────────────────────────────── */
 /*  BUTTONS                                                    */
 /* ─────────────────────────────────────────────────────────── */
 .btn-primary {
-  --btn-text: #000;
-  background: linear-gradient(135deg, var(--color-cyan), var(--color-blue));
+  --btn-text: #ffffff;
+  background: linear-gradient(135deg, var(--color-brand), var(--color-brand-strong));
   color: var(--btn-text);
   font-weight: 600;
   border-radius: 0.75rem;
@@ -345,58 +259,30 @@ html.light .skeleton {
   transform: translateY(-1px);
 }
 
-/* Light mode — solid royal blue gradient, white text */
-html.light .btn-primary {
-  --btn-text: #ffffff;
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-  color: #ffffff !important;
-  box-shadow: 0 4px 16px rgba(30, 64, 175, 0.3);
-}
-
-html.light .btn-primary:hover {
-  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
-  box-shadow: 0 8px 28px rgba(30, 64, 175, 0.4);
-  transform: translateY(-1px);
-}
-
 .btn-ghost {
-  background: rgba(255, 255, 255, 0.05);
+  background: #ffffff;
   color: var(--color-text-primary);
   font-weight: 500;
   border-radius: 0.75rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-border);
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .btn-ghost:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(0, 212, 255, 0.4);
-  color: var(--color-cyan);
-}
-
-html.light .btn-ghost {
-  background: #ffffff;
-  color: #1e40af;
-  border: 1px solid rgba(30, 64, 175, 0.2);
-  box-shadow: 0 2px 8px rgba(30, 64, 175, 0.06);
-}
-
-html.light .btn-ghost:hover {
-  background: #f0f7ff;
-  border-color: rgba(37, 99, 235, 0.4);
-  color: #1d4ed8;
-  box-shadow: 0 4px 16px rgba(30, 64, 175, 0.1);
+  background: var(--color-brand-soft);
+  border-color: var(--color-border-hover);
+  color: var(--color-brand-strong);
 }
 
 /* ─────────────────────────────────────────────────────────── */
 /*  INPUTS                                                     */
 /* ─────────────────────────────────────────────────────────── */
 .input-field {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #ffffff;
+  border: 1px solid var(--color-border);
   border-radius: 0.75rem;
-  color: #f1f5f9;
+  color: var(--color-text-primary);
   width: 100%;
   transition: all 0.3s ease;
   outline: none;
@@ -406,48 +292,20 @@ html.light .btn-ghost:hover {
 .input-field::placeholder { color: #475569; }
 
 .input-field:focus {
-  border-color: rgba(0, 212, 255, 0.5);
-  box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
-  background: rgba(255, 255, 255, 0.06);
-}
-
-/* Light mode inputs */
-html.light .input-field {
+  border-color: var(--color-brand);
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
   background: #ffffff;
-  border: 1.5px solid rgba(30, 64, 175, 0.15);
-  color: #0f172a;
-  box-shadow: 0 2px 8px rgba(30, 64, 175, 0.04);
-}
-
-html.light .input-field::placeholder {
-  color: #94a3b8;
-}
-
-html.light .input-field:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
-  background: #fafbff;
 }
 
 /* Select option fix */
 select option {
-  background-color: #0d1224 !important;
-  color: #f1f5f9 !important;
-}
-
-html.light select option {
-  background-color: #ffffff !important;
-  color: #0f172a !important;
+  background-color: #ffffff;
+  color: var(--color-text-primary);
 }
 
 select.input-field {
-  background-color: #0d1224 !important;
-  color: #f1f5f9 !important;
-}
-
-html.light select.input-field {
-  background-color: #ffffff !important;
-  color: #0f172a !important;
+  background-color: #ffffff;
+  color: var(--color-text-primary);
 }
 
 /* ─────────────────────────────────────────────────────────── */
@@ -462,21 +320,21 @@ html.light select.input-field {
 }
 
 .badge-cyan {
-  background: rgba(0, 212, 255, 0.15);
-  color: #00d4ff;
-  border: 1px solid rgba(0, 212, 255, 0.3);
+  background: var(--color-brand-soft);
+  color: var(--color-brand-strong);
+  border: 1px solid rgba(2, 132, 199, 0.25);
 }
 
 .badge-blue {
-  background: rgba(59, 130, 246, 0.15);
-  color: #60a5fa;
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  background: #eaf2ff;
+  color: #1d4ed8;
+  border: 1px solid rgba(29, 78, 216, 0.22);
 }
 
 .badge-green {
-  background: rgba(16, 185, 129, 0.15);
-  color: #10b981;
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  background: #e7f8f1;
+  color: #047857;
+  border: 1px solid rgba(4, 120, 87, 0.22);
 }
 
 .badge-yellow {
@@ -486,52 +344,15 @@ html.light select.input-field {
 }
 
 .badge-red {
-  background: rgba(239, 68, 68, 0.15);
-  color: #ef4444;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: #fdeceb;
+  color: #b91c1c;
+  border: 1px solid rgba(185, 28, 28, 0.22);
 }
 
 .badge-purple {
   background: rgba(139, 92, 246, 0.15);
   color: #8b5cf6;
   border: 1px solid rgba(139, 92, 246, 0.3);
-}
-
-/* Light mode badge overrides — keep them vibrant but readable */
-html.light .badge-cyan {
-  background: rgba(37, 99, 235, 0.08);
-  color: #1d4ed8;
-  border-color: rgba(37, 99, 235, 0.2);
-}
-
-html.light .badge-blue {
-  background: rgba(37, 99, 235, 0.08);
-  color: #1e40af;
-  border-color: rgba(37, 99, 235, 0.2);
-}
-
-html.light .badge-green {
-  background: rgba(5, 150, 105, 0.08);
-  color: #047857;
-  border-color: rgba(5, 150, 105, 0.2);
-}
-
-html.light .badge-purple {
-  background: rgba(109, 40, 217, 0.08);
-  color: #6d28d9;
-  border-color: rgba(109, 40, 217, 0.2);
-}
-
-html.light .badge-yellow {
-  background: rgba(180, 83, 9, 0.08);
-  color: #b45309;
-  border-color: rgba(180, 83, 9, 0.2);
-}
-
-html.light .badge-red {
-  background: rgba(185, 28, 28, 0.08);
-  color: #b91c1c;
-  border-color: rgba(185, 28, 28, 0.2);
 }
 
 /* ─── Section ─────────────────────────────────────────────── */
@@ -612,11 +433,8 @@ html.light .badge-red {
      sections, which is most of why the page read as assembled rather than
      designed. */
   font-size: clamp(1.5rem, 1.15rem + 1.5vw, 2.25rem);
-  color: #f8fafc;
+  color: var(--color-text-primary);
 }
-
-
-html.light .section-title { color: #0f172a; }
 
 .section-subtitle {
   margin-top: 0.6rem;
@@ -651,11 +469,7 @@ html.light .section-title { color: #0f172a; }
 /* ─── Divider ─────────────────────────────────────────────── */
 .divider {
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.3), transparent);
-}
-
-html.light .divider {
-  background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.25), transparent);
+  background: linear-gradient(90deg, transparent, var(--color-border), transparent);
 }
 
 /* ─── No scrollbar ────────────────────────────────────────── */
@@ -709,128 +523,10 @@ html.light .divider {
   align-items: center;
   gap: 0.75rem;
   border-radius: 0.75rem;
-  background: rgba(251, 191, 36, 0.08);
-  border: 1px solid rgba(251, 191, 36, 0.2);
-  color: rgb(252, 211, 77);
+  background: #fdf6e3;
+  border: 1px solid #f3e0ae;
+  color: #92400e;
   font-size: 0.875rem;
-}
-
-html.light .banner-warning {
-  background: rgba(245, 158, 11, 0.08);
-  border-color: rgba(245, 158, 11, 0.25);
-  color: #b45309;
-}
-
-/* ─────────────────────────────────────────────────────────── */
-/*  LIGHT MODE — Global Text Overrides                        */
-/* ─────────────────────────────────────────────────────────── */
-html.light .text-white {
-  color: #0f172a !important;
-}
-
-html.light .text-slate-100,
-html.light .text-slate-200,
-html.light .text-slate-300 {
-  color: #334155 !important;
-}
-
-html.light .text-slate-400 {
-  color: #64748b !important;
-}
-
-html.light .text-slate-500 {
-  color: #94a3b8 !important;
-}
-
-html.light .text-slate-400:hover,
-html.light .text-slate-300:hover {
-  color: #0f172a !important;
-}
-
-html.light .text-cyan-400 {
-  color: #2563eb !important;
-}
-
-/* ─── Light mode — Navbar overrides ──────────────────────── */
-html.light header span.text-white,
-html.light header .text-white {
-  color: #0f172a !important;
-}
-
-html.light header .text-cyan-400 {
-  color: #2563eb !important;
-}
-
-/* ─── Light mode — Dropdown / glass menu ─────────────────── */
-html.light .glass p.text-white {
-  color: #0f172a !important;
-}
-
-html.light .glass .text-slate-400,
-html.light .glass .text-slate-300 {
-  color: #64748b !important;
-}
-
-html.light .glass .hover\:bg-white\/5:hover,
-html.light .glass .hover\:bg-white\/5 {
-  background-color: rgba(30, 64, 175, 0.04) !important;
-  color: #0f172a !important;
-}
-
-html.light .glass .hover\:bg-white\/5:hover * {
-  color: #1d4ed8 !important;
-}
-
-/* ─── Light mode — Admin indicators ──────────────────────── */
-html.light .text-cyan-400 {
-  color: #2563eb !important;
-}
-
-/* ─── Light mode — Particle canvas dim ───────────────────── */
-html.light canvas {
-  opacity: 0.25;
-}
-
-/* ─────────────────────────────────────────────────────────── */
-/*  LIGHT MODE — Premium Page Sections                        */
-/* ─────────────────────────────────────────────────────────── */
-
-/* Sections with dark bg classes */
-html.light .bg-\[\#030712\],
-html.light .bg-\[\#0a0f1e\],
-html.light .bg-black\/20,
-html.light .bg-black\/40,
-html.light .bg-slate-950\/40 {
-  background-color: #f8fafc !important;
-}
-
-html.light .bg-white\/\[0\.02\],
-html.light .bg-white\/\[0\.03\],
-html.light .bg-white\/\[0\.04\] {
-  background-color: #f1f5f9 !important;
-}
-
-html.light .bg-white\/5 {
-  background-color: rgba(30, 64, 175, 0.04) !important;
-}
-
-/* Border classes */
-html.light .border-white\/5,
-html.light .border-white\/8,
-html.light .border-white\/10 {
-  border-color: rgba(30, 64, 175, 0.1) !important;
-}
-
-/* ─── Light mode — ResourceFinder tree ───────────────────── */
-html.light .bg-black\/40 {
-  background-color: #f1f5f9 !important;
-}
-
-/* ─── Light mode — marketing blast overlay (handled per-component) ─────── */
-
-/* ─── Light mode page header ─────────────────────────────── */
-html.light .min-h-screen.bg-\[\#030712\] {
-  background-color: #ffffff !important;
 }
 
 /* ─────────────────────────────────────────────────────────── */
@@ -854,11 +550,7 @@ html.light .min-h-screen.bg-\[\#030712\] {
 
 /* ─── Newsletter gradient banner ─────────────────────────── */
 .newsletter-gradient {
-  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 40%, #7c3aed 100%);
-}
-
-html.dark .newsletter-gradient {
-  background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 50%, #4c1d95 100%);
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 55%, #075985 100%);
 }
 
 /* ─── Ticker marquee ──────────────────────────────────────────
@@ -911,17 +603,11 @@ html.dark .newsletter-gradient {
   border: 1px solid transparent;
 }
 
-.type-pyq   { background: rgba(139, 92, 246, 0.16); color: #c4b5fd; border-color: rgba(139, 92, 246, 0.32); }
-.type-ct    { background: rgba(56, 189, 248, 0.16); color: #7dd3fc; border-color: rgba(56, 189, 248, 0.32); }
-.type-notes { background: rgba(245, 158, 11, 0.16); color: #fcd34d; border-color: rgba(245, 158, 11, 0.32); }
-.type-book  { background: rgba(16, 185, 129, 0.16); color: #6ee7b7; border-color: rgba(16, 185, 129, 0.32); }
-.type-other { background: rgba(148, 163, 184, 0.14); color: #cbd5e1; border-color: rgba(148, 163, 184, 0.26); }
-
-html.light .type-pyq   { background: rgba(139, 92, 246, 0.1); color: #6d28d9; border-color: rgba(139, 92, 246, 0.25); }
-html.light .type-ct    { background: rgba(37, 99, 235, 0.1);  color: #1d4ed8; border-color: rgba(37, 99, 235, 0.25); }
-html.light .type-notes { background: rgba(245, 158, 11, 0.12); color: #b45309; border-color: rgba(245, 158, 11, 0.3); }
-html.light .type-book  { background: rgba(16, 185, 129, 0.1); color: #047857; border-color: rgba(16, 185, 129, 0.25); }
-html.light .type-other { background: rgba(100, 116, 139, 0.1); color: #475569; border-color: rgba(100, 116, 139, 0.22); }
+.type-pyq   { background: #f1ecfe; color: #6d28d9; border-color: #ddd0fb; }
+.type-ct    { background: var(--color-brand-soft); color: var(--color-brand-strong); border-color: #c4e4f9; }
+.type-notes { background: #fdf3e0; color: #b45309; border-color: #f7ddb0; }
+.type-book  { background: #e7f8f1; color: #047857; border-color: #bfeada; }
+.type-other { background: #f1f5f9; color: #475569; border-color: #dde5ee; }
 
 /* Quiet metadata chip — subject, semester, branch. */
 .meta-chip {
@@ -932,13 +618,8 @@ html.light .type-other { background: rgba(100, 116, 139, 0.1); color: #475569; b
   font-weight: 500;
   line-height: 1.5;
   color: var(--color-text-muted);
-  background: rgba(255, 255, 255, 0.045);
+  background: var(--color-surface-2);
   white-space: nowrap;
-}
-
-html.light .meta-chip {
-  color: #64748b;
-  background: rgba(15, 23, 42, 0.05);
 }
 
 /* ─── Resource card ───────────────────────────────────────────
@@ -973,8 +654,8 @@ html.light .meta-chip {
   height: 4rem;
   border-radius: 0.5rem;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -988,18 +669,13 @@ html.light .meta-chip {
   }
 }
 
-html.light .resource-thumb {
-  background: rgba(15, 23, 42, 0.04);
-  border-color: rgba(15, 23, 42, 0.08);
-}
-
 /* Title: two lines on a phone row, two on a card. Fixed clamp so every card in
    a row lines up instead of each sizing to its own text. */
 .resource-title {
   font-size: 0.8125rem;
   font-weight: 600;
   line-height: 1.35;
-  color: #f1f5f9;
+  color: var(--color-text-primary);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -1009,8 +685,6 @@ html.light .resource-thumb {
 @media (min-width: 640px) {
   .resource-title { font-size: 0.875rem; }
 }
-
-html.light .resource-title { color: #0f172a; }
 
 /* ─── Resource grid ───────────────────────────────────────────
    The single layout for any list of resource cards, so the library, wishlist,
@@ -1139,8 +813,8 @@ html.light .resource-title { color: #0f172a; }
   aspect-ratio: 1 / 1;
   border-radius: var(--card-radius);
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-2);
   margin: 0;
   transition: border-color 0.18s ease, transform 0.18s ease;
 }

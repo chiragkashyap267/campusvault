@@ -6,7 +6,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <div className="min-h-screen flex flex-col">
       <div className="flex-1 flex">
         {/* Admin sidebar */}
-        <aside className="w-56 shrink-0 border-r border-white/[0.06] glass hidden md:block">
+        <aside className="w-56 shrink-0 border-r border-line glass hidden md:block">
           <AdminSidebar />
         </aside>
         <main className="flex-1 overflow-auto p-4 md:p-8">{children}</main>
@@ -29,12 +29,12 @@ function AdminSidebar() {
   return (
     <div className="p-4">
       <div className="flex items-center gap-2 mb-6 px-2 pt-2">
-        <Shield className="w-5 h-5 text-cyan-400" />
-        <span className="font-display font-bold text-white text-sm">Admin Panel</span>
+        <Shield className="w-5 h-5 text-brand" />
+        <span className="font-display font-bold text-ink text-sm">Admin Panel</span>
       </div>
       <nav className="space-y-1">
         {links.map((l) => (
-          <Link key={l.href} href={l.href} className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/5 transition-all">
+          <Link key={l.href} href={l.href} className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-muted hover:text-ink hover:bg-surface-2 transition-all">
             {l.icon} {l.label}
           </Link>
         ))}

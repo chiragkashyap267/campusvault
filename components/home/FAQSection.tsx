@@ -32,13 +32,13 @@ export function FAQSection() {
 
   return (
     <section className="section relative overflow-hidden">
-      <div className="absolute inset-0 bg-[#030712]" />
-      <div className="absolute top-0 right-1/4 w-96 h-96 bg-cyan-500/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute inset-0 bg-white" />
+      <div className="absolute top-0 right-1/4 w-96 h-96 bg-brand-soft rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-purple-500/5 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="container-app relative z-10 max-w-4xl">
         <div className="section-head text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-sm font-medium mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-soft border border-brand/30 text-brand text-sm font-medium mb-6">
             <HelpCircle className="w-4 h-4" />
             <span>Got Questions?</span>
           </div>
@@ -57,18 +57,18 @@ export function FAQSection() {
               <div
                 key={i}
                 className={`glass-card rounded-2xl overflow-hidden transition-colors ${
-                                  isOpen ? "border-cyan-500/30 bg-white/[0.04]" : "border-white/5 hover:border-white/10"
+                                  isOpen ? "border-brand/30 bg-surface-2" : "border-line hover:border-line"
                                 }`}
               >
                 <button
                   onClick={() => setOpenIndex(isOpen ? null : i)}
                   className="w-full flex items-center justify-between p-6 text-left"
                 >
-                  <span className={`font-semibold text-lg ${isOpen ? "text-cyan-400" : "text-white"}`}>
+                  <span className={`font-semibold text-lg ${isOpen ? "text-brand" : "text-ink"}`}>
                     {faq.question}
                   </span>
                   <div className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
-                    isOpen ? "bg-cyan-500/20 text-cyan-400" : "bg-white/5 text-slate-400"
+                    isOpen ? "bg-brand-soft text-brand" : "bg-surface-2 text-muted"
                   }`}>
                     {isOpen ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
                   </div>
@@ -81,7 +81,7 @@ export function FAQSection() {
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.3, ease: "easeInOut" }}
                     >
-                      <div className="px-6 pb-6 pt-0 text-slate-400 leading-relaxed">
+                      <div className="px-6 pb-6 pt-0 text-muted leading-relaxed">
                         {faq.answer}
                       </div>
                     </motion.div>

@@ -43,13 +43,13 @@ export function StatsSection() {
               key={stat.label}
               className="glass-card p-6 text-center group"
             >
-              <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-cyan-400/10 text-cyan-400 mb-3 group-hover:bg-cyan-400/20 transition-all">
+              <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-brand-soft text-brand mb-3 group-hover:bg-brand-soft transition-all">
                 {stat.icon}
               </div>
               <p className="text-3xl font-display font-bold gradient-text mb-1">
                 <Counter value={stat.value} suffix={stat.suffix} />
               </p>
-              <p className="text-sm text-slate-500">{stat.label}</p>
+              <p className="text-sm text-muted">{stat.label}</p>
             </div>
           ))}
         </div>

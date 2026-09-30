@@ -33,10 +33,10 @@ export default function ContactPage() {
       <div className="max-w-4xl mx-auto page-stack">
         {/* Header */}
         <div className="text-center">
-          <h1 className="font-display text-3xl sm:text-4xl font-bold text-white mb-3">
+          <h1 className="font-display text-3xl sm:text-4xl font-bold text-ink mb-3">
             Get in <span className="gradient-text">Touch</span>
           </h1>
-          <p className="text-slate-400 max-w-lg mx-auto text-sm">
+          <p className="text-muted max-w-lg mx-auto text-sm">
             Have feedback, want to report an issue, or want to become a contributor? Drop us a message!
           </p>
         </div>
@@ -44,28 +44,28 @@ export default function ContactPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Contact Form */}
           <div className="glass-card p-6">
-            <h2 className="font-display font-bold text-white mb-4 flex items-center gap-2">
-              <MessageSquare className="w-5 h-5 text-cyan-400" /> Send Message
+            <h2 className="font-display font-bold text-ink mb-4 flex items-center gap-2">
+              <MessageSquare className="w-5 h-5 text-brand" /> Send Message
             </h2>
             {sent ? (
               <div className="text-center py-8">
                 <CheckCircle className="w-10 h-10 text-green-400 mx-auto mb-3" />
-                <p className="text-white font-semibold mb-1">Message Sent!</p>
-                <p className="text-slate-400 text-sm">We'll reply to your email soon.</p>
+                <p className="text-ink font-semibold mb-1">Message Sent!</p>
+                <p className="text-muted text-sm">We'll reply to your email soon.</p>
                 <button onClick={() => { setSent(false); setForm({ name: "", email: "", message: "" }); }} className="btn-ghost mt-4 px-4 py-2 rounded-xl text-sm">Send Another</button>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-3">
                 <div>
-                  <label className="text-xs text-slate-400 block mb-1">Your Name</label>
+                  <label className="text-xs text-muted block mb-1">Your Name</label>
                   <input className="input-field" required value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} placeholder="Chirag Kashyap" />
                 </div>
                 <div>
-                  <label className="text-xs text-slate-400 block mb-1">Email</label>
+                  <label className="text-xs text-muted block mb-1">Email</label>
                   <input type="email" className="input-field" required value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} placeholder="you@gbpiet.ac.in" />
                 </div>
                 <div>
-                  <label className="text-xs text-slate-400 block mb-1">Message</label>
+                  <label className="text-xs text-muted block mb-1">Message</label>
                   <textarea className="input-field resize-none" rows={5} required value={form.message} onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))} placeholder="Your message..." />
                 </div>
                 <button type="submit" disabled={sending} className="btn-primary w-full py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2">
@@ -79,39 +79,39 @@ export default function ContactPage() {
           {/* Info + FAQ */}
           <div className="space-y-4">
             <div className="glass-card p-5 space-y-3">
-              <h3 className="font-semibold text-white text-sm">Contact Info</h3>
-              <div className="flex items-center gap-3 text-sm text-slate-400">
-                <Mail className="w-4 h-4 text-cyan-400 shrink-0" />
+              <h3 className="font-semibold text-ink text-sm">Contact Info</h3>
+              <div className="flex items-center gap-3 text-sm text-muted">
+                <Mail className="w-4 h-4 text-brand shrink-0" />
                 <span>chiragkashyap@gbpiet.ac.in</span>
               </div>
-              <div className="flex items-center gap-3 text-sm text-slate-400">
-                <Globe className="w-4 h-4 text-cyan-400 shrink-0" />
-                <a href={CREATOR_LINKS.github} target="_blank" rel="noopener noreferrer" className="hover:text-cyan-400 transition-colors">{CREATOR_LINK_LABELS.github}</a>
+              <div className="flex items-center gap-3 text-sm text-muted">
+                <Globe className="w-4 h-4 text-brand shrink-0" />
+                <a href={CREATOR_LINKS.github} target="_blank" rel="noopener noreferrer" className="hover:text-brand transition-colors">{CREATOR_LINK_LABELS.github}</a>
               </div>
-              <div className="flex items-center gap-3 text-sm text-slate-400">
-                <ExternalLink className="w-4 h-4 text-cyan-400 shrink-0" />
-                <a href={CREATOR_LINKS.portfolio} target="_blank" rel="noopener noreferrer" className="hover:text-cyan-400 transition-colors">{CREATOR_LINK_LABELS.portfolio}</a>
+              <div className="flex items-center gap-3 text-sm text-muted">
+                <ExternalLink className="w-4 h-4 text-brand shrink-0" />
+                <a href={CREATOR_LINKS.portfolio} target="_blank" rel="noopener noreferrer" className="hover:text-brand transition-colors">{CREATOR_LINK_LABELS.portfolio}</a>
               </div>
-              <div className="flex items-center gap-3 text-sm text-slate-400">
-                <MapPin className="w-4 h-4 text-cyan-400 shrink-0" />
+              <div className="flex items-center gap-3 text-sm text-muted">
+                <MapPin className="w-4 h-4 text-brand shrink-0" />
                 <span>GBPIET, Pauri Garhwal, Uttarakhand</span>
               </div>
             </div>
 
             <div className="glass-card p-5">
-              <h3 className="font-semibold text-white text-sm mb-4">FAQs</h3>
+              <h3 className="font-semibold text-ink text-sm mb-4">FAQs</h3>
               <div className="space-y-2">
                 {FAQS.map((faq, i) => (
-                  <div key={i} className="border border-white/[0.06] rounded-xl overflow-hidden">
+                  <div key={i} className="border border-line rounded-xl overflow-hidden">
                     <button
                       onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                      className="w-full text-left p-3 text-sm text-white hover:bg-white/5 transition-all flex items-center justify-between gap-2"
+                      className="w-full text-left p-3 text-sm text-ink hover:bg-surface-2 transition-all flex items-center justify-between gap-2"
                     >
                       <span className="font-medium">{faq.q}</span>
-                      <span className="text-slate-500 shrink-0">{openFaq === i ? "−" : "+"}</span>
+                      <span className="text-muted shrink-0">{openFaq === i ? "−" : "+"}</span>
                     </button>
                     {openFaq === i && (
-                      <div className="p-3 pt-0 text-xs text-slate-400 leading-relaxed">
+                      <div className="p-3 pt-0 text-xs text-muted leading-relaxed">
                         {faq.a}
                       </div>
                     )}

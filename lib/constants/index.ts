@@ -111,7 +111,8 @@ export const CREATOR_LINK_LABELS = {
 
 export const CLOUDINARY_BASE_URL = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}`;
 
-export const MAX_FILE_SIZE_MB = 50;
+/** Must match the limit enforced in app/api/upload/route.ts. */
+export const MAX_FILE_SIZE_MB = 25;
 export const ALLOWED_FILE_TYPES = [
   "application/pdf",
   "image/jpeg",

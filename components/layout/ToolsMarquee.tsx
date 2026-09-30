@@ -1,6 +1,5 @@
 ﻿"use client";
 
-import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 
 const TOOLS = [
@@ -40,31 +39,24 @@ const TOOLS = [
 const MARQUEE_ITEMS = [...TOOLS, ...TOOLS];
 
 export function ToolsMarquee() {
-  const { resolvedTheme } = useTheme();
-  const isLight = resolvedTheme === "light";
-
   const bannerClass = cn(
     "w-full overflow-hidden py-1.5 border-b",
-    isLight
-      ? "bg-gradient-to-r from-blue-50 via-slate-50 to-blue-50 border-blue-100"
-      : "bg-gradient-to-r from-[#0a0f1e] via-[#0d1424] to-[#0a0f1e] border-cyan-400/15"
+    "bg-[#075985] border-white/10"
   );
 
   const labelClass = cn(
     "text-[10px] font-semibold uppercase tracking-wider whitespace-nowrap mr-3 shrink-0",
-    isLight ? "text-blue-600" : "text-cyan-400"
+    "text-sky-200"
   );
 
   const itemClass = cn(
     "inline-flex items-center gap-1 px-3 py-0.5 rounded-full text-xs font-medium transition-colors cursor-pointer shrink-0",
-    isLight
-      ? "text-slate-600 hover:text-blue-700 hover:bg-blue-50"
-      : "text-slate-400 hover:text-cyan-400 hover:bg-cyan-400/10"
+    "text-white/80 hover:text-white hover:bg-white/15"
   );
 
   const separatorClass = cn(
     "mx-2 shrink-0",
-    isLight ? "text-blue-200" : "text-cyan-400/25"
+    "text-white/30"
   );
 
   return (
@@ -78,17 +70,13 @@ export function ToolsMarquee() {
           <div
             className={cn(
               "absolute left-0 top-0 bottom-0 w-8 z-10 pointer-events-none",
-              isLight
-                ? "bg-gradient-to-r from-[#f8fafc] to-transparent"
-                : "bg-gradient-to-r from-[#0a0f1e] to-transparent"
+              "bg-gradient-to-r from-[#f8fafc] to-transparent"
             )}
           />
           <div
             className={cn(
               "absolute right-0 top-0 bottom-0 w-8 z-10 pointer-events-none",
-              isLight
-                ? "bg-gradient-to-l from-[#f8fafc] to-transparent"
-                : "bg-gradient-to-l from-[#0a0f1e] to-transparent"
+              "bg-gradient-to-l from-[#f8fafc] to-transparent"
             )}
           />
 
@@ -118,9 +106,7 @@ export function ToolsMarquee() {
           rel="noopener noreferrer"
           className={cn(
             "shrink-0 px-3 mr-1 text-[10px] font-bold uppercase tracking-wider whitespace-nowrap rounded-full py-0.5 transition-all hidden sm:block",
-            isLight
-              ? "text-blue-700 bg-blue-100 hover:bg-blue-200"
-              : "text-cyan-400 bg-cyan-400/10 hover:bg-cyan-400/20"
+            "text-blue-700 bg-blue-100 hover:bg-blue-200"
           )}
         >
           {"Try All \u2192"}

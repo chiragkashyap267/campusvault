@@ -42,7 +42,7 @@ const SOCIAL_LINKS = [
 
 export function Footer() {
   return (
-    <footer className="relative bg-[#030712] border-t border-white/5">
+    <footer className="relative bg-white border-t border-line">
       {/* No top margin here on purpose: the footer's own padding provides the
           separation. mt-12 stacked on pt-16 put 112px of dead space above the
           first line of footer text. */}
@@ -56,27 +56,27 @@ export function Footer() {
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center">
                 <BookOpen className="w-4 h-4 text-black" />
               </div>
-              <span className="font-display font-extrabold tracking-[-0.03em] text-white">
-                CampusVault <span className="text-cyan-400">GBPIET</span>
+              <span className="font-display font-extrabold tracking-[-0.03em] text-ink">
+                CampusVault <span className="text-brand">GBPIET</span>
               </span>
             </Link>
-            <p className="text-slate-400 text-sm leading-relaxed mb-6 max-w-xs">
+            <p className="text-muted text-sm leading-relaxed mb-6 max-w-xs">
               The ultimate academic resource hub for GBPIET students. Share, discover, and
               collaborate on study materials, PYQs, and more.
             </p>
 
             {/* Creator Card */}
             <div className="glass-card p-4 rounded-xl max-w-xs">
-              <p className="text-xs text-slate-500 uppercase tracking-wider mb-3 font-medium">Created by</p>
+              <p className="text-xs text-muted uppercase tracking-wider mb-3 font-medium">Created by</p>
               <div className="flex items-center gap-3 mb-3">
                 <img 
                   src="/chirag.png" 
                   alt={CREATOR_NAME}
-                  className="w-10 h-10 rounded-full border border-white/10 shrink-0 object-cover"
+                  className="w-10 h-10 rounded-full border border-line shrink-0 object-cover"
                 />
                 <div>
-                  <p className="text-sm font-semibold text-white">{CREATOR_NAME}</p>
-                  <p className="text-xs text-slate-400">MCA Student, GBPIET</p>
+                  <p className="text-sm font-semibold text-ink">{CREATOR_NAME}</p>
+                  <p className="text-xs text-muted">MCA Student, GBPIET</p>
                 </div>
               </div>
               <div className="flex gap-2">
@@ -87,7 +87,7 @@ export function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={s.label}
-                    className="p-2 rounded-lg bg-white/5 text-slate-400 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all"
+                    className="p-2 rounded-lg bg-surface-2 text-muted hover:text-brand hover:bg-brand-soft transition-all"
                   >
                     {s.icon}
                   </a>
@@ -99,7 +99,7 @@ export function Footer() {
           {/* Link columns */}
           {Object.entries(FOOTER_LINKS).map(([section, links]) => (
             <div key={section}>
-              <p className="text-xs text-slate-500 uppercase tracking-wider font-medium mb-4">
+              <p className="text-xs text-muted uppercase tracking-wider font-medium mb-4">
                 {section}
               </p>
               <ul className="space-y-2.5">
@@ -107,7 +107,7 @@ export function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm text-slate-400 hover:text-cyan-400 transition-colors flex items-center gap-1 group"
+                      className="text-sm text-muted hover:text-brand transition-colors flex items-center gap-1 group"
                     >
                       {link.label}
                       <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -120,21 +120,21 @@ export function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-white/[0.06] pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-slate-500 flex items-center gap-1.5">
+        <div className="border-t border-line pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-sm text-muted flex items-center gap-1.5">
             Made with{" "}
             <span>
               <Heart className="w-3.5 h-3.5 text-red-400 fill-red-400" />
             </span>{" "}
             by{" "}
-            <span className="text-cyan-400 font-medium">{CREATOR_NAME}</span>
+            <span className="text-brand font-medium">{CREATOR_NAME}</span>
           </p>
-          <p className="text-xs text-slate-600">
+          <p className="text-xs text-slate-400">
             © {new Date().getFullYear()} {SITE_NAME}. All rights reserved.
           </p>
-          <div className="flex items-center gap-4 text-xs text-slate-600">
-            <Link href="/about" className="hover:text-slate-400 transition-colors">About</Link>
-            <Link href="/contact" className="hover:text-slate-400 transition-colors">Contact</Link>
+          <div className="flex items-center gap-4 text-xs text-slate-400">
+            <Link href="/about" className="hover:text-muted transition-colors">About</Link>
+            <Link href="/contact" className="hover:text-muted transition-colors">Contact</Link>
           </div>
         </div>
       </div>

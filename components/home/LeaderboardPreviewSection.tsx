@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getLeaderboard } from "@/lib/firebase/firestore";
 
 const PODIUM_CONFIG = [
-  { rank: 2, offset: "mt-6",  barH: "h-20", emoji: "🥈", glow: "shadow-[0_0_30px_rgba(148,163,184,0.2)]",  ring: "ring-slate-400/40", bg: "from-slate-400/20 to-slate-500/10",  text: "text-slate-300" },
+  { rank: 2, offset: "mt-6",  barH: "h-20", emoji: "🥈", glow: "shadow-[0_0_30px_rgba(148,163,184,0.2)]",  ring: "ring-slate-400/40", bg: "from-slate-400/20 to-slate-500/10",  text: "text-ink-soft" },
   { rank: 1, offset: "mt-0",  barH: "h-28", emoji: "🥇", glow: "shadow-[0_0_40px_rgba(251,191,36,0.35)]", ring: "ring-yellow-400/50", bg: "from-yellow-400/20 to-amber-500/10", text: "text-yellow-400" },
   { rank: 3, offset: "mt-10", barH: "h-14", emoji: "🥉", glow: "shadow-[0_0_25px_rgba(251,146,60,0.2)]",  ring: "ring-orange-400/40", bg: "from-orange-400/20 to-amber-600/10", text: "text-orange-400" },
 ];
@@ -39,9 +39,9 @@ export function LeaderboardPreviewSection() {
   const restList = leaders.slice(3, 5);
 
   return (
-    <section className="section relative overflow-hidden bg-[#030712]">
+    <section className="section relative overflow-hidden bg-white">
       <div className="absolute top-0 left-1/4 w-[500px] h-[300px] rounded-full blur-[140px] bg-yellow-500/4 pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-[400px] h-[200px] rounded-full blur-[140px] bg-cyan-500/4 pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-[400px] h-[200px] rounded-full blur-[140px] bg-brand-soft pointer-events-none" />
 
       <div className="container-app relative z-10">
         {/* Header */}
@@ -68,9 +68,9 @@ export function LeaderboardPreviewSection() {
           </div>
         ) : leaders.length === 0 ? (
           <div className="glass-card p-16 text-center max-w-md mx-auto">
-            <Trophy className="w-12 h-12 text-slate-700 mx-auto mb-4" />
-            <p className="text-slate-300 font-medium mb-1">No heroes yet!</p>
-            <p className="text-slate-500 text-sm mb-5">Be the first to upload and claim the #1 spot.</p>
+            <Trophy className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+            <p className="text-ink-soft font-medium mb-1">No heroes yet!</p>
+            <p className="text-muted text-sm mb-5">Be the first to upload and claim the #1 spot.</p>
             <Link href="/upload" className="btn-primary px-6 py-2.5 rounded-xl text-sm font-semibold inline-flex items-center gap-2">
               <Upload className="w-4 h-4" /> Upload Now
             </Link>
@@ -86,19 +86,19 @@ export function LeaderboardPreviewSection() {
                   return (
                     <div
                       key={user.uid}
-                      className={`flex-1 flex flex-col items-center text-center rounded-2xl px-3 py-5 border transition-all cursor-default bg-gradient-to-b ${cfg.bg} border-white/10 ring-1 ${cfg.ring} ${cfg.glow} ${cfg.offset}`}
+                      className={`flex-1 flex flex-col items-center text-center rounded-2xl px-3 py-5 border transition-all cursor-default bg-gradient-to-b ${cfg.bg} border-line ring-1 ${cfg.ring} ${cfg.glow} ${cfg.offset}`}
                     >
                       {cfg.rank === 1 && <Crown className="w-5 h-5 text-yellow-400 mb-2 animate-bounce" style={{ animationDuration: "2s" }} />}
                       <Avatar name={user.displayName} photo={user.photoURL} size={cfg.rank === 1 ? 60 : 48} ringClass={`ring-2 ${cfg.ring}`} />
                       <span className="text-2xl mt-2 mb-1">{cfg.emoji}</span>
-                      <p className="text-xs font-bold text-white truncate w-full px-1">
+                      <p className="text-xs font-bold text-ink truncate w-full px-1">
                         {user.displayName?.split(" ")[0] || "Student"}
                       </p>
-                      <div className={`mt-2 px-2.5 py-0.5 rounded-full text-xs font-bold border ${cfg.text} bg-white/5 border-white/10`}>
+                      <div className={`mt-2 px-2.5 py-0.5 rounded-full text-xs font-bold border ${cfg.text} bg-surface-2 border-line`}>
                         {user.uploadCount ?? 0} uploads
                       </div>
                       {/* Platform bar */}
-                      <div className={`w-full mt-3 rounded-lg ${cfg.barH} bg-gradient-to-t ${cfg.bg} border border-white/5`} />
+                      <div className={`w-full mt-3 rounded-lg ${cfg.barH} bg-gradient-to-t ${cfg.bg} border border-line`} />
                     </div>
                   );
                 })}
@@ -111,19 +111,19 @@ export function LeaderboardPreviewSection() {
                 {restList.map((user, i) => (
                   <div
                     key={user.uid}
-                    className="glass-card flex items-center gap-4 p-4 hover:border-white/15 transition-all"
+                    className="glass-card flex items-center gap-4 p-4 hover:border-line transition-all"
                   >
-                    <div className="w-8 h-8 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center font-bold text-sm text-slate-500 shrink-0">
+                    <div className="w-8 h-8 rounded-xl bg-surface-2 border border-line flex items-center justify-center font-bold text-sm text-muted shrink-0">
                       {i + 4}
                     </div>
                     <Avatar name={user.displayName} photo={user.photoURL} size={40} />
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-white truncate">{user.displayName || "Anonymous"}</p>
-                      <p className="text-xs text-slate-500 truncate">{user.email}</p>
+                      <p className="text-sm font-semibold text-ink truncate">{user.displayName || "Anonymous"}</p>
+                      <p className="text-xs text-muted truncate">{user.email}</p>
                     </div>
                     <div className="text-right shrink-0">
-                      <p className="text-[10px] text-slate-500">Uploads</p>
-                      <p className="text-sm font-bold text-cyan-400">{user.uploadCount ?? 0}</p>
+                      <p className="text-[10px] text-muted">Uploads</p>
+                      <p className="text-sm font-bold text-brand">{user.uploadCount ?? 0}</p>
                     </div>
                   </div>
                 ))}
@@ -132,16 +132,16 @@ export function LeaderboardPreviewSection() {
 
             {/* CTA */}
             <div
-              className="w-full max-w-lg glass-card p-6 text-center border-cyan-400/10 relative overflow-hidden"
+              className="w-full max-w-lg glass-card p-6 text-center border-brand/30 relative overflow-hidden"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/5 via-blue-500/5 to-purple-500/5 pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-r from-brand-soft via-blue-500/5 to-purple-500/5 pointer-events-none" />
               <div className="relative">
                 <div className="flex items-center justify-center gap-2 mb-2">
                   <Flame className="w-5 h-5 text-orange-400" />
-                  <span className="font-display font-bold text-lg text-white">Your spot is waiting</span>
+                  <span className="font-display font-bold text-lg text-ink">Your spot is waiting</span>
                   <Flame className="w-5 h-5 text-orange-400" />
                 </div>
-                <p className="text-sm text-slate-400 mb-4">
+                <p className="text-sm text-muted mb-4">
                   Upload notes, PYQs & study material — every approved upload adds to your rank.
                 </p>
                 <div className="flex items-center justify-center gap-3 flex-wrap">

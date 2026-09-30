@@ -430,27 +430,27 @@ This uses the 7-day cooldown so students won't get spammed.`;
           headerBg: "bg-gradient-to-r from-blue-600 to-indigo-700",
           accentColor: "text-blue-500",
           accentBg: "bg-blue-500/10",
-          btnBg: "bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white"
+          btnBg: "bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-ink"
         };
       case "gold":
         return {
           headerBg: "bg-gradient-to-r from-amber-500 to-yellow-600",
           accentColor: "text-amber-500",
           accentBg: "bg-amber-500/10",
-          btnBg: "bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white"
+          btnBg: "bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-ink"
         };
       case "emerald":
         return {
           headerBg: "bg-gradient-to-r from-emerald-600 to-teal-700",
           accentColor: "text-emerald-500",
           accentBg: "bg-emerald-500/10",
-          btnBg: "bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white"
+          btnBg: "bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-ink"
         };
       case "sky":
       default:
         return {
           headerBg: "bg-gradient-to-r from-sky-400 to-cyan-500",
-          accentColor: "text-sky-400",
+          accentColor: "text-brand",
           accentBg: "bg-sky-400/10",
           btnBg: "bg-gradient-to-r from-sky-400 to-cyan-500 hover:from-sky-500 hover:to-cyan-600 text-black font-semibold"
         };
@@ -465,7 +465,7 @@ This uses the 7-day cooldown so students won't get spammed.`;
       <div className="min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="w-10 h-10 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
-          <p className="text-slate-400 text-sm">Verifying permissions...</p>
+          <p className="text-muted text-sm">Verifying permissions...</p>
         </div>
       </div>
     );
@@ -479,8 +479,8 @@ This uses the 7-day cooldown so students won't get spammed.`;
           <div className="w-16 h-16 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center">
             <Shield className="w-8 h-8 text-red-500" />
           </div>
-          <h2 className="text-xl font-bold text-white">Admin Access Required</h2>
-          <p className="text-slate-400 text-sm">Redirecting you to home...</p>
+          <h2 className="text-xl font-bold text-ink">Admin Access Required</h2>
+          <p className="text-muted text-sm">Redirecting you to home...</p>
         </div>
       </div>
     );
@@ -491,14 +491,14 @@ This uses the 7-day cooldown so students won't get spammed.`;
       {/* Header */}
       <header className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-semibold mb-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-soft border border-brand/30 text-brand text-xs font-semibold mb-3">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Interactive Marketing & Mailing Suite</span>
           </div>
-          <h1 className="text-3xl md:text-5xl font-display font-black text-white leading-tight">
+          <h1 className="text-3xl md:text-5xl font-display font-black text-ink leading-tight">
             CampusVault <span className="gradient-text glow-text">Outreach Hub</span>
           </h1>
-          <p className="text-slate-400 text-sm md:text-base mt-2 max-w-xl leading-relaxed">
+          <p className="text-muted text-sm md:text-base mt-2 max-w-xl leading-relaxed">
             Promote new exam papers, notes, and academic alerts. Set up your credentials below and send **real emails** to student inboxes!
           </p>
         </div>
@@ -506,9 +506,9 @@ This uses the 7-day cooldown so students won't get spammed.`;
         {/* Mail Settings Button */}
         <button
           onClick={() => setShowSettings(!showSettings)}
-          className="flex items-center gap-2 btn-ghost py-3 px-5 rounded-xl text-xs font-bold shadow-md cursor-pointer border border-cyan-400/20 hover:border-cyan-400/40"
+          className="flex items-center gap-2 btn-ghost py-3 px-5 rounded-xl text-xs font-bold shadow-md cursor-pointer border border-brand/30 hover:border-brand/30"
         >
-          <Settings className="w-4 h-4 text-cyan-400 animate-spin-slow" />
+          <Settings className="w-4 h-4 text-brand animate-spin-slow" />
           <span>Configure Mail Server</span>
         </button>
       </header>
@@ -528,20 +528,20 @@ This uses the 7-day cooldown so students won't get spammed.`;
               initial={{ scale: 0.95, y: 15 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 15 }}
-              className="relative w-full max-w-md glass rounded-3xl border border-cyan-400/20 shadow-2xl p-6 md:p-8 z-10"
+              className="relative w-full max-w-md glass rounded-3xl border border-brand/30 shadow-2xl p-6 md:p-8 z-10"
             >
-              <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
-                <Key className="w-5 h-5 text-cyan-400" />
+              <h3 className="text-lg font-bold text-ink mb-2 flex items-center gap-2">
+                <Key className="w-5 h-5 text-brand" />
                 Resend Mail Server Settings
               </h3>
-              <p className="text-xs text-slate-400 mb-5 leading-relaxed">
+              <p className="text-xs text-muted mb-5 leading-relaxed">
                 CampusVault handles real email dispatches using Resend API (completely free 3,000 emails/month). 
                 Your API key remains 100% private, saved only inside your local browser memory.
               </p>
 
               <form onSubmit={saveApiKeySetting} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Resend API Key</label>
+                  <label className="block text-xs font-bold text-muted uppercase tracking-wider mb-2">Resend API Key</label>
                   <input
                     type="password"
                     placeholder="re_xxxxxxxxxxxxxxxxxxxxxxxx"
@@ -549,10 +549,10 @@ This uses the 7-day cooldown so students won't get spammed.`;
                     onChange={(e) => setResendApiKey(e.target.value)}
                     className="input-field"
                   />
-                  <div className="flex gap-2 items-center bg-cyan-400/5 border border-cyan-400/10 rounded-xl p-3.5 mt-3.5">
-                    <HelpCircle className="w-8 h-8 text-cyan-400 shrink-0" />
-                    <p className="text-[10px] text-slate-400 leading-normal">
-                      <strong>How to get this key free:</strong> Go to <a href="https://resend.com" target="_blank" rel="noreferrer" className="text-cyan-400 underline font-bold">resend.com</a> → Sign Up Free → Click API Keys → Create Key → Copy Key and paste it here!
+                  <div className="flex gap-2 items-center bg-brand-soft border border-brand/30 rounded-xl p-3.5 mt-3.5">
+                    <HelpCircle className="w-8 h-8 text-brand shrink-0" />
+                    <p className="text-[10px] text-muted leading-normal">
+                      <strong>How to get this key free:</strong> Go to <a href="https://resend.com" target="_blank" rel="noreferrer" className="text-brand underline font-bold">resend.com</a> → Sign Up Free → Click API Keys → Create Key → Copy Key and paste it here!
                     </p>
                   </div>
                 </div>
@@ -566,7 +566,7 @@ This uses the 7-day cooldown so students won't get spammed.`;
                       toast.success("Settings cleared.");
                       setShowSettings(false);
                     }}
-                    className="text-xs text-slate-400 hover:text-white px-3.5 py-2 cursor-pointer"
+                    className="text-xs text-muted hover:text-ink px-3.5 py-2 cursor-pointer"
                   >
                     Clear Credentials
                   </button>
@@ -587,61 +587,61 @@ This uses the 7-day cooldown so students won't get spammed.`;
       <section className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
         <div className="glass-card p-5 rounded-2xl relative overflow-hidden">
           <div className="flex justify-between items-start mb-3">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Subscribers</span>
-            <div className="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center text-cyan-400">
+            <span className="text-xs font-bold text-muted uppercase tracking-wider">Subscribers</span>
+            <div className="w-8 h-8 rounded-lg bg-brand-soft flex items-center justify-center text-brand">
               <Users className="w-4 h-4" />
             </div>
           </div>
-          <p className="text-2xl md:text-3xl font-black text-white">
+          <p className="text-2xl md:text-3xl font-black text-ink">
             {loadingStats ? (
               <span className="inline-block w-12 h-6 skeleton" />
             ) : (
               `${subscribersCount}`
             )}
           </p>
-          <p className="text-[10px] text-slate-400 mt-1">Real emails in database</p>
+          <p className="text-[10px] text-muted mt-1">Real emails in database</p>
         </div>
 
         <div className="glass-card p-5 rounded-2xl relative overflow-hidden">
           <div className="flex justify-between items-start mb-3">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Mail Server</span>
+            <span className="text-xs font-bold text-muted uppercase tracking-wider">Mail Server</span>
             <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400">
               <ShieldCheck className="w-4 h-4" />
             </div>
           </div>
-          <p className="text-xl md:text-2xl font-black text-white truncate">
+          <p className="text-xl md:text-2xl font-black text-ink truncate">
             {hasServerApiKey ? "Server Active" : resendApiKey ? "Resend Online" : "Local Simulator"}
           </p>
-          <p className="text-[10px] text-cyan-400 font-semibold mt-1">
+          <p className="text-[10px] text-brand font-semibold mt-1">
             {hasServerApiKey ? "Server-side Key Active" : resendApiKey ? "API dispatch active" : "Paste Key to send real"}
           </p>
         </div>
 
         <div className="glass-card p-5 rounded-2xl relative overflow-hidden">
           <div className="flex justify-between items-start mb-3">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Campaigns Sent</span>
+            <span className="text-xs font-bold text-muted uppercase tracking-wider">Campaigns Sent</span>
             <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400">
               <Send className="w-4 h-4" />
             </div>
           </div>
-          <p className="text-2xl md:text-3xl font-black text-white">
+          <p className="text-2xl md:text-3xl font-black text-ink">
             {loadingStats ? (
               <span className="inline-block w-8 h-6 skeleton" />
             ) : (
               `${campaigns.length}`
             )}
           </p>
-          <p className="text-xs text-slate-500 mt-1">Archived dispatches</p>
+          <p className="text-xs text-muted mt-1">Archived dispatches</p>
         </div>
 
         <div className="glass-card p-5 rounded-2xl relative overflow-hidden">
           <div className="flex justify-between items-start mb-3">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Est. CTR</span>
+            <span className="text-xs font-bold text-muted uppercase tracking-wider">Est. CTR</span>
             <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400">
               <BarChart2 className="w-4 h-4" />
             </div>
           </div>
-          <p className="text-2xl md:text-3xl font-black text-white">82.6%</p>
+          <p className="text-2xl md:text-3xl font-black text-ink">82.6%</p>
           <p className="text-[10px] text-emerald-400 font-semibold mt-1">Very high readability</p>
         </div>
       </section>
@@ -649,15 +649,15 @@ This uses the 7-day cooldown so students won't get spammed.`;
       {/* Main Grid: Form / Live Preview */}
       <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 mb-12">
         {/* Campaign Creation Panel */}
-        <section className="glass-card p-6 md:p-8 rounded-3xl relative border border-white/5 shadow-md">
-          <div className="flex justify-between items-center mb-6 border-b border-white/5 pb-4">
-            <h2 className="text-xl md:text-2xl font-bold text-white flex items-center gap-2.5">
-              <Mail className="w-5 h-5 text-cyan-400 animate-pulse" />
+        <section className="glass-card p-6 md:p-8 rounded-3xl relative border border-line shadow-md">
+          <div className="flex justify-between items-center mb-6 border-b border-line pb-4">
+            <h2 className="text-xl md:text-2xl font-bold text-ink flex items-center gap-2.5">
+              <Mail className="w-5 h-5 text-brand animate-pulse" />
               Compose Outreach Broadcast
             </h2>
             <button
               onClick={() => setShowPreview(!showPreview)}
-              className="text-xs font-semibold px-3.5 py-1.5 rounded-lg border border-cyan-400/20 bg-cyan-400/5 text-cyan-400 hover:bg-cyan-400/10 flex items-center gap-1.5 transition-all cursor-pointer"
+              className="text-xs font-semibold px-3.5 py-1.5 rounded-lg border border-brand/30 bg-brand-soft text-brand hover:bg-brand-soft flex items-center gap-1.5 transition-all cursor-pointer"
             >
               <Eye className="w-3.5 h-3.5" />
               <span>{showPreview ? "Edit Mode" : "Preview Layout"}</span>
@@ -667,7 +667,7 @@ This uses the 7-day cooldown so students won't get spammed.`;
           <form onSubmit={handleLaunchCampaign} className="space-y-5">
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Target Audience</label>
+                <label className="block text-xs font-bold text-muted uppercase tracking-wider mb-2">Target Audience</label>
                 <select
                   value={campaignBranch}
                   onChange={(e) => setCampaignBranch(e.target.value)}
@@ -682,7 +682,7 @@ This uses the 7-day cooldown so students won't get spammed.`;
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Visual Theme</label>
+                <label className="block text-xs font-bold text-muted uppercase tracking-wider mb-2">Visual Theme</label>
                 <select
                   value={campaignTemplate}
                   onChange={(e) => setCampaignTemplate(e.target.value)}
@@ -697,37 +697,37 @@ This uses the 7-day cooldown so students won't get spammed.`;
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Email Subject Line</label>
+              <label className="block text-xs font-bold text-muted uppercase tracking-wider mb-2">Email Subject Line</label>
               <input
                 type="text"
                 placeholder="e.g. [New Uploads] Handwritten study notes and syllabus papers are now live!"
                 value={campaignSubject}
                 onChange={(e) => setCampaignSubject(e.target.value)}
-                className="input-field font-medium text-white"
+                className="input-field font-medium text-ink"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Campaign Header / Tagline</label>
+              <label className="block text-xs font-bold text-muted uppercase tracking-wider mb-2">Campaign Header / Tagline</label>
               <input
                 type="text"
                 placeholder="e.g. Hey, topper handwritten notes are live. Check them out and upload yours!"
                 value={campaignHeadline}
                 onChange={(e) => setCampaignHeadline(e.target.value)}
-                className="input-field font-medium text-white"
+                className="input-field font-medium text-ink"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Campaign Main Message</label>
+              <label className="block text-xs font-bold text-muted uppercase tracking-wider mb-2">Campaign Main Message</label>
               <textarea
                 placeholder="Write your email contents here. Encourage students to contribute back by uploading CT papers, notes and books to help everyone!"
                 rows={5}
                 value={campaignMessage}
                 onChange={(e) => setCampaignMessage(e.target.value)}
-                className="input-field leading-relaxed resize-none font-medium text-white"
+                className="input-field leading-relaxed resize-none font-medium text-ink"
                 required
               />
             </div>
@@ -748,9 +748,9 @@ This uses the 7-day cooldown so students won't get spammed.`;
                     }}
                     className="w-4 h-4 rounded accent-cyan-400 cursor-pointer"
                   />
-                  <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">Deliver Real Emails</span>
+                  <span className="text-xs font-bold text-ink-soft uppercase tracking-wider">Deliver Real Emails</span>
                 </label>
-                <p className="text-[10px] text-slate-500 mt-1">If unchecked, runs campaign visual dispatcher simulator only</p>
+                <p className="text-[10px] text-muted mt-1">If unchecked, runs campaign visual dispatcher simulator only</p>
               </div>
 
               <div className="flex items-end">
@@ -772,30 +772,30 @@ This uses the 7-day cooldown so students won't get spammed.`;
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="absolute inset-0 z-30 bg-[#0f172a]/95 backdrop-blur-md rounded-3xl p-6 md:p-8 flex flex-col justify-between border border-cyan-400/20"
+                className="absolute inset-0 z-30 bg-white backdrop-blur-md rounded-3xl p-6 md:p-8 flex flex-col justify-between border border-brand/30"
               >
                 <div className="text-center pt-6">
                   <div className="relative inline-flex mb-5">
-                    <div className="absolute inset-0 rounded-full bg-cyan-400/20 blur-xl animate-pulse scale-150" />
-                    <div className="w-16 h-16 rounded-full bg-cyan-400/10 border border-cyan-400/30 flex items-center justify-center text-cyan-400 animate-bounce">
+                    <div className="absolute inset-0 rounded-full bg-brand-soft blur-xl animate-pulse scale-150" />
+                    <div className="w-16 h-16 rounded-full bg-brand-soft border border-brand/30 flex items-center justify-center text-brand animate-bounce">
                       <Send className="w-7 h-7" />
                     </div>
                   </div>
-                  <h3 className="text-xl md:text-2xl font-black text-white">
+                  <h3 className="text-xl md:text-2xl font-black text-ink">
                     {sendRealEmails ? "Mailing Engine Active" : "Visual Blast Simulation"}
                   </h3>
-                  <p className="text-xs text-slate-400 mt-1 uppercase tracking-wider">Targeting: {campaignBranch} Students</p>
+                  <p className="text-xs text-muted mt-1 uppercase tracking-wider">Targeting: {campaignBranch} Students</p>
                   
                   {/* Progress bar */}
                   <div className="mt-8 max-w-md mx-auto">
                     <div className="flex justify-between text-xs font-semibold mb-2">
-                      <span className="text-cyan-400 flex items-center gap-1.5">
+                      <span className="text-brand flex items-center gap-1.5">
                         <RefreshCw className="w-3.5 h-3.5 animate-spin" />
                         <span>Sending campaign bulletins ({blastProgress}%)</span>
                       </span>
-                      <span className="text-white">{blastProgress}%</span>
+                      <span className="text-ink">{blastProgress}%</span>
                     </div>
-                    <div className="w-full h-3 bg-white/5 rounded-full overflow-hidden border border-white/5 p-0.5">
+                    <div className="w-full h-3 bg-surface-2 rounded-full overflow-hidden border border-line p-0.5">
                       <motion.div
                         className="h-full bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full shadow-[0_0_12px_rgba(0,212,255,0.4)]"
                         initial={{ width: 0 }}
@@ -803,19 +803,19 @@ This uses the 7-day cooldown so students won't get spammed.`;
                         transition={{ ease: "easeInOut" }}
                       />
                     </div>
-                    <p className="text-xs text-slate-400 mt-3 truncate font-mono">
-                      Recipient: <span className="text-cyan-400">{currentRecipient}</span>
+                    <p className="text-xs text-muted mt-3 truncate font-mono">
+                      Recipient: <span className="text-brand">{currentRecipient}</span>
                     </p>
                   </div>
                 </div>
 
                 {/* Animated Flying Email Canvas */}
-                <div className="relative h-24 my-3 overflow-hidden border border-white/5 bg-slate-950/40 rounded-xl flex items-center justify-center">
+                <div className="relative h-24 my-3 overflow-hidden border border-line bg-surface-2 rounded-xl flex items-center justify-center">
                   <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(56,189,248,0.03)_0%,transparent_80%)]" />
                   {[...Array(6)].map((_, i) => (
                     <motion.div
                       key={i}
-                      className="absolute text-cyan-400/30"
+                      className="absolute text-brand/30"
                       initial={{ x: -180, y: Math.random() * 60 - 30, scale: 0.7 + Math.random() * 0.5 }}
                       animate={{ x: 280, y: Math.random() * 60 - 30 }}
                       transition={{
@@ -828,14 +828,14 @@ This uses the 7-day cooldown so students won't get spammed.`;
                       <Mail className="w-5 h-5" />
                     </motion.div>
                   ))}
-                  <p className="text-[10px] text-slate-600 uppercase tracking-widest font-mono z-10">Mailing Engine Loop dispatch</p>
+                  <p className="text-[10px] text-slate-400 uppercase tracking-widest font-mono z-10">Mailing Engine Loop dispatch</p>
                 </div>
 
                 {/* Live logs scrolling */}
-                <div className="bg-black/40 rounded-xl p-4 font-mono text-[10px] text-slate-400 text-left h-36 overflow-y-auto border border-white/5 flex flex-col justify-end">
+                <div className="bg-black/40 rounded-xl p-4 font-mono text-[10px] text-muted text-left h-36 overflow-y-auto border border-line flex flex-col justify-end">
                   {blastLogs.map((log, index) => (
-                    <div key={index} className="flex gap-1.5 py-0.5 border-b border-white/3 select-none">
-                      <span className="text-cyan-400">»</span>
+                    <div key={index} className="flex gap-1.5 py-0.5 border-b border-line select-none">
+                      <span className="text-brand">»</span>
                       <span className="truncate">{log}</span>
                     </div>
                   ))}
@@ -848,19 +848,19 @@ This uses the 7-day cooldown so students won't get spammed.`;
         {/* Live Preview / Subscribe Panel */}
         <div className="space-y-6">
           {/* Email Preview Layout */}
-          <section className="glass-card p-5 rounded-3xl border border-white/8 relative">
-            <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-              <Eye className="w-4 h-4 text-cyan-400" />
+          <section className="glass-card p-5 rounded-3xl border border-line relative">
+            <h3 className="text-sm font-bold text-muted uppercase tracking-wider mb-3 flex items-center gap-1.5">
+              <Eye className="w-4 h-4 text-brand" />
               Email Newsletter Preview
             </h3>
 
             <div className="bg-white text-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-slate-200">
-              <div className={`p-6 text-white text-center transition-all ${styleConfig.headerBg}`}>
-                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-2.5">
-                  <BookOpen className="w-5 h-5 text-white" />
+              <div className={`p-6 text-ink text-center transition-all ${styleConfig.headerBg}`}>
+                <div className="w-10 h-10 rounded-full bg-surface-2 flex items-center justify-center mx-auto mb-2.5">
+                  <BookOpen className="w-5 h-5 text-ink" />
                 </div>
                 <h4 className="font-display font-black text-lg tracking-tight">CampusVault GBPIET</h4>
-                <p className="text-[11px] text-white/80 font-medium">Your Central Academic Portal</p>
+                <p className="text-[11px] text-ink/80 font-medium">Your Central Academic Portal</p>
               </div>
 
               <div className="p-6">
@@ -870,11 +870,11 @@ This uses the 7-day cooldown so students won't get spammed.`;
                 <h5 className="font-display font-extrabold text-base text-slate-900 leading-snug">
                   {campaignSubject || "Important Academic Updates & Study Materials!"}
                 </h5>
-                <p className="text-[12px] font-bold text-slate-500 mt-1 mb-4 leading-normal">
+                <p className="text-[12px] font-bold text-muted mt-1 mb-4 leading-normal">
                   {campaignHeadline || "Ensure your exam readiness with handpicked notes, previous year papers, and syllabus templates."}
                 </p>
 
-                <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 text-[12px] text-slate-600 leading-relaxed italic whitespace-pre-line mb-5">
+                <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 text-[12px] text-slate-400 leading-relaxed italic whitespace-pre-line mb-5">
                   {campaignMessage || "Hello Students,\n\nWe have added several new study resources matching the syllabus of core branches. Make sure to download CT papers and lab manuals to stay ahead.\n\nContribute back by uploading notes!"}
                 </div>
 
@@ -886,19 +886,19 @@ This uses the 7-day cooldown so students won't get spammed.`;
                   >
                     <span>Click Here to View Files</span>
                   </a>
-                  <p className="text-[10px] text-slate-400 mt-2">Sent completely free from CampusVault Outreach Hub</p>
+                  <p className="text-[10px] text-muted mt-2">Sent completely free from CampusVault Outreach Hub</p>
                 </div>
               </div>
             </div>
           </section>
 
           {/* Quick Subscribe Card */}
-          <section className="glass-card p-6 rounded-3xl border border-cyan-400/10">
-            <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
-              <Plus className="w-5 h-5 text-cyan-400" />
+          <section className="glass-card p-6 rounded-3xl border border-brand/30">
+            <h3 className="text-lg font-bold text-ink mb-2 flex items-center gap-2">
+              <Plus className="w-5 h-5 text-brand" />
               Add Student Subscriber
             </h3>
-            <p className="text-xs text-slate-400 mb-5 leading-relaxed">
+            <p className="text-xs text-muted mb-5 leading-relaxed">
               Opt-in student email IDs. Registered students receive immediate real-time digests when you dispatch a campaign blast!
             </p>
 
@@ -952,7 +952,7 @@ This uses the 7-day cooldown so students won't get spammed.`;
                 {submittingSub ? (
                   <RefreshCw className="w-3.5 h-3.5 animate-spin" />
                 ) : (
-                  <Check className="w-4 h-4 text-cyan-400" />
+                  <Check className="w-4 h-4 text-brand" />
                 )}
                 <span>Register Student ID</span>
               </button>
@@ -962,15 +962,15 @@ This uses the 7-day cooldown so students won't get spammed.`;
       </div>
 
       {/* Campaigns History Archive */}
-      <section className="glass-card p-6 md:p-8 rounded-3xl border border-white/5">
+      <section className="glass-card p-6 md:p-8 rounded-3xl border border-line">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-white flex items-center gap-2">
-            <FileText className="w-5 h-5 text-cyan-400" />
+          <h2 className="text-xl font-bold text-ink flex items-center gap-2">
+            <FileText className="w-5 h-5 text-brand" />
             Outreach Campaign Archive
           </h2>
           <button
             onClick={fetchMetrics}
-            className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-all"
+            className="p-2 rounded-lg text-muted hover:text-ink hover:bg-surface-2 transition-all"
             title="Refresh database records"
           >
             <RefreshCw className="w-4.5 h-4.5" />
@@ -984,10 +984,10 @@ This uses the 7-day cooldown so students won't get spammed.`;
             <div className="w-full h-12 skeleton" />
           </div>
         ) : campaigns.length === 0 ? (
-          <div className="text-center py-10 border border-dashed border-white/5 rounded-2xl bg-white/2">
-            <AlertCircle className="w-10 h-10 text-slate-500 mx-auto mb-2" />
-            <p className="text-sm text-slate-400 font-bold">No Dispatched Campaigns Yet</p>
-            <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
+          <div className="text-center py-10 border border-dashed border-line rounded-2xl bg-surface-2">
+            <AlertCircle className="w-10 h-10 text-muted mx-auto mb-2" />
+            <p className="text-sm text-muted font-bold">No Dispatched Campaigns Yet</p>
+            <p className="text-xs text-muted mt-1 max-w-sm mx-auto">
               Create your first email campaign above and blast it to students to see the history archive populate!
             </p>
           </div>
@@ -995,7 +995,7 @@ This uses the 7-day cooldown so students won't get spammed.`;
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-left text-xs md:text-sm">
               <thead>
-                <tr className="border-b border-white/5 text-slate-500 font-bold">
+                <tr className="border-b border-line text-muted font-bold">
                   <th className="pb-3 pr-4">Subject</th>
                   <th className="pb-3 px-4">Headline</th>
                   <th className="pb-3 px-4">Target Audience</th>
@@ -1004,17 +1004,17 @@ This uses the 7-day cooldown so students won't get spammed.`;
                   <th className="pb-3 pl-4">Sent At</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5 text-slate-300">
+              <tbody className="divide-y divide-line text-ink-soft">
                 {campaigns.map((camp, idx) => (
-                  <tr key={camp.id || idx} className="hover:bg-white/2 transition-colors">
-                    <td className="py-3.5 pr-4 font-bold text-white">{camp.subject}</td>
-                    <td className="py-3.5 px-4 text-slate-400 max-w-xs truncate">{camp.headline}</td>
+                  <tr key={camp.id || idx} className="hover:bg-surface-2 transition-colors">
+                    <td className="py-3.5 pr-4 font-bold text-ink">{camp.subject}</td>
+                    <td className="py-3.5 px-4 text-muted max-w-xs truncate">{camp.headline}</td>
                     <td className="py-3.5 px-4">
                       <span className="badge badge-cyan text-[10px] font-semibold">{camp.branchFilter}</span>
                     </td>
-                    <td className="py-3.5 px-4 capitalize font-mono text-[10px] text-cyan-400">{camp.templateStyle}</td>
-                    <td className="py-3.5 px-4 text-center font-bold text-white">{camp.recipientCount} delivered</td>
-                    <td className="py-3.5 pl-4 text-slate-500 font-medium">{camp.sentAt}</td>
+                    <td className="py-3.5 px-4 capitalize font-mono text-[10px] text-brand">{camp.templateStyle}</td>
+                    <td className="py-3.5 px-4 text-center font-bold text-ink">{camp.recipientCount} delivered</td>
+                    <td className="py-3.5 pl-4 text-muted font-medium">{camp.sentAt}</td>
                   </tr>
                 ))}
               </tbody>
@@ -1032,16 +1032,16 @@ This uses the 7-day cooldown so students won't get spammed.`;
               <Send className="w-3 h-3" />
               <span>One-Click All-Users Blast</span>
             </div>
-            <h2 className="text-xl font-bold text-white">Send to ALL {subscribersCount > 0 ? subscribersCount : ""} Registered Students</h2>
-            <p className="text-xs text-slate-400 mt-1 leading-relaxed max-w-lg">
-              Sends a weekly academic digest to every user in the <code className="text-cyan-400 bg-cyan-400/5 px-1 rounded">users</code> and <code className="text-cyan-400 bg-cyan-400/5 px-1 rounded">subscribers</code> collections simultaneously — with a 7-day per-user cooldown to prevent spam.
+            <h2 className="text-xl font-bold text-ink">Send to ALL {subscribersCount > 0 ? subscribersCount : ""} Registered Students</h2>
+            <p className="text-xs text-muted mt-1 leading-relaxed max-w-lg">
+              Sends a weekly academic digest to every user in the <code className="text-brand bg-brand-soft px-1 rounded">users</code> and <code className="text-brand bg-brand-soft px-1 rounded">subscribers</code> collections simultaneously — with a 7-day per-user cooldown to prevent spam.
             </p>
             {quickBlastResult && (
               <div className="mt-3 flex items-center gap-4 text-xs font-bold">
                 <span className="text-emerald-400">✓ {quickBlastResult.sent} sent</span>
                 {!!quickBlastResult.skipped && <span className="text-amber-400">⏳ {quickBlastResult.skipped} on cooldown</span>}
                 {quickBlastResult.failed > 0 && <span className="text-red-400">✗ {quickBlastResult.failed} failed</span>}
-                <span className="text-slate-400">{quickBlastResult.total} total recipients</span>
+                <span className="text-muted">{quickBlastResult.total} total recipients</span>
               </div>
             )}
           </div>
@@ -1071,14 +1071,14 @@ This uses the 7-day cooldown so students won't get spammed.`;
       </section>
 
       {/* Templates Quick Load Footer */}
-      <footer className="mt-8 p-5 rounded-2xl bg-cyan-500/5 border border-cyan-400/10 flex flex-col md:flex-row gap-4 items-center justify-between">
+      <footer className="mt-8 p-5 rounded-2xl bg-brand-soft border border-brand/30 flex flex-col md:flex-row gap-4 items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-cyan-400/10 flex items-center justify-center text-cyan-400 shrink-0">
+          <div className="w-9 h-9 rounded-xl bg-brand-soft flex items-center justify-center text-brand shrink-0">
             <Info className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="text-sm font-bold text-white">Promote Student Uploads Directly</h4>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <h4 className="text-sm font-bold text-ink">Promote Student Uploads Directly</h4>
+            <p className="text-xs text-muted leading-relaxed">
               Use the template on the right to load pre-constructed text specifically written to encourage students to upload their notes and PYQs.
             </p>
           </div>
@@ -1091,7 +1091,7 @@ This uses the 7-day cooldown so students won't get spammed.`;
             setCampaignMessage(`Hey Campus,\n\nWe need your support! CampusVault thrives when students share notes, syllabus sheets, class test (CT) papers, and lab manuals.\n\nIf you have handwritten study guides or previous year papers, please take a quick photo or convert them to PDF and upload them directly to CampusVault using the Upload tab!\n\nYour contributions help classmates study smart and score higher. Plus, climb to the top of our Hall of Fame Leaderboard!\n\nUpload now: ${appOrigin}/upload\n\nHappy sharing!`);
             toast.success("Loaded Contribution campaign template!");
           }}
-          className="text-xs font-semibold px-4 py-2 rounded-xl bg-cyan-400/10 border border-cyan-400/20 text-cyan-400 hover:bg-cyan-400/20 transition-all cursor-pointer whitespace-nowrap shrink-0 animate-pulse"
+          className="text-xs font-semibold px-4 py-2 rounded-xl bg-brand-soft border border-brand/30 text-brand hover:bg-brand-soft transition-all cursor-pointer whitespace-nowrap shrink-0 animate-pulse"
         >
           Load Contribution Template
         </button>

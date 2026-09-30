@@ -148,7 +148,7 @@ export function MomentsSection() {
   const durationSeconds = Math.round(setsPerHalf * Math.max(moments.length, 1) * secondsPerTile);
 
   return (
-    <section className="section-tight relative border-y border-white/5 bg-[#060b18]">
+    <section className="section-tight relative border-y border-line bg-surface-2">
       <div className="container-app">
         <div className="flex items-end justify-between gap-4 mb-5">
           <div>
@@ -170,7 +170,7 @@ export function MomentsSection() {
           ) : (
             <a
               href="/login"
-              className="text-xs text-slate-500 hover:text-cyan-400 transition-colors shrink-0 text-right"
+              className="text-xs text-muted hover:text-brand transition-colors shrink-0 text-right"
             >
               Sign in to
               <br className="sm:hidden" /> add a photo
@@ -209,7 +209,7 @@ export function MomentsSection() {
                 placeholder="e.g. MCA batch 2026 group pic"
                 className="input-field py-2 text-sm"
               />
-              <p className="text-[11px] text-slate-600 mt-1">
+              <p className="text-[11px] text-slate-400 mt-1">
                 {CAPTION_LIMIT - caption.length} characters left
               </p>
             </div>
@@ -225,7 +225,7 @@ export function MomentsSection() {
                 onClick={clearPending}
                 disabled={upload.isPending}
                 aria-label="Cancel"
-                className="p-2 rounded-lg text-slate-500 hover:text-white hover:bg-white/5 transition-colors"
+                className="p-2 rounded-lg text-muted hover:text-ink hover:bg-surface-2 transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -244,9 +244,9 @@ export function MomentsSection() {
       ) : moments.length === 0 ? (
         <div className="container-app">
           <div className="glass-card py-10 text-center">
-            <ImagePlus className="w-8 h-8 text-slate-600 mx-auto mb-2.5" />
-            <p className="text-sm text-slate-400">No moments yet.</p>
-            <p className="text-xs text-slate-600 mt-1">
+            <ImagePlus className="w-8 h-8 text-slate-400 mx-auto mb-2.5" />
+            <p className="text-sm text-muted">No moments yet.</p>
+            <p className="text-xs text-slate-400 mt-1">
               {user ? "Be the first to add one." : "Sign in to add the first one."}
             </p>
           </div>
@@ -304,7 +304,7 @@ export function MomentsSection() {
           <button
             onClick={closeLightbox}
             aria-label="Close"
-            className="absolute top-4 right-4 p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+            className="absolute top-4 right-4 p-2.5 rounded-full bg-white/15 hover:bg-white/25 text-white transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -314,14 +314,14 @@ export function MomentsSection() {
               <button
                 onClick={(e) => { e.stopPropagation(); step(-1); }}
                 aria-label="Previous photo"
-                className="absolute left-2 sm:left-5 p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+                className="absolute left-2 sm:left-5 p-2.5 rounded-full bg-white/15 hover:bg-white/25 text-white transition-colors"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
               <button
                 onClick={(e) => { e.stopPropagation(); step(1); }}
                 aria-label="Next photo"
-                className="absolute right-2 sm:right-5 p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+                className="absolute right-2 sm:right-5 p-2.5 rounded-full bg-white/15 hover:bg-white/25 text-white transition-colors"
               >
                 <ChevronRight className="w-5 h-5" />
               </button>
@@ -340,10 +340,11 @@ export function MomentsSection() {
               className="max-h-[78vh] w-auto max-w-full rounded-xl object-contain shadow-2xl"
             />
             <figcaption className="text-center">
+              {/* On the scrim, not on the page — light type, not ink. */}
               <p className="text-sm font-medium text-white">
                 {moments[lightboxIndex].caption}
               </p>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className="text-xs text-white/70 mt-0.5">
                 Posted by {moments[lightboxIndex].uploaderName}
                 {moments.length > 1 && ` · ${lightboxIndex + 1} of ${moments.length}`}
               </p>

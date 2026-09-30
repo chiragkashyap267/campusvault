@@ -41,7 +41,7 @@ function FileFormatIcon({ format, className = "w-4 h-4" }: { format: string; cla
     case "pdf": return <FileText className={cn("text-red-400/80", className)} />;
     case "image": return <ImageIcon className={cn("text-emerald-400/80", className)} />;
     case "zip": return <Archive className={cn("text-amber-400/80", className)} />;
-    default: return <File className={cn("text-sky-400/80", className)} />;
+    default: return <File className={cn("text-brand/80", className)} />;
   }
 }
 
@@ -127,7 +127,7 @@ export function ResourceCard({ resource, showStatus = false }: ResourceCardProps
        the library did — it delayed the first paper being readable by up to
        150ms and made scrolling stutter while the animations were in flight.
        Papers now appear the instant they arrive. */
-    <div className="glass-card resource-card group relative hover:border-cyan-400/25 hover:bg-white/[0.055] active:bg-white/[0.075]">
+    <div className="glass-card resource-card group relative hover:border-brand/30 hover:bg-surface-2 active:bg-surface-2">
       {/* A real link covering the whole card, rather than onClick + router.push
           on the wrapper div.
 
@@ -174,17 +174,17 @@ export function ResourceCard({ resource, showStatus = false }: ResourceCardProps
           {showStatus && <StatusBadge status={resource.status} />}
         </div>
 
-        <h3 className="resource-title group-hover:text-cyan-400 transition-colors">
+        <h3 className="resource-title group-hover:text-brand transition-colors">
           {resource.title}
         </h3>
 
         {resource.subject && (
-          <p className="text-[11px] text-slate-500 truncate leading-tight">{resource.subject}</p>
+          <p className="text-[11px] text-muted truncate leading-tight">{resource.subject}</p>
         )}
 
         {/* Footer pinned to the bottom so every card's action row lines up */}
         <div className="flex items-center justify-between gap-2 mt-auto pt-1.5">
-          <div className="flex items-center gap-2.5 text-[11px] text-slate-500 min-w-0">
+          <div className="flex items-center gap-2.5 text-[11px] text-muted min-w-0">
             <span className="flex items-center gap-1 shrink-0">
               <Download className="w-3 h-3" />
               {resource.downloads || 0}
@@ -203,7 +203,7 @@ export function ResourceCard({ resource, showStatus = false }: ResourceCardProps
             <button
               onClick={handleShare}
               aria-label="Share this resource"
-              className="flex items-center gap-1 px-2 py-1.5 rounded-md text-[11px] font-semibold text-cyan-400 bg-cyan-400/10 hover:bg-cyan-400/20 transition-colors"
+              className="flex items-center gap-1 px-2 py-1.5 rounded-md text-[11px] font-semibold text-brand bg-brand-soft hover:bg-brand-soft transition-colors"
             >
               <Share2 className="w-3.5 h-3.5" />
               <span>Share</span>
@@ -213,7 +213,7 @@ export function ResourceCard({ resource, showStatus = false }: ResourceCardProps
               aria-label={isLiked ? "Unlike" : "Like"}
               className={cn(
                 "p-2 rounded-md transition-colors",
-                isLiked ? "text-red-400 bg-red-400/10" : "text-slate-500 hover:text-red-400 hover:bg-red-400/10"
+                isLiked ? "text-red-400 bg-red-400/10" : "text-muted hover:text-red-400 hover:bg-red-400/10"
               )}
             >
               <Heart className={cn("w-3.5 h-3.5", isLiked && "fill-red-400")} />
@@ -223,7 +223,7 @@ export function ResourceCard({ resource, showStatus = false }: ResourceCardProps
               aria-label={inWishlist ? "Remove from saved" : "Save for later"}
               className={cn(
                 "p-2 rounded-md transition-colors",
-                inWishlist ? "text-cyan-400 bg-cyan-400/10" : "text-slate-500 hover:text-cyan-400 hover:bg-cyan-400/10"
+                inWishlist ? "text-brand bg-brand-soft" : "text-muted hover:text-brand hover:bg-brand-soft"
               )}
             >
               <BookmarkPlus className="w-3.5 h-3.5" />

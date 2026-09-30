@@ -47,11 +47,11 @@ export default function RegisterPage() {
         <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center">
           <BookOpen className="w-4 h-4 text-black" />
         </div>
-        <span className="font-display font-extrabold tracking-[-0.03em] text-white">CampusVault <span className="text-cyan-400">GBPIET</span></span>
+        <span className="font-display font-extrabold tracking-[-0.03em] text-ink">CampusVault <span className="text-brand">GBPIET</span></span>
       </div>
 
-      <h1 className="font-display text-xl font-bold text-white text-center mb-1">Create Account</h1>
-      <p className="text-slate-400 text-sm text-center mb-6">Join the GBPIET academic community</p>
+      <h1 className="font-display text-xl font-bold text-ink text-center mb-1">Create Account</h1>
+      <p className="text-muted text-sm text-center mb-6">Join the GBPIET academic community</p>
 
       <button onClick={handleGoogle} disabled={googleLoading} className="btn-ghost w-full py-3 rounded-xl mb-4 flex items-center justify-center gap-2 text-sm font-medium disabled:opacity-40">
         {googleLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Globe className="w-4 h-4 text-red-400" />}
@@ -59,22 +59,22 @@ export default function RegisterPage() {
       </button>
 
       <div className="flex items-center gap-3 mb-4">
-        <div className="flex-1 h-px bg-white/10" />
-        <span className="text-xs text-slate-600">or</span>
-        <div className="flex-1 h-px bg-white/10" />
+        <div className="flex-1 h-px bg-surface-2" />
+        <span className="text-xs text-slate-400">or</span>
+        <div className="flex-1 h-px bg-surface-2" />
       </div>
 
       <form onSubmit={handleRegister} className="space-y-3">
         <div className="relative">
-          <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+          <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
           <input className="input-field pl-9" placeholder="Full name" required value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} />
         </div>
         <div className="relative">
-          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
           <input type="email" className="input-field pl-9" placeholder="Email address" required value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} />
         </div>
         <div className="relative">
-          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
           <input type="password" className="input-field pl-9" placeholder="Password (min 6 chars)" required value={form.password} onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))} />
         </div>
         <button type="submit" disabled={loading} className="btn-primary w-full py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-40">
@@ -83,9 +83,9 @@ export default function RegisterPage() {
         </button>
       </form>
 
-      <p className="text-center text-sm text-slate-500 mt-4">
+      <p className="text-center text-sm text-muted mt-4">
         Already have an account?{" "}
-        <Link href="/login" className="text-cyan-400 hover:underline font-medium">Sign in</Link>
+        <Link href="/login" className="text-brand hover:underline font-medium">Sign in</Link>
       </p>
     </div>
   );

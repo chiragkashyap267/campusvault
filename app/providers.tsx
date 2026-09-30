@@ -3,7 +3,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState, ReactNode } from "react";
 import { Toaster } from "react-hot-toast";
-import { ThemeProvider } from "next-themes";
 import { useAuth } from "@/lib/hooks/useAuth";
 
 function AuthInitializer({ children }: { children: ReactNode }) {
@@ -27,37 +26,33 @@ export function Providers({ children }: { children: ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="dark"
-        enableSystem={false}
-        disableTransitionOnChange
-      >
-        <AuthInitializer>
+      {/* No ThemeProvider any more. The site is one light theme; the dark
+          palette and its 63 override rules are gone, and ThemeToggle was
+          already a stub returning null, so nothing could switch anyway. */}
+      <AuthInitializer>
           {children}
           <Toaster
             position="top-right"
             toastOptions={{
               duration: 4000,
               style: {
-                background: "rgba(10, 15, 30, 0.95)",
-                color: "#f1f5f9",
-                border: "1px solid rgba(0, 212, 255, 0.2)",
-                backdropFilter: "blur(20px)",
+                background: "#ffffff",
+                color: "#0b1220",
+                border: "1px solid #e3eaf3",
+                boxShadow: "0 6px 24px rgba(11, 18, 32, 0.10)",
                 borderRadius: "12px",
                 fontSize: "14px",
                 fontFamily: "Inter, sans-serif",
               },
               success: {
-                iconTheme: { primary: "#10b981", secondary: "#030712" },
+                iconTheme: { primary: "#047857", secondary: "#ffffff" },
               },
               error: {
-                iconTheme: { primary: "#ef4444", secondary: "#030712" },
+                iconTheme: { primary: "#b91c1c", secondary: "#ffffff" },
               },
             }}
           />
-        </AuthInitializer>
-      </ThemeProvider>
+      </AuthInitializer>
     </QueryClientProvider>
   );
 }

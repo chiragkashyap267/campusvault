@@ -66,7 +66,7 @@ export default function FormsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#030712]">
+    <div className="min-h-screen bg-white">
       {/* Background stays full-bleed; the padding lives on the container so
           the gutters match every other page. */}
       <div className="page-container max-w-4xl page-stack">
@@ -76,17 +76,17 @@ export default function FormsPage() {
             <BookOpen className="w-3.5 h-3.5" />
             Forms & Syllabuses
           </div>
-          <h1 className="font-display text-3xl sm:text-4xl font-bold text-white tracking-tight">
+          <h1 className="font-display text-3xl sm:text-4xl font-bold text-ink tracking-tight">
             Academic <span className="gradient-text">Forms & Documents</span>
           </h1>
-          <p className="text-slate-400 text-sm max-w-lg mx-auto leading-relaxed">
+          <p className="text-muted text-sm max-w-lg mx-auto leading-relaxed">
             Download standard front pages, index pages, syllabuses, and hostel/mess outpass forms for GBPIET students.
           </p>
         </div>
 
         {/* Search Filter */}
         <div className="relative max-w-md mx-auto">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none" />
           <input
             type="text"
             value={search}
@@ -99,19 +99,19 @@ export default function FormsPage() {
         {/* Loading / Error States */}
         {isLoading ? (
           <div className="h-60 flex flex-col items-center justify-center gap-3">
-            <Loader2 className="w-8 h-8 text-cyan-400 animate-spin" />
-            <p className="text-xs text-slate-500 animate-pulse">Loading directory...</p>
+            <Loader2 className="w-8 h-8 text-brand animate-spin" />
+            <p className="text-xs text-muted animate-pulse">Loading directory...</p>
           </div>
         ) : error ? (
           <div className="glass-card p-8 text-center max-w-md mx-auto border border-red-500/20">
             <AlertCircle className="w-8 h-8 text-red-400 mx-auto mb-3" />
-            <p className="text-sm font-semibold text-white">Failed to load documents</p>
-            <p className="text-xs text-slate-500 mt-1">Please check your connection and try again.</p>
+            <p className="text-sm font-semibold text-ink">Failed to load documents</p>
+            <p className="text-xs text-muted mt-1">Please check your connection and try again.</p>
           </div>
         ) : filteredForms.length === 0 ? (
-          <div className="glass-card p-12 text-center max-w-md mx-auto border border-white/5">
-            <File className="w-10 h-10 text-slate-600 mx-auto mb-3" />
-            <p className="text-sm font-medium text-slate-400">No documents found matching "{search}"</p>
+          <div className="glass-card p-12 text-center max-w-md mx-auto border border-line">
+            <File className="w-10 h-10 text-slate-400 mx-auto mb-3" />
+            <p className="text-sm font-medium text-muted">No documents found matching "{search}"</p>
           </div>
         ) : (
           /* Accordion Category Container */
@@ -124,25 +124,25 @@ export default function FormsPage() {
               return (
                 <div 
                   key={category} 
-                  className="rounded-xl overflow-hidden bg-white/[0.02] border border-white/5 transition-colors duration-300 hover:border-white/10"
+                  className="rounded-xl overflow-hidden bg-surface-2 border border-line transition-colors duration-300 hover:border-line"
                 >
                   {/* Category Trigger Header */}
                   <button
                     onClick={() => toggleTab(category)}
-                    className="w-full flex items-center justify-between p-5 hover:bg-white/[0.03] transition-colors"
+                    className="w-full flex items-center justify-between p-5 hover:bg-surface-2 transition-colors"
                   >
                     <div className="flex items-center gap-3">
                       <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
-                        isOpen ? "bg-cyan-400/10 border border-cyan-400/20 text-cyan-400" : "bg-white/5 text-slate-500"
+                        isOpen ? "bg-brand-soft border border-brand/30 text-brand" : "bg-surface-2 text-muted"
                       }`}>
                         <FileText className="w-4 h-4" />
                       </div>
-                      <span className="font-semibold text-white text-sm uppercase tracking-wide">
+                      <span className="font-semibold text-ink text-sm uppercase tracking-wide">
                         {category} ({forms.length})
                       </span>
                     </div>
                     <ChevronDown
-                      className={`w-4 h-4 text-slate-400 transition-transform duration-300 ${isOpen ? "rotate-180 text-cyan-400" : ""}`}
+                      className={`w-4 h-4 text-muted transition-transform duration-300 ${isOpen ? "rotate-180 text-brand" : ""}`}
                     />
                   </button>
 
@@ -154,28 +154,28 @@ export default function FormsPage() {
                         animate={{ height: "auto" }}
                         exit={{ height: 0 }}
                         transition={{ duration: 0.3, ease: "easeInOut" }}
-                        className="overflow-hidden border-t border-white/[0.04]"
+                        className="overflow-hidden border-t border-line"
                       >
                         <div className="p-3 sm:p-5 bg-black/20 grid grid-cols-2 sm:grid-cols-2 gap-2.5 sm:gap-3.5">
                           {forms.length === 0 ? (
-                            <p className="text-xs text-slate-600 col-span-2 py-4 text-center">
+                            <p className="text-xs text-slate-400 col-span-2 py-4 text-center">
                               No files currently available in this section.
                             </p>
                           ) : (
                             forms.map((form) => (
                               <div 
                                 key={form.id} 
-                                className="glass-card p-3 sm:p-4 flex flex-col justify-between hover:bg-white/[0.04] cursor-pointer transition-all duration-300 group"
+                                className="glass-card p-3 sm:p-4 flex flex-col justify-between hover:bg-surface-2 cursor-pointer transition-all duration-300 group"
                               >
                                 <div className="flex items-start gap-2 sm:gap-3 mb-3 sm:mb-4">
-                                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-cyan-400/10 border border-cyan-400/20 text-cyan-400 flex items-center justify-center shrink-0">
-                                    <File className="w-3.5 h-3.5 sm:w-4 h-4 text-cyan-400" />
+                                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-brand-soft border border-brand/30 text-brand flex items-center justify-center shrink-0">
+                                    <File className="w-3.5 h-3.5 sm:w-4 h-4 text-brand" />
                                   </div>
                                   <div className="min-w-0">
-                                    <h4 className="text-xs sm:text-sm font-semibold text-white leading-tight group-hover:text-cyan-400 transition-colors truncate">
+                                    <h4 className="text-xs sm:text-sm font-semibold text-ink leading-tight group-hover:text-brand transition-colors truncate">
                                       {form.title}
                                     </h4>
-                                    <p className="text-[9px] sm:text-[10px] text-slate-500 mt-1">
+                                    <p className="text-[9px] sm:text-[10px] text-muted mt-1">
                                       {formatBytes(form.size || 0)} · Approved
                                     </p>
                                   </div>
@@ -195,7 +195,7 @@ export default function FormsPage() {
                                     href={form.fileUrl} 
                                     target="_blank" 
                                     rel="noopener noreferrer"
-                                    className="p-1.5 sm:p-2 rounded-lg bg-white/5 border border-white/10 hover:border-cyan-400/30 text-slate-400 hover:text-cyan-400 transition-all"
+                                    className="p-1.5 sm:p-2 rounded-lg bg-surface-2 border border-line hover:border-brand/30 text-muted hover:text-brand transition-all"
                                     title="Open"
                                   >
                                     <ExternalLink className="w-3.5 h-3.5" />
@@ -203,7 +203,7 @@ export default function FormsPage() {
                                   <a 
                                     href={getDirectDownloadUrl(form.fileUrl)} 
                                     download={`${form.title.replace(/[^a-zA-Z0-9_\-]/g, "_")}.pdf`}
-                                    className="p-1.5 sm:p-2 rounded-lg bg-white/5 border border-white/10 hover:border-cyan-400/30 text-slate-400 hover:text-cyan-400 transition-all"
+                                    className="p-1.5 sm:p-2 rounded-lg bg-surface-2 border border-line hover:border-brand/30 text-muted hover:text-brand transition-all"
                                     title="Download"
                                   >
                                     <Download className="w-3.5 h-3.5" />

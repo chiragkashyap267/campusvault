@@ -73,19 +73,19 @@ export default function AdminUsersPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-2xl font-bold text-white mb-1">User Manager</h1>
-        <p className="text-slate-400 text-sm">
+        <h1 className="font-display text-2xl font-bold text-ink mb-1">User Manager</h1>
+        <p className="text-muted text-sm">
           {users?.length ?? 0} registered users · {adminCount} admin{adminCount === 1 ? "" : "s"}.
         </p>
       </div>
 
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
         <input className="input-field pl-9" placeholder="Search by name or email..." value={search} onChange={(e) => setSearch(e.target.value)} />
       </div>
 
       {isLoading ? (
-        <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 text-cyan-400 animate-spin" /></div>
+        <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 text-brand animate-spin" /></div>
       ) : (
         <div className="space-y-2">
           {sorted.map((u) => {
@@ -99,15 +99,15 @@ export default function AdminUsersPage() {
                 className="glass-card p-4 flex flex-wrap items-center gap-3"
               >
                 {u.photoURL ? (
-                  <Image src={u.photoURL} alt="" width={36} height={36} className="rounded-full border border-white/10 shrink-0" />
+                  <Image src={u.photoURL} alt="" width={36} height={36} className="rounded-full border border-line shrink-0" />
                 ) : (
-                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-cyan-400/20 to-blue-500/20 flex items-center justify-center text-xs font-bold text-cyan-400 shrink-0">
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-brand-soft to-brand-soft flex items-center justify-center text-xs font-bold text-brand shrink-0">
                     {u.displayName?.[0]?.toUpperCase() || <UserIcon className="w-4 h-4" />}
                   </div>
                 )}
 
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-white flex items-center gap-2 flex-wrap">
+                  <p className="text-sm font-medium text-ink flex items-center gap-2 flex-wrap">
                     <span className="truncate">{u.displayName || "Anonymous"}</span>
                     {userIsAdmin && (
                       <span className="type-badge type-ct inline-flex items-center gap-1">
@@ -116,18 +116,18 @@ export default function AdminUsersPage() {
                       </span>
                     )}
                   </p>
-                  <p className="text-xs text-slate-500 truncate">{u.email}</p>
+                  <p className="text-xs text-muted truncate">{u.email}</p>
                 </div>
 
                 <div className="text-right shrink-0">
-                  <p className="text-xs text-slate-500">{u.uploadCount ?? 0} uploads</p>
-                  {u.createdAt && <p className="text-[10px] text-slate-700">{formatDate(u.createdAt)}</p>}
+                  <p className="text-xs text-muted">{u.uploadCount ?? 0} uploads</p>
+                  {u.createdAt && <p className="text-[10px] text-slate-400">{formatDate(u.createdAt)}</p>}
                 </div>
 
                 {/* An admin who demotes themselves has no way back in through
                     the app, so their own row offers nothing to click. */}
                 {isSelf ? (
-                  <span className="text-[11px] text-slate-600 shrink-0 w-28 text-right">You</span>
+                  <span className="text-[11px] text-slate-400 shrink-0 w-28 text-right">You</span>
                 ) : (
                   <button
                     onClick={() => handleToggle(u.uid, u.displayName || u.email || "this user", userIsAdmin)}
@@ -135,7 +135,7 @@ export default function AdminUsersPage() {
                     className={
                       userIsAdmin
                         ? "btn-ghost shrink-0 w-28 justify-center inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-red-300 hover:text-red-200 disabled:opacity-50"
-                        : "btn-ghost shrink-0 w-28 justify-center inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold hover:text-cyan-300 disabled:opacity-50"
+                        : "btn-ghost shrink-0 w-28 justify-center inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold hover:text-brand disabled:opacity-50"
                     }
                   >
                     {pending ? (
@@ -151,7 +151,7 @@ export default function AdminUsersPage() {
             );
           })}
           {sorted.length === 0 && (
-            <div className="glass-card p-10 text-center text-slate-500 text-sm">No users found.</div>
+            <div className="glass-card p-10 text-center text-muted text-sm">No users found.</div>
           )}
         </div>
       )}

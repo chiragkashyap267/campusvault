@@ -88,14 +88,14 @@ export function ResourceFinder({ onSelect }: ResourceFinderProps = {}) {
   return (
     <div className="glass-card overflow-hidden">
       {/* Header */}
-      <div className="flex items-center gap-2.5 px-3 sm:px-4 py-3 border-b border-white/[0.07] bg-white/[0.03]">
-        <div className="w-8 h-8 rounded-lg bg-cyan-400/10 border border-cyan-400/20 flex items-center justify-center shrink-0">
-          <Search className="w-4 h-4 text-cyan-400" />
+      <div className="flex items-center gap-2.5 px-3 sm:px-4 py-3 border-b border-line bg-surface-2">
+        <div className="w-8 h-8 rounded-lg bg-brand-soft border border-brand/30 flex items-center justify-center shrink-0">
+          <Search className="w-4 h-4 text-brand" />
         </div>
-        <h3 className="font-display text-sm sm:text-base font-bold text-white leading-tight">
+        <h3 className="font-display text-sm sm:text-base font-bold text-ink leading-tight">
           Browse by subject
         </h3>
-        <span className="ml-auto text-[11px] text-slate-500">Pick a branch</span>
+        <span className="ml-auto text-[11px] text-muted">Pick a branch</span>
       </div>
 
       {/* Branch list */}
@@ -109,24 +109,24 @@ export function ResourceFinder({ onSelect }: ResourceFinderProps = {}) {
               key={branch.value}
               className={`rounded-lg overflow-hidden border transition-colors ${
                 isOpenBranch
-                  ? "bg-cyan-400/[0.06] border-cyan-400/25"
-                  : "bg-white/[0.025] border-white/[0.08]"
+                  ? "bg-brand-soft border-brand/30"
+                  : "bg-surface-2 border-line"
               }`}
             >
               {/* Branch row — 48px min height, comfortably tappable on a phone */}
               <button
                 onClick={() => toggleBranch(branch.value)}
                 aria-expanded={isOpenBranch}
-                className="w-full flex items-center justify-between px-3.5 py-3.5 min-h-[3rem] hover:bg-white/[0.05] active:bg-white/[0.07] transition-colors"
+                className="w-full flex items-center justify-between px-3.5 py-3.5 min-h-[3rem] hover:bg-surface-2 active:bg-surface-2 transition-colors"
               >
                 <div className="flex items-center gap-2.5">
-                  <Folder className={`w-4 h-4 shrink-0 ${isOpenBranch ? "text-cyan-400" : "text-slate-400"}`} />
-                  <span className="font-bold text-white uppercase tracking-wider text-sm">
+                  <Folder className={`w-4 h-4 shrink-0 ${isOpenBranch ? "text-brand" : "text-muted"}`} />
+                  <span className="font-bold text-ink uppercase tracking-wider text-sm">
                     {branch.label}
                   </span>
                 </div>
                 <span className={`flex items-center justify-center w-6 h-6 rounded-full shrink-0 transition-colors ${
-                  isOpenBranch ? "bg-cyan-400/20 text-cyan-300" : "bg-white/[0.06] text-slate-400"
+                  isOpenBranch ? "bg-brand-soft text-brand" : "bg-surface-2 text-muted"
                 }`}>
                   <ChevronDown
                     className={`w-3.5 h-3.5 transition-transform duration-200 ${isOpenBranch ? "rotate-180" : ""}`}
@@ -143,23 +143,23 @@ export function ResourceFinder({ onSelect }: ResourceFinderProps = {}) {
                     transition={{ duration: 0.18, ease: "easeInOut" }}
                     className="overflow-hidden"
                   >
-                    <div className="px-2 pt-2 pb-2 space-y-1.5 border-t border-white/[0.06]">
+                    <div className="px-2 pt-2 pb-2 space-y-1.5 border-t border-line">
                       {getSemesters(branch.value).map((sem) => {
                         const isOpenSem = openSemester === sem.value;
                         return (
-                          <div key={sem.value} className="rounded-md overflow-hidden bg-white/[0.02] border border-white/[0.04]">
+                          <div key={sem.value} className="rounded-md overflow-hidden bg-surface-2 border border-line">
                             {/* Semester row */}
                             <button
                               onClick={() => toggleSemester(sem.value)}
                               aria-expanded={isOpenSem}
-                              className="w-full flex items-center justify-between px-3 py-2.5 min-h-[2.5rem] hover:bg-white/[0.05] active:bg-white/[0.07] transition-colors"
+                              className="w-full flex items-center justify-between px-3 py-2.5 min-h-[2.5rem] hover:bg-surface-2 active:bg-surface-2 transition-colors"
                             >
                               <div className="flex items-center gap-2">
-                                <Folder className={`w-3.5 h-3.5 shrink-0 ${isOpenSem ? "text-cyan-400" : "text-slate-500"}`} />
-                                <span className={`text-[13px] font-medium ${isOpenSem ? "text-white" : "text-slate-300"}`}>{sem.label}</span>
+                                <Folder className={`w-3.5 h-3.5 shrink-0 ${isOpenSem ? "text-brand" : "text-muted"}`} />
+                                <span className={`text-[13px] font-medium ${isOpenSem ? "text-ink" : "text-ink-soft"}`}>{sem.label}</span>
                               </div>
                               <ChevronDown
-                                className={`w-3.5 h-3.5 text-slate-500 transition-transform duration-200 shrink-0 ${isOpenSem ? "rotate-180" : ""}`}
+                                className={`w-3.5 h-3.5 text-muted transition-transform duration-200 shrink-0 ${isOpenSem ? "rotate-180" : ""}`}
                               />
                             </button>
 
@@ -172,7 +172,7 @@ export function ResourceFinder({ onSelect }: ResourceFinderProps = {}) {
                                   transition={{ duration: 0.15, ease: "easeInOut" }}
                                   className="overflow-hidden"
                                 >
-                                  <div className="px-2 pt-1.5 pb-2 border-t border-white/[0.05] space-y-1">
+                                  <div className="px-2 pt-1.5 pb-2 border-t border-line space-y-1">
                                     {getSubjects(branch.value, sem.value).map((sub) => {
                                       const isOpenSub = openSubject === sub;
                                       return (
@@ -180,13 +180,13 @@ export function ResourceFinder({ onSelect }: ResourceFinderProps = {}) {
                                           {/* Subject row */}
                                           <button
                                             onClick={() => toggleSubject(sub)}
-                                            className="w-full flex items-center justify-between px-3 py-1.5 hover:bg-white/[0.05] transition-colors rounded-md group"
+                                            className="w-full flex items-center justify-between px-3 py-1.5 hover:bg-surface-2 transition-colors rounded-md group"
                                           >
-                                            <span className="text-xs text-slate-400 group-hover:text-white transition-colors text-left leading-snug">
+                                            <span className="text-xs text-muted group-hover:text-ink transition-colors text-left leading-snug">
                                               {sub}
                                             </span>
                                             <ChevronRight
-                                              className={`w-3 h-3 text-slate-600 transition-transform duration-150 shrink-0 ml-2 ${isOpenSub ? "rotate-90" : ""}`}
+                                              className={`w-3 h-3 text-slate-400 transition-transform duration-150 shrink-0 ml-2 ${isOpenSub ? "rotate-90" : ""}`}
                                             />
                                           </button>
 

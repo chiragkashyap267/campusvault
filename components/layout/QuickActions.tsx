@@ -22,7 +22,7 @@ export function QuickActions() {
   if (onResources && onUpload) return null;
 
   return (
-    <div className="border-b border-white/[0.06] bg-[#070d1a]">
+    <div className="border-b border-line bg-surface-2">
       <div className="container-app py-3 sm:py-3.5">
         {/* Phone: side by side and equal width, so neither is a stray
             full-width block when the other is hidden.

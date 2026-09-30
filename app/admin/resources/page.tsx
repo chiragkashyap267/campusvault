@@ -36,17 +36,17 @@ export default function AdminResourcesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-2xl font-bold text-white mb-1">Resource Manager</h1>
-        <p className="text-slate-400 text-sm">{resources?.length ?? 0} total resources.</p>
+        <h1 className="font-display text-2xl font-bold text-ink mb-1">Resource Manager</h1>
+        <p className="text-muted text-sm">{resources?.length ?? 0} total resources.</p>
       </div>
 
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
         <input className="input-field pl-9" placeholder="Search by title or uploader..." value={search} onChange={(e) => setSearch(e.target.value)} />
       </div>
 
       {isLoading ? (
-        <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 text-cyan-400 animate-spin" /></div>
+        <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 text-brand animate-spin" /></div>
       ) : (
         <div className="space-y-2">
           {filtered.map((r) => (
@@ -61,21 +61,21 @@ export default function AdminResourcesPage() {
                   )}>{r.status}</span>
                   <span className="badge badge-cyan text-[10px]">{getResourceTypeLabel(r.type)}</span>
                 </div>
-                <p className="text-sm font-medium text-white truncate">{r.title}</p>
-                <p className="text-xs text-slate-500">by {r.uploaderName} · {formatRelativeTime(r.createdAt)}</p>
+                <p className="text-sm font-medium text-ink truncate">{r.title}</p>
+                <p className="text-xs text-muted">by {r.uploaderName} · {formatRelativeTime(r.createdAt)}</p>
               </div>
               <div className="flex items-center gap-2 shrink-0">
-                <a href={r.fileUrl} target="_blank" rel="noopener noreferrer" className="p-2 text-slate-500 hover:text-white rounded-lg hover:bg-white/5 transition-all">
+                <a href={r.fileUrl} target="_blank" rel="noopener noreferrer" className="p-2 text-muted hover:text-ink rounded-lg hover:bg-surface-2 transition-all">
                   <ExternalLink className="w-4 h-4" />
                 </a>
-                <button onClick={() => handleDelete(r.id, r.title)} className="p-2 text-slate-500 hover:text-red-400 rounded-lg hover:bg-red-400/10 transition-all">
+                <button onClick={() => handleDelete(r.id, r.title)} className="p-2 text-muted hover:text-red-400 rounded-lg hover:bg-red-400/10 transition-all">
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
             </div>
           ))}
           {filtered.length === 0 && (
-            <div className="glass-card p-10 text-center text-slate-500 text-sm">No resources found.</div>
+            <div className="glass-card p-10 text-center text-muted text-sm">No resources found.</div>
           )}
         </div>
       )}

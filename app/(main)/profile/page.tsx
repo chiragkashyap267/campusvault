@@ -69,7 +69,7 @@ export default function ProfilePage() {
   return (
     <div className="page-container min-h-screen">
       <div className="max-w-3xl mx-auto page-stack">
-        <h1 className="font-display text-2xl font-bold text-white">
+        <h1 className="font-display text-2xl font-bold text-ink">
           My Profile
         </h1>
 
@@ -80,28 +80,28 @@ export default function ProfilePage() {
             <div className="relative group" {...getRootProps()}>
               <input {...getInputProps()} />
               {user?.photoURL ? (
-                <Image src={user.photoURL} alt="" width={80} height={80} className="rounded-full border-2 border-cyan-400/30 object-cover" />
+                <Image src={user.photoURL} alt="" width={80} height={80} className="rounded-full border-2 border-brand/30 object-cover" />
               ) : (
                 <div className="w-20 h-20 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-2xl font-bold text-black">
                   {user?.displayName?.[0]?.toUpperCase() || "U"}
                 </div>
               )}
               <div className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
-                {uploading ? <Loader2 className="w-5 h-5 text-white animate-spin" /> : <Camera className="w-5 h-5 text-white" />}
+                {uploading ? <Loader2 className="w-5 h-5 text-ink animate-spin" /> : <Camera className="w-5 h-5 text-ink" />}
               </div>
             </div>
 
             <div className="flex-1 space-y-3 min-w-0">
               <div>
-                <label className="text-xs text-slate-400 block mb-1">Display Name</label>
+                <label className="text-xs text-muted block mb-1">Display Name</label>
                 <input className="input-field" value={form.displayName} onChange={(e) => setForm((f) => ({ ...f, displayName: e.target.value }))} />
               </div>
               <div>
-                <label className="text-xs text-slate-400 block mb-1">Email</label>
+                <label className="text-xs text-muted block mb-1">Email</label>
                 <input className="input-field opacity-50" value={user?.email || ""} disabled />
               </div>
               <div>
-                <label className="text-xs text-slate-400 block mb-1">Bio</label>
+                <label className="text-xs text-muted block mb-1">Bio</label>
                 <textarea className="input-field resize-none" rows={2} placeholder="Tell others about yourself..." value={form.bio} onChange={(e) => setForm((f) => ({ ...f, bio: e.target.value }))} />
               </div>
             </div>
@@ -110,7 +110,7 @@ export default function ProfilePage() {
 
         {/* Social Links */}
         <div className="glass-card p-6">
-          <h2 className="font-semibold text-white mb-4 text-sm">Social Links</h2>
+          <h2 className="font-semibold text-ink mb-4 text-sm">Social Links</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {[
               { key: "github", icon: <Globe className="w-4 h-4" />, placeholder: "github.com/username" },
@@ -118,7 +118,7 @@ export default function ProfilePage() {
               { key: "twitter", icon: <ExternalLink className="w-4 h-4" />, placeholder: "twitter.com/username" },
             ].map((s) => (
               <div key={s.key} className="relative">
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">{s.icon}</div>
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted">{s.icon}</div>
                 <input
                   className="input-field pl-9"
                   placeholder={s.placeholder}
@@ -138,7 +138,7 @@ export default function ProfilePage() {
         {/* Contributions */}
         {approved.length > 0 && (
           <section>
-            <h2 className="font-display text-lg font-bold text-white mb-4">Public Contributions ({approved.length})</h2>
+            <h2 className="font-display text-lg font-bold text-ink mb-4">Public Contributions ({approved.length})</h2>
             <div className="resource-grid">
               {approved.map((r) => <ResourceCard key={r.id} resource={r} />)}
             </div>

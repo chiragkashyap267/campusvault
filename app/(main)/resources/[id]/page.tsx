@@ -198,7 +198,7 @@ export default function ResourceViewerPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <p className="text-slate-400 mb-4">Resource not found.</p>
+          <p className="text-muted mb-4">Resource not found.</p>
           <Link href="/resources" className="btn-ghost px-6 py-2 rounded-xl text-sm">← Back to Resources</Link>
         </div>
       </div>
@@ -209,15 +209,15 @@ export default function ResourceViewerPage() {
     <div className="page-container min-h-screen">
       <div className="max-w-3xl mx-auto page-stack">
         {/* Back */}
-        <Link href="/resources" className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors">
+        <Link href="/resources" className="inline-flex items-center gap-2 text-sm text-muted hover:text-ink transition-colors">
           <ArrowLeft className="w-4 h-4" /> Back to Resources
         </Link>
 
         {/* Resource Info */}
         <div className="glass-card p-6">
           <div className="flex items-start gap-4 mb-4">
-            <div className="w-12 h-12 rounded-xl bg-cyan-400/10 border border-cyan-400/20 flex items-center justify-center shrink-0">
-              <FileText className="w-6 h-6 text-cyan-400" />
+            <div className="w-12 h-12 rounded-xl bg-brand-soft border border-brand/30 flex items-center justify-center shrink-0">
+              <FileText className="w-6 h-6 text-brand" />
             </div>
             <div className="flex-1">
               <div className="flex flex-wrap gap-2 mb-2">
@@ -225,13 +225,13 @@ export default function ResourceViewerPage() {
                 <span className="badge badge-purple text-xs">{resource.branch.toUpperCase()}</span>
                 <span className="badge badge-cyan text-xs">Sem {resource.semester}</span>
               </div>
-              <h1 className="font-display text-xl font-bold text-white mb-1">{resource.title}</h1>
-              <p className="text-slate-400 text-sm">{resource.description}</p>
+              <h1 className="font-display text-xl font-bold text-ink mb-1">{resource.title}</h1>
+              <p className="text-muted text-sm">{resource.description}</p>
             </div>
           </div>
 
           {/* Meta */}
-          <div className="flex flex-wrap gap-x-4 gap-y-2 text-xs text-slate-500 mb-5">
+          <div className="flex flex-wrap gap-x-4 gap-y-2 text-xs text-muted mb-5">
             <span>By {resource.uploaderName}</span>
             <span>·</span>
             <span>{formatRelativeTime(resource.createdAt)}</span>
@@ -274,7 +274,7 @@ export default function ResourceViewerPage() {
                   "p-2.5 rounded-xl border transition-all flex-1 sm:flex-initial flex justify-center items-center", 
                   isLiked 
                     ? "border-red-400/30 bg-red-400/10 text-red-400" 
-                    : "border-white/10 text-slate-500 hover:text-red-400 hover:border-red-400/20"
+                    : "border-line text-muted hover:text-red-400 hover:border-red-400/20"
                 )}
                 title="Like"
               >
@@ -285,8 +285,8 @@ export default function ResourceViewerPage() {
                 className={cn(
                   "p-2.5 rounded-xl border transition-all flex-1 sm:flex-initial flex justify-center items-center", 
                   inWishlist 
-                    ? "border-cyan-400/30 bg-cyan-400/10 text-cyan-400" 
-                    : "border-white/10 text-slate-500 hover:text-cyan-400 hover:border-cyan-400/20"
+                    ? "border-brand/30 bg-brand-soft text-brand" 
+                    : "border-line text-muted hover:text-brand hover:border-brand/30"
                 )}
                 title="Save to Wishlist"
               >
@@ -299,27 +299,27 @@ export default function ResourceViewerPage() {
         {/* PDF Preview */}
         {resource.fileFormat === "pdf" && (
           <div className="glass-card overflow-hidden rounded-xl">
-            <div className="p-4 border-b border-white/[0.06] flex items-center justify-between">
-              <p className="text-sm font-medium text-slate-300">Preview</p>
+            <div className="p-4 border-b border-line flex items-center justify-between">
+              <p className="text-sm font-medium text-ink-soft">Preview</p>
               {pdfStatus.code !== "CLOUDINARY_PDF_RESTRICTED" && (
                 <a 
                   href={getDirectDownloadUrl(resource.fileUrl)}
                   download={`${resource.title.replace(/[^a-zA-Z0-9_\-]/g, "_")}.pdf`}
-                  className="text-xs text-cyan-400 hover:text-cyan-300"
+                  className="text-xs text-brand hover:text-brand"
                 >
                   Download PDF
                 </a>
               )}
             </div>
-            <div className="relative w-full bg-[#0f172a] min-h-[300px]">
+            <div className="relative w-full bg-white min-h-[300px]">
               {pdfStatus.loading ? (
                 <div className="h-[400px] flex flex-col items-center justify-center gap-3">
-                  <Loader2 className="w-8 h-8 text-cyan-400 animate-spin" />
-                  <p className="text-xs text-slate-500 animate-pulse">Loading PDF preview...</p>
+                  <Loader2 className="w-8 h-8 text-brand animate-spin" />
+                  <p className="text-xs text-muted animate-pulse">Loading PDF preview...</p>
                 </div>
               ) : pdfStatus.error ? (
                 pdfStatus.code === "CLOUDINARY_PDF_RESTRICTED" ? (
-                  <div className="p-6 md:p-8 text-center space-y-6 bg-[#0f172a]/80 backdrop-blur-xl border border-yellow-500/20 rounded-xl relative overflow-hidden">
+                  <div className="p-6 md:p-8 text-center space-y-6 bg-white backdrop-blur-xl border border-yellow-500/20 rounded-xl relative overflow-hidden">
                     <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-500" />
                     
                     <div className="w-16 h-16 mx-auto rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
@@ -327,20 +327,20 @@ export default function ResourceViewerPage() {
                     </div>
 
                     <div className="space-y-2 max-w-md mx-auto">
-                      <h3 className="text-lg font-bold text-white">Cloudinary PDF Delivery Restricted</h3>
-                      <p className="text-sm text-slate-400 leading-relaxed">
+                      <h3 className="text-lg font-bold text-ink">Cloudinary PDF Delivery Restricted</h3>
+                      <p className="text-sm text-muted leading-relaxed">
                         Your Cloudinary environment blocks raw PDF delivery by default with a <code className="text-amber-400 bg-amber-950/40 px-1.5 py-0.5 rounded text-xs font-mono">401 Unauthorized</code> error.
                       </p>
                     </div>
 
-                    <div className="bg-slate-900/60 border border-white/5 rounded-xl p-5 text-left max-w-lg mx-auto space-y-3">
-                      <h4 className="text-xs font-semibold text-slate-300 uppercase tracking-wider">How to Enable in 1 Minute:</h4>
-                      <ol className="text-xs text-slate-400 space-y-2 list-decimal list-inside leading-relaxed">
-                        <li>Log in to your <a href="https://cloudinary.com/console" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline inline-flex items-center gap-0.5">Cloudinary Console <ExternalLink className="w-3 h-3" /></a></li>
-                        <li>Click the <strong className="text-white">Settings</strong> gear icon (bottom-left corner)</li>
-                        <li>Select the <strong className="text-white">Security</strong> tab from the menu</li>
-                        <li>Scroll down to the <strong className="text-white">"PDF and ZIP files delivery"</strong> section</li>
-                        <li>Uncheck <strong className="text-amber-400">"Restrict PDF and ZIP files delivery"</strong> (or check <strong className="text-cyan-400">"Allow delivery of PDF and ZIP files"</strong>)</li>
+                    <div className="bg-surface-2 border border-line rounded-xl p-5 text-left max-w-lg mx-auto space-y-3">
+                      <h4 className="text-xs font-semibold text-ink-soft uppercase tracking-wider">How to Enable in 1 Minute:</h4>
+                      <ol className="text-xs text-muted space-y-2 list-decimal list-inside leading-relaxed">
+                        <li>Log in to your <a href="https://cloudinary.com/console" target="_blank" rel="noopener noreferrer" className="text-brand hover:underline inline-flex items-center gap-0.5">Cloudinary Console <ExternalLink className="w-3 h-3" /></a></li>
+                        <li>Click the <strong className="text-ink">Settings</strong> gear icon (bottom-left corner)</li>
+                        <li>Select the <strong className="text-ink">Security</strong> tab from the menu</li>
+                        <li>Scroll down to the <strong className="text-ink">"PDF and ZIP files delivery"</strong> section</li>
+                        <li>Uncheck <strong className="text-amber-400">"Restrict PDF and ZIP files delivery"</strong> (or check <strong className="text-brand">"Allow delivery of PDF and ZIP files"</strong>)</li>
                         <li>Click the <strong className="text-emerald-400">"Save"</strong> button at the bottom</li>
                       </ol>
                     </div>
@@ -380,8 +380,8 @@ export default function ResourceViewerPage() {
                       <AlertTriangle className="w-6 h-6 text-red-400" />
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-white">Error Loading PDF Preview</p>
-                      <p className="text-xs text-slate-500 mt-1">{pdfStatus.error}</p>
+                      <p className="text-sm font-semibold text-ink">Error Loading PDF Preview</p>
+                      <p className="text-xs text-muted mt-1">{pdfStatus.error}</p>
                     </div>
                     <div className="flex gap-2">
                       <a href={resource.fileUrl} target="_blank" rel="noopener noreferrer" className="btn-primary px-4 py-2 rounded-xl text-xs">
@@ -397,8 +397,8 @@ export default function ResourceViewerPage() {
                     className="w-full h-[600px] border-0"
                     title={resource.title}
                   />
-                  <div className="p-4 text-center border-t border-white/5 flex flex-wrap gap-2 justify-center">
-                    <p className="text-xs text-slate-500 w-full mb-1">Preview not loading?</p>
+                  <div className="p-4 text-center border-t border-line flex flex-wrap gap-2 justify-center">
+                    <p className="text-xs text-muted w-full mb-1">Preview not loading?</p>
                     <a href={resource.fileUrl} target="_blank" rel="noopener noreferrer" className="btn-primary px-4 py-2 rounded-xl text-sm inline-block">
                       Open in Browser
                     </a>
@@ -421,8 +421,8 @@ export default function ResourceViewerPage() {
 
         {/* Comments */}
         <div className="glass-card p-6">
-          <h2 className="font-display font-bold text-white mb-4 flex items-center gap-2">
-            <MessageSquare className="w-5 h-5 text-cyan-400" />
+          <h2 className="font-display font-bold text-ink mb-4 flex items-center gap-2">
+            <MessageSquare className="w-5 h-5 text-brand" />
             Comments ({comments.length})
           </h2>
 
@@ -439,28 +439,28 @@ export default function ResourceViewerPage() {
               </button>
             </form>
           ) : (
-            <p className="text-slate-500 text-sm mb-6">
-              <Link href="/login" className="text-cyan-400 hover:underline">Sign in</Link> to comment.
+            <p className="text-muted text-sm mb-6">
+              <Link href="/login" className="text-brand hover:underline">Sign in</Link> to comment.
             </p>
           )}
 
           <div className="space-y-4">
             {comments.map((c) => (
               <div key={c.id} className="flex gap-3">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400/30 to-blue-500/30 flex items-center justify-center text-xs font-bold text-cyan-400 shrink-0">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand-soft to-brand-soft flex items-center justify-center text-xs font-bold text-brand shrink-0">
                   {c.displayName[0]?.toUpperCase()}
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs font-semibold text-white">{c.displayName}</span>
-                    <span className="text-[10px] text-slate-600">{formatRelativeTime(c.createdAt)}</span>
+                    <span className="text-xs font-semibold text-ink">{c.displayName}</span>
+                    <span className="text-[10px] text-slate-400">{formatRelativeTime(c.createdAt)}</span>
                   </div>
-                  <p className="text-sm text-slate-400">{c.text}</p>
+                  <p className="text-sm text-muted">{c.text}</p>
                 </div>
               </div>
             ))}
             {comments.length === 0 && (
-              <p className="text-center text-slate-600 text-sm py-4">No comments yet. Be the first!</p>
+              <p className="text-center text-slate-400 text-sm py-4">No comments yet. Be the first!</p>
             )}
           </div>
         </div>

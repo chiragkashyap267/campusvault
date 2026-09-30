@@ -22,8 +22,8 @@ export function ResourceFiltersPanel({ filters, onChange, onReset }: ResourceFil
     <div className="space-y-5">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-sm font-semibold text-white">
-          <Filter className="w-4 h-4 text-cyan-400" />
+        <div className="flex items-center gap-2 text-sm font-semibold text-ink">
+          <Filter className="w-4 h-4 text-brand" />
           Filters
           {activeCount > 0 && (
             <span className="badge badge-cyan text-[10px]">{activeCount}</span>
@@ -32,7 +32,7 @@ export function ResourceFiltersPanel({ filters, onChange, onReset }: ResourceFil
         {activeCount > 0 && (
           <button
             onClick={onReset}
-            className="text-xs text-slate-500 hover:text-red-400 flex items-center gap-1 transition-colors"
+            className="text-xs text-muted hover:text-red-400 flex items-center gap-1 transition-colors"
           >
             <X className="w-3 h-3" />
             Clear
@@ -92,8 +92,8 @@ export function ResourceFiltersPanel({ filters, onChange, onReset }: ResourceFil
               className={cn(
                 "py-1.5 rounded-lg text-xs font-medium transition-all",
                 filters.semester === s.value
-                  ? "bg-cyan-400/20 text-cyan-400 border border-cyan-400/30"
-                  : "bg-white/5 text-slate-400 hover:bg-white/10"
+                  ? "bg-brand-soft text-brand border border-brand/30"
+                  : "bg-surface-2 text-muted hover:bg-surface-2"
               )}
             >
               {s.value}
@@ -111,7 +111,7 @@ function FilterGroup({ label, children }: { label: string; children: React.React
     <div>
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center justify-between w-full text-xs font-medium text-slate-500 uppercase tracking-wider mb-2 hover:text-slate-300 transition-colors"
+        className="flex items-center justify-between w-full text-xs font-medium text-muted uppercase tracking-wider mb-2 hover:text-ink-soft transition-colors"
       >
         {label}
         <ChevronDown className={cn("w-3 h-3 transition-transform", !open && "-rotate-90")} />
@@ -140,8 +140,8 @@ function FilterChip({ label, active, onClick }: { label: string; active: boolean
       className={cn(
         "w-full text-left px-3 py-1.5 rounded-lg text-xs transition-all",
         active
-          ? "bg-cyan-400/15 text-cyan-400 border border-cyan-400/25"
-          : "text-slate-400 hover:text-white hover:bg-white/5"
+          ? "bg-brand-soft text-brand border border-brand/30"
+          : "text-muted hover:text-ink hover:bg-surface-2"
       )}
     >
       {label}

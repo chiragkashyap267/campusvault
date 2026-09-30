@@ -17,7 +17,7 @@ export function FeaturedSection() {
         <div>
           <div className="flex items-end justify-between mb-6">
             <div>
-              <div className="flex items-center gap-2 text-cyan-400 mb-1.5">
+              <div className="flex items-center gap-2 text-brand mb-1.5">
                 <TrendingUp className="w-4 h-4" />
                 {/* Not "this week". `downloads` is a running counter with no
                     per-download timestamp, so there is nothing to window by —
@@ -26,7 +26,7 @@ export function FeaturedSection() {
               </div>
               <h2 className="section-title">Trending Resources</h2>
             </div>
-            <Link href="/resources?sortBy=downloads" className="flex items-center gap-1 text-sm text-slate-400 hover:text-cyan-400 transition-colors group">
+            <Link href="/resources?sortBy=downloads" className="flex items-center gap-1 text-sm text-muted hover:text-brand transition-colors group">
               View all <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
             </Link>
           </div>
@@ -43,11 +43,11 @@ export function FeaturedSection() {
                not the same as nothing being uploaded, so this no longer asks
                for uploads the library already has. */
             <div className="glass-card p-12 text-center">
-              <Sparkles className="w-8 h-8 text-slate-600 mx-auto mb-3" />
-              <p className="text-slate-500 text-sm">
+              <Sparkles className="w-8 h-8 text-slate-400 mx-auto mb-3" />
+              <p className="text-muted text-sm">
                 Nothing has been downloaded yet. The papers students open most will show up here.
               </p>
-              <Link href="/resources" className="inline-flex items-center gap-1.5 mt-4 text-cyan-400 text-sm hover:text-cyan-300 transition-colors font-medium">
+              <Link href="/resources" className="inline-flex items-center gap-1.5 mt-4 text-brand text-sm hover:text-brand transition-colors font-medium">
                 Browse the library <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
@@ -60,13 +60,13 @@ export function FeaturedSection() {
         {/* Dual CTA */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <div className="glass-card p-8 text-center relative overflow-hidden group">
-            <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/5 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="absolute inset-0 bg-gradient-to-br from-brand-soft via-transparent to-brand-soft opacity-0 group-hover:opacity-100 transition-opacity" />
             <div className="relative">
-              <div className="w-12 h-12 rounded-2xl bg-cyan-400/10 border border-cyan-400/20 flex items-center justify-center mx-auto mb-4">
-                <Sparkles className="w-6 h-6 text-cyan-400" />
+              <div className="w-12 h-12 rounded-2xl bg-brand-soft border border-brand/30 flex items-center justify-center mx-auto mb-4">
+                <Sparkles className="w-6 h-6 text-brand" />
               </div>
-              <h3 className="font-display text-xl font-bold text-white mb-2">Share Your Materials</h3>
-              <p className="text-slate-400 text-sm mb-5 leading-relaxed">
+              <h3 className="font-display text-xl font-bold text-ink mb-2">Share Your Materials</h3>
+              <p className="text-muted text-sm mb-5 leading-relaxed">
                 Upload notes, PYQs, and study materials to help your batchmates and earn a spot on the leaderboard!
               </p>
               <Link href="/upload" className="btn-primary px-6 py-2.5 rounded-xl text-sm font-semibold inline-flex items-center gap-2">
@@ -83,8 +83,8 @@ export function FeaturedSection() {
               <div className="w-12 h-12 rounded-2xl bg-yellow-400/10 border border-yellow-400/20 flex items-center justify-center mx-auto mb-4">
                 <Crown className="w-6 h-6 text-yellow-400" />
               </div>
-              <h3 className="font-display text-xl font-bold text-white mb-2">Leaderboard</h3>
-              <p className="text-slate-400 text-sm mb-5 leading-relaxed">
+              <h3 className="font-display text-xl font-bold text-ink mb-2">Leaderboard</h3>
+              <p className="text-muted text-sm mb-5 leading-relaxed">
                 See who are the top contributors. Climb the ranks and get recognized by your peers!
               </p>
               <Link href="/leaderboard" className="btn-ghost px-6 py-2.5 rounded-xl text-sm font-semibold inline-flex items-center gap-2">

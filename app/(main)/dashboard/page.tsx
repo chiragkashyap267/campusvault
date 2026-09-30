@@ -32,17 +32,17 @@ export default function DashboardPage() {
         {/* Header */}
         <div className="glass-card p-6 flex items-center gap-4">
           {user?.photoURL ? (
-            <Image src={user.photoURL} alt="" width={56} height={56} className="rounded-full border-2 border-cyan-400/30" />
+            <Image src={user.photoURL} alt="" width={56} height={56} className="rounded-full border-2 border-brand/30" />
           ) : (
             <div className="w-14 h-14 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-xl font-bold text-black">
               {user?.displayName?.[0]?.toUpperCase() || "U"}
             </div>
           )}
           <div className="flex-1">
-            <h1 className="font-display text-xl font-bold text-white">
+            <h1 className="font-display text-xl font-bold text-ink">
               Welcome back, {user?.displayName?.split(" ")[0] || "Student"}!
             </h1>
-            <p className="text-slate-400 text-sm">{user?.email}</p>
+            <p className="text-muted text-sm">{user?.email}</p>
           </div>
           <Link href="/profile" className="btn-ghost px-4 py-2 rounded-xl text-sm hidden sm:flex items-center gap-2">
             Edit Profile
@@ -52,7 +52,7 @@ export default function DashboardPage() {
         {/* Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
-            { icon: <Upload className="w-4 h-4" />, label: "Uploads", value: uploads?.length || 0, color: "text-cyan-400" },
+            { icon: <Upload className="w-4 h-4" />, label: "Uploads", value: uploads?.length || 0, color: "text-brand" },
             { icon: <CheckCircle className="w-4 h-4" />, label: "Approved", value: approved.length, color: "text-green-400" },
             { icon: <Download className="w-4 h-4" />, label: "Downloads", value: totalDownloads, color: "text-blue-400" },
             { icon: <Star className="w-4 h-4" />, label: "Likes", value: totalLikes, color: "text-yellow-400" },
@@ -62,8 +62,8 @@ export default function DashboardPage() {
               className="glass-card p-4 text-center"
             >
               <div className={`flex justify-center mb-2 ${stat.color}`}>{stat.icon}</div>
-              <p className="text-2xl font-bold text-white font-display">{stat.value}</p>
-              <p className="text-xs text-slate-500">{stat.label}</p>
+              <p className="text-2xl font-bold text-ink font-display">{stat.value}</p>
+              <p className="text-xs text-muted">{stat.label}</p>
             </div>
           ))}
         </div>
@@ -85,8 +85,8 @@ export default function DashboardPage() {
         {/* My Uploads */}
         <section>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-display text-lg font-bold text-white flex items-center gap-2">
-              <Upload className="w-5 h-5 text-cyan-400" /> My Uploads
+            <h2 className="font-display text-lg font-bold text-ink flex items-center gap-2">
+              <Upload className="w-5 h-5 text-brand" /> My Uploads
             </h2>
             <Link href="/upload" className="btn-primary text-xs px-4 py-2 rounded-lg">+ Upload</Link>
           </div>
@@ -100,21 +100,21 @@ export default function DashboardPage() {
             </div>
           ) : (
             <div className="glass-card p-10 text-center">
-              <Upload className="w-8 h-8 text-slate-600 mx-auto mb-3" />
-              <p className="text-slate-400 text-sm">No uploads yet. Share your first resource!</p>
+              <Upload className="w-8 h-8 text-slate-400 mx-auto mb-3" />
+              <p className="text-muted text-sm">No uploads yet. Share your first resource!</p>
             </div>
           )}
         </section>
 
         {/* Saved Resources */}
         <section>
-          <h2 className="font-display text-lg font-bold text-white flex items-center gap-2 mb-4">
-            <BookmarkIcon className="w-5 h-5 text-cyan-400" /> Saved Resources
+          <h2 className="font-display text-lg font-bold text-ink flex items-center gap-2 mb-4">
+            <BookmarkIcon className="w-5 h-5 text-brand" /> Saved Resources
           </h2>
           {wishlist && wishlist.length === 0 && (
             <div className="glass-card p-10 text-center">
-              <BookmarkIcon className="w-8 h-8 text-slate-600 mx-auto mb-3" />
-              <p className="text-slate-400 text-sm">No saved resources yet.</p>
+              <BookmarkIcon className="w-8 h-8 text-slate-400 mx-auto mb-3" />
+              <p className="text-muted text-sm">No saved resources yet.</p>
             </div>
           )}
         </section>

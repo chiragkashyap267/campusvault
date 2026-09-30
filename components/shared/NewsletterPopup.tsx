@@ -158,12 +158,12 @@ export function NewsletterPopup() {
             animate={{ scale: 1, y: 0, opacity: 1 }}
             exit={{ scale: 0.9, y: 30, opacity: 0 }}
             transition={{ type: "spring", damping: 25, stiffness: 220 }}
-            className="relative w-full max-w-md glass rounded-3xl border border-cyan-400/20 overflow-hidden shadow-[0_24px_64px_rgba(0,0,0,0.5)] p-6 md:p-8"
+            className="relative w-full max-w-md glass rounded-3xl border border-brand/30 overflow-hidden shadow-[0_24px_64px_rgba(0,0,0,0.5)] p-6 md:p-8"
           >
             {/* Close Button */}
             <button
               onClick={handleClose}
-              className="absolute top-4 right-4 p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer z-10"
+              className="absolute top-4 right-4 p-1.5 rounded-lg text-muted hover:text-ink hover:bg-surface-2 transition-all cursor-pointer z-10"
               aria-label="Dismiss — will ask again shortly"
             >
               <X className="w-5 h-5" />
@@ -175,13 +175,13 @@ export function NewsletterPopup() {
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", damping: 15, stiffness: 300 }}
-                  className="w-16 h-16 rounded-full bg-cyan-500/10 border border-cyan-500/35 flex items-center justify-center text-cyan-400 mx-auto mb-4"
+                  className="w-16 h-16 rounded-full bg-brand-soft border border-brand/30 flex items-center justify-center text-brand mx-auto mb-4"
                 >
                   <Check className="w-8 h-8" />
                 </motion.div>
-                <h3 className="text-xl font-display font-black text-white">You're In! 🎉</h3>
-                <p className="text-xs text-slate-400 mt-2 leading-relaxed">
-                  Welcome! We've registered <span className="text-cyan-400 font-bold">{email}</span> for weekly study digests.
+                <h3 className="text-xl font-display font-black text-ink">You're In! 🎉</h3>
+                <p className="text-xs text-muted mt-2 leading-relaxed">
+                  Welcome! We've registered <span className="text-brand font-bold">{email}</span> for weekly study digests.
                   Check your inbox for a welcome email!
                 </p>
               </div>
@@ -193,15 +193,15 @@ export function NewsletterPopup() {
                     <Bell className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[10px] font-bold">
+                    <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-brand-soft border border-brand/30 text-brand text-[10px] font-bold">
                       <Sparkles className="w-3 h-3" />
                       <span>Free Weekly Digests</span>
                     </div>
-                    <h3 className="text-lg font-display font-black text-white mt-1">Get Study Alerts in Your Inbox</h3>
+                    <h3 className="text-lg font-display font-black text-ink mt-1">Get Study Alerts in Your Inbox</h3>
                   </div>
                 </div>
 
-                <p className="text-xs text-slate-400 leading-relaxed mb-5">
+                <p className="text-xs text-muted leading-relaxed mb-5">
                   Stay ahead in your exams! Get instant email alerts whenever toppers upload
                   handpicked notes, PYQs, and class test papers — completely free, no spam.
                 </p>
@@ -213,9 +213,9 @@ export function NewsletterPopup() {
                     { icon: "📝", label: "Handwritten Notes" },
                     { icon: "📚", label: "Books & Manuals" },
                   ].map(perk => (
-                    <div key={perk.label} className="bg-white/5 rounded-xl p-2.5 text-center border border-white/5">
+                    <div key={perk.label} className="bg-surface-2 rounded-xl p-2.5 text-center border border-line">
                       <div className="text-lg mb-1">{perk.icon}</div>
-                      <div className="text-[10px] font-bold text-slate-400">{perk.label}</div>
+                      <div className="text-[10px] font-bold text-muted">{perk.label}</div>
                     </div>
                   ))}
                 </div>
@@ -223,7 +223,7 @@ export function NewsletterPopup() {
                 {/* Form */}
                 <form onSubmit={handleSubscribe} className="space-y-3">
                   <div>
-                    <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5" htmlFor="newsletter-email">
+                    <label className="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5" htmlFor="newsletter-email">
                       Your Email Address
                     </label>
                     <input
@@ -232,7 +232,7 @@ export function NewsletterPopup() {
                       placeholder="e.g. chirag@gmail.com"
                       value={email}
                       onChange={e => setEmail(e.target.value)}
-                      className="input-field py-2.5 text-white"
+                      className="input-field py-2.5 text-ink"
                       required
                       autoComplete="email"
                     />
@@ -253,7 +253,7 @@ export function NewsletterPopup() {
                   </button>
                 </form>
 
-                <div className="mt-4 pt-3 border-t border-white/5 flex justify-between items-center text-[9px] text-slate-500 font-bold uppercase tracking-wider">
+                <div className="mt-4 pt-3 border-t border-line flex justify-between items-center text-[9px] text-muted font-bold uppercase tracking-wider">
                   <span>🔒 Zero Spam Policy</span>
                   <span>📩 Free Forever</span>
                 </div>

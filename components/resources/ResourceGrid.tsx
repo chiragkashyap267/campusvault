@@ -126,7 +126,7 @@ export function ResourceGrid({ filters = {} }: ResourceGridProps) {
     return (
       <div className="glass-card p-10 text-center">
         <p className="text-red-400 mb-1.5 font-semibold">Failed to load resources</p>
-        <p className="text-slate-500 text-sm">Please try refreshing the page.</p>
+        <p className="text-muted text-sm">Please try refreshing the page.</p>
       </div>
     );
   }
@@ -136,20 +136,20 @@ export function ResourceGrid({ filters = {} }: ResourceGridProps) {
       <div className="glass-card p-10 sm:p-14 text-center">
         {isSearching ? (
           <>
-            <Search className="w-10 h-10 text-slate-600 mx-auto mb-3" />
-            <h3 className="text-base font-semibold text-slate-300 mb-1.5">
+            <Search className="w-10 h-10 text-slate-400 mx-auto mb-3" />
+            <h3 className="text-base font-semibold text-ink-soft mb-1.5">
               Nothing matches “{searchTerm}”
             </h3>
-            <p className="text-slate-500 text-sm max-w-sm mx-auto">
-              Try a shorter term, the subject code (like <span className="text-slate-400">DBMS</span>),
+            <p className="text-muted text-sm max-w-sm mx-auto">
+              Try a shorter term, the subject code (like <span className="text-muted">DBMS</span>),
               or clear the filters on the left.
             </p>
           </>
         ) : (
           <>
-            <PackageOpen className="w-10 h-10 text-slate-600 mx-auto mb-3" />
-            <h3 className="text-base font-semibold text-slate-300 mb-1.5">No resources found</h3>
-            <p className="text-slate-500 text-sm">
+            <PackageOpen className="w-10 h-10 text-slate-400 mx-auto mb-3" />
+            <h3 className="text-base font-semibold text-ink-soft mb-1.5">No resources found</h3>
+            <p className="text-muted text-sm">
               Try adjusting your filters or be the first to upload!
             </p>
           </>
@@ -161,8 +161,8 @@ export function ResourceGrid({ filters = {} }: ResourceGridProps) {
   return (
     <div>
       {isSearching && (
-        <p className="text-xs text-slate-500 mb-3">
-          <span className="text-slate-300 font-medium">{resources.length}</span>{" "}
+        <p className="text-xs text-muted mb-3">
+          <span className="text-ink-soft font-medium">{resources.length}</span>{" "}
           {resources.length === 1 ? "result" : "results"} for “{searchTerm}” — best matches first
         </p>
       )}
@@ -176,9 +176,9 @@ export function ResourceGrid({ filters = {} }: ResourceGridProps) {
       {/* Infinite scroll sentinel — browse mode only */}
       {!isSearching && (
         <div ref={sentinelRef} className="h-8 mt-6 flex items-center justify-center">
-          {isFetchingNextPage && <Loader2 className="w-5 h-5 text-cyan-400 animate-spin" />}
+          {isFetchingNextPage && <Loader2 className="w-5 h-5 text-brand animate-spin" />}
           {!hasNextPage && resources.length > 0 && (
-            <p className="text-xs text-slate-600">All resources loaded</p>
+            <p className="text-xs text-slate-400">All resources loaded</p>
           )}
         </div>
       )}
