@@ -23,6 +23,7 @@ import {
 } from "firebase/firestore";
 import { User as FirebaseUser } from "firebase/auth";
 import { db } from "./config";
+import { rankByUsage, MIN_TRENDING_DOWNLOADS } from "@/lib/search/trending";
 import {
   Resource,
   User,
@@ -226,15 +227,29 @@ export async function getRecentResources(count = 6): Promise<Resource[]> {
   return snap.docs.map(toResource);
 }
 
-export async function getTrendingResources(count = 6): Promise<Resource[]> {
+/**
+ * The resources students are actually using — see `rankByUsage` for what
+ * qualifies and why.
+ *
+ * Over-fetches and finishes the work in memory. Expressing `downloads > 0`
+ * alongside the status filter would need a second composite index for a
+ * candidate set this small, and the tie-breaks cannot be expressed in a
+ * Firestore query at all. The `count * 5` headroom is so the filter has spare
+ * rows to discard.
+ */
+export async function getTrendingResources(
+  count = 6,
+  minDownloads = MIN_TRENDING_DOWNLOADS
+): Promise<Resource[]> {
   const q = query(
     collection(db, "resources"),
     where("status", "==", "approved"),
     orderBy("downloads", "desc"),
-    limit(count)
+    limit(Math.max(count * 5, 30))
   );
   const snap = await getDocs(q);
-  return snap.docs.map(toResource);
+
+  return rankByUsage(snap.docs.map(toResource), count, minDownloads);
 }
 
 export async function getResourceById(id: string): Promise<Resource | null> {

@@ -112,25 +112,40 @@ export default function ResourceViewerPage() {
       toast.error("Download blocked by Cloudinary settings. See steps below!");
       return;
     }
-    try {
-      // Use direct CDN download for maximum speed
-      const downloadUrl = getDirectDownloadUrl(resource.fileUrl);
+    const filename = `${resource.title.replace(/[^a-zA-Z0-9_\-]/g, "_")}.pdf`;
+    const saveFrom = (url: string) => {
       const a = document.createElement("a");
-      a.href = downloadUrl;
-      a.setAttribute("download", `${resource.title.replace(/[^a-zA-Z0-9_\-]/g, "_")}.pdf`);
+      a.href = url;
+      a.setAttribute("download", filename);
       document.body.appendChild(a);
       a.click();
       a.remove();
-      await downloadMut.mutateAsync(id);
-      toast.success("Download started!");
+    };
+
+    try {
+      // Direct from the CDN for speed; the proxy is the fallback.
+      saveFrom(getDirectDownloadUrl(resource.fileUrl));
     } catch (error) {
       console.error("Direct download failed, using proxy fallback:", error);
-      const downloadUrl = getDownloadUrl(resource.fileUrl, resource.title);
-      const a = document.createElement("a");
-      a.href = downloadUrl;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
+      saveFrom(getDownloadUrl(resource.fileUrl, resource.title));
+    }
+
+    toast.success("Download started!");
+
+    // Counted outside the try above, on purpose.
+    //
+    // The count used to sit inside it, after the click. A failed write — which
+    // was every write by anyone but an admin, until the rules were fixed —
+    // threw straight into the fallback and handed the student a second copy of
+    // the same paper. And the fallback never counted at all, so every download
+    // that took the proxy route was invisible to the trending row.
+    //
+    // A lost count is not worth a duplicate download, so a failure here stays
+    // in the console.
+    try {
+      await downloadMut.mutateAsync(id);
+    } catch (error) {
+      console.error("Could not record the download:", error);
     }
   };
 

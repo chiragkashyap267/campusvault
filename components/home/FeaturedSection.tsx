@@ -19,7 +19,10 @@ export function FeaturedSection() {
             <div>
               <div className="flex items-center gap-2 text-cyan-400 mb-1.5">
                 <TrendingUp className="w-4 h-4" />
-                <span className="text-xs font-semibold uppercase tracking-widest">Most Downloaded This Week</span>
+                {/* Not "this week". `downloads` is a running counter with no
+                    per-download timestamp, so there is nothing to window by —
+                    the label was claiming a recency the data cannot support. */}
+                <span className="text-xs font-semibold uppercase tracking-widest">Most Downloaded</span>
               </div>
               <h2 className="section-title">Trending Resources</h2>
             </div>
@@ -36,11 +39,16 @@ export function FeaturedSection() {
               {trending.map((r) => <ResourceCard key={r.id} resource={r} />)}
             </div>
           ) : (
+            /* Reached only when nothing has been downloaded at all — which is
+               not the same as nothing being uploaded, so this no longer asks
+               for uploads the library already has. */
             <div className="glass-card p-12 text-center">
               <Sparkles className="w-8 h-8 text-slate-600 mx-auto mb-3" />
-              <p className="text-slate-500 text-sm">No trending resources yet. Be the first to upload!</p>
-              <Link href="/upload" className="inline-flex items-center gap-1.5 mt-4 text-cyan-400 text-sm hover:text-cyan-300 transition-colors font-medium">
-                Upload now <ArrowRight className="w-3.5 h-3.5" />
+              <p className="text-slate-500 text-sm">
+                Nothing has been downloaded yet. The papers students open most will show up here.
+              </p>
+              <Link href="/resources" className="inline-flex items-center gap-1.5 mt-4 text-cyan-400 text-sm hover:text-cyan-300 transition-colors font-medium">
+                Browse the library <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
           )}

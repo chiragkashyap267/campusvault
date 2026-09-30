@@ -40,11 +40,62 @@ service cloud.firestore {
     }
 
     // ── Resources ─────────────────────────────────────────────────────────────
+    // The owner check used to read `resource.data.uploaderId`. Resource
+    // documents store the uploader as `uploadedBy` — no document has ever had
+    // an `uploaderId` — so that branch could never be true and, in practice,
+    // only an admin could update or delete anything.
+    //
+    // Uploaders could not edit or remove their own uploads. More visibly,
+    // every download counter bump and every like written by an ordinary
+    // student was rejected, silently, in the browser. That is why download
+    // counts sat in single figures and every like count in the library is
+    // still zero.
     match /resources/{resourceId} {
+      function ownsResource() {
+        return isSignedIn() && request.auth.uid == resource.data.uploadedBy;
+      }
+
+      function touchesOnly(fields) {
+        return request.resource.data.diff(resource.data).affectedKeys().hasOnly(fields);
+      }
+
+      function likedBefore() {
+        return 'likedBy' in resource.data ? resource.data.likedBy : [];
+      }
+
+      function likedAfter() {
+        return 'likedBy' in request.resource.data ? request.resource.data.likedBy : [];
+      }
+
       allow read: if true;
       allow create: if isSignedIn();
-      allow update, delete: if isSignedIn() &&
-        (request.auth.uid == resource.data.uploaderId || isAdmin());
+
+      allow update: if ownsResource() || isAdmin()
+
+        // A download raises the counter by exactly one and touches nothing
+        // else. Open to logged-out visitors deliberately: browsing without an
+        // account is the point of this site, so counting only signed-in
+        // downloads would leave the trending row nearly as wrong as it is now.
+        || (touchesOnly(['downloads'])
+            && request.resource.data.downloads == resource.data.downloads + 1)
+
+        // A like adds or removes the caller's own uid and moves the count one
+        // step in the matching direction. The size checks are what stop
+        // someone dropping other people from the list while adding themselves.
+        || (isSignedIn() && touchesOnly(['likes', 'likedBy'])
+            && (
+                 (request.resource.data.likes == resource.data.likes + 1
+                  && likedAfter().size() == likedBefore().size() + 1
+                  && !(request.auth.uid in likedBefore())
+                  && request.auth.uid in likedAfter())
+                 ||
+                 (request.resource.data.likes == resource.data.likes - 1
+                  && likedAfter().size() == likedBefore().size() - 1
+                  && request.auth.uid in likedBefore()
+                  && !(request.auth.uid in likedAfter()))
+               ));
+
+      allow delete: if ownsResource() || isAdmin();
     }
 
     // ── Users ─────────────────────────────────────────────────────────────────
