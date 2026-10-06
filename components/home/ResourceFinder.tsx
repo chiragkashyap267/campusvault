@@ -2,24 +2,9 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ChevronRight, Folder, FileText, Book, PenTool, Search } from "lucide-react";
+import { ChevronDown, ChevronRight, Folder, Search } from "lucide-react";
 import Link from "next/link";
 import { BRANCHES, SEMESTERS, SUBJECTS_BY_BRANCH, SEMESTER_COUNT, BTECH_SUBJECTS } from "@/lib/constants";
-
-/**
- * The four things you can open for a subject.
- *
- * Accents come from the shared type classes, so a "Final Exams" tile here, the
- * PYQ chip on the library page and the PYQ badge on a card are all the same
- * colour. The four blocks this replaces were near-identical markup with the
- * colours written out by hand each time.
- */
-const SUBJECT_LINKS = [
-  { type: "ct", label: "CT Papers", icon: PenTool, accent: "type-ct" },
-  { type: "pyq", label: "Final Exams", icon: FileText, accent: "type-pyq" },
-  { type: "notes", label: "Notes", icon: FileText, accent: "type-notes" },
-  { type: "study_material", label: "Books", icon: Book, accent: "type-book" },
-] as const;
 
 interface ResourceFinderProps {
   /**
@@ -34,7 +19,6 @@ interface ResourceFinderProps {
 export function ResourceFinder({ onSelect }: ResourceFinderProps = {}) {
   const [openBranch, setOpenBranch] = useState<string | null>(null);
   const [openSemester, setOpenSemester] = useState<number | string | null>(null);
-  const [openSubject, setOpenSubject] = useState<string | null>(null);
 
   /**
    * Subjects come from the shared table rather than a copy inside this
@@ -64,24 +48,17 @@ export function ResourceFinder({ onSelect }: ResourceFinderProps = {}) {
     } else {
       setOpenBranch(val);
       setOpenSemester(null);
-      setOpenSubject(null);
     }
   };
 
   const toggleSemester = (val: number | string) => {
     setOpenSemester(openSemester === val ? null : val);
-    setOpenSubject(null);
-  };
-
-  const toggleSubject = (val: string) => {
-    setOpenSubject(openSubject === val ? null : val);
   };
 
   /** Collapse the whole directory once a choice is made, then hand off. */
   const handleSelect = () => {
     setOpenBranch(null);
     setOpenSemester(null);
-    setOpenSubject(null);
     onSelect?.();
   };
 
@@ -173,51 +150,19 @@ export function ResourceFinder({ onSelect }: ResourceFinderProps = {}) {
                                   className="overflow-hidden"
                                 >
                                   <div className="px-2 pt-1.5 pb-2 border-t border-line space-y-1">
-                                    {getSubjects(branch.value, sem.value).map((sub) => {
-                                      const isOpenSub = openSubject === sub;
-                                      return (
-                                        <div key={sub}>
-                                          {/* Subject row */}
-                                          <button
-                                            onClick={() => toggleSubject(sub)}
-                                            className="w-full flex items-center justify-between px-3 py-1.5 hover:bg-surface-2 transition-colors rounded-md group"
-                                          >
-                                            <span className="text-xs text-muted group-hover:text-ink transition-colors text-left leading-snug">
-                                              {sub}
-                                            </span>
-                                            <ChevronRight
-                                              className={`w-3 h-3 text-slate-400 transition-transform duration-150 shrink-0 ml-2 ${isOpenSub ? "rotate-90" : ""}`}
-                                            />
-                                          </button>
-
-                                          <AnimatePresence initial={false}>
-                                            {isOpenSub && (
-                                              <motion.div
-                                                initial={{ height: 0, opacity: 0 }}
-                                                animate={{ height: "auto", opacity: 1 }}
-                                                exit={{ height: 0, opacity: 0 }}
-                                                transition={{ duration: 0.15 }}
-                                                className="overflow-hidden"
-                                              >
-                                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 px-2 pt-2 pb-3">
-                                                  {SUBJECT_LINKS.map((link) => (
-                                                    <Link
-                                                      key={link.type}
-                                                      href={`/resources?branch=${branch.value}&semester=${sem.value}&subject=${encodeURIComponent(sub)}&type=${link.type}`}
-                                                      onClick={handleSelect}
-                                                      className={`type-tile ${link.accent}`}
-                                                    >
-                                                      <link.icon className="w-3.5 h-3.5" />
-                                                      <span>{link.label}</span>
-                                                    </Link>
-                                                  ))}
-                                                </div>
-                                              </motion.div>
-                                            )}
-                                          </AnimatePresence>
-                                        </div>
-                                      );
-                                    })}
+                                    {getSubjects(branch.value, sem.value).map((sub) => (
+                                      <Link
+                                        key={sub}
+                                        href={`/resources?branch=${branch.value}&semester=${sem.value}&subject=${encodeURIComponent(sub)}`}
+                                        onClick={handleSelect}
+                                        className="w-full flex items-center justify-between px-3 py-1.5 hover:bg-surface-2 transition-colors rounded-md group"
+                                      >
+                                        <span className="text-xs text-muted group-hover:text-ink transition-colors text-left leading-snug">
+                                          {sub}
+                                        </span>
+                                        <ChevronRight className="w-3 h-3 text-slate-400 shrink-0 ml-2" />
+                                      </Link>
+                                    ))}
                                   </div>
                                 </motion.div>
                               )}

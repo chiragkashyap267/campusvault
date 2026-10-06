@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Filter, X, ChevronDown } from "lucide-react";
 import { useState } from "react";
-import { BRANCHES, RESOURCE_TYPES, SEMESTERS, SORT_OPTIONS } from "@/lib/constants";
+import { BRANCHES, SEMESTERS, SORT_OPTIONS } from "@/lib/constants";
 import { ResourceFilters } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -15,7 +15,7 @@ interface ResourceFiltersProps {
 }
 
 export function ResourceFiltersPanel({ filters, onChange, onReset }: ResourceFiltersProps) {
-  const activeCount = [filters.type, filters.branch, filters.semester]
+  const activeCount = [filters.branch, filters.semester]
     .filter(Boolean).length;
 
   return (
@@ -49,20 +49,6 @@ export function ResourceFiltersPanel({ filters, onChange, onReset }: ResourceFil
               label={opt.label}
               active={filters.sortBy === opt.value}
               onClick={() => onChange("sortBy", opt.value)}
-            />
-          ))}
-        </div>
-      </FilterGroup>
-
-      {/* Type */}
-      <FilterGroup label="Resource Type">
-        <div className="space-y-1">
-          {RESOURCE_TYPES.map((t) => (
-            <FilterChip
-              key={t.value}
-              label={`${t.icon} ${t.label}`}
-              active={filters.type === t.value}
-              onClick={() => onChange("type", filters.type === t.value ? "" : t.value)}
             />
           ))}
         </div>

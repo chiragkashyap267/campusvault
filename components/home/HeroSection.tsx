@@ -1,26 +1,46 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, forwardRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, ArrowRight, Upload, BookOpen, Sparkles, FileText, MonitorPlay, Pencil, Lightbulb, Blocks } from "lucide-react";
+import { Search, ArrowRight, Upload, BookOpen, Sparkles } from "lucide-react";
 import { useAuthStore } from "@/lib/store/authStore";
 
+/** Cycling words in the heading */
 const WORDS = ["Resources", "PYQ Papers", "Notes", "Lab Manuals", "Projects"];
 
-/** One tap each, for the searches students actually run. */
+/**
+ * Placeholder examples that cycle inside the search input — exactly like
+ * Google's animated suggestions. They teach new users what to type.
+ */
+const PLACEHOLDER_EXAMPLES = [
+  "Search Graph Theory...",
+  "Search Big Data Analytics...",
+  "Search Entrepreneurship...",
+  "Search MCA Sem 3 papers...",
+  "Search BCA Database...",
+  "Search B.Tech networks...",
+  "Search Cloud Computing...",
+  "Search Compiler Design...",
+  "Search Discrete Structures...",
+  "Search Data Structures...",
+];
+
+/** Quick-tap chips below the search bar */
 const QUICK_PICKS = [
-  { label: "MCA PYQ", href: "/resources?type=pyq&branch=mca" },
-  { label: "B.Tech PYQ", href: "/resources?type=pyq&branch=btech" },
-  { label: "BCA PYQ", href: "/resources?type=pyq&branch=bca" },
-  { label: "CT Papers", href: "/resources?type=ct" },
+  { label: "MCA Papers", href: "/resources?branch=mca" },
+  { label: "BCA Papers", href: "/resources?branch=bca" },
+  { label: "B.Tech Papers", href: "/resources?branch=btech" },
+  { label: "Graph Theory", href: "/resources?search=Graph+Theory" },
+  { label: "Big Data", href: "/resources?search=Big+Data" },
 ];
 
 export function HeroSection() {
   const { user } = useAuthStore();
   const router = useRouter();
   const [query, setQuery] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,28 +49,29 @@ export function HeroSection() {
   };
 
   return (
-    /* Height excludes the navbar. At a flat 100svh the hero was a full
-       viewport tall *below* a 64px nav, so it always overflowed the screen and
-       pushed the call to action under the fold. */
     <section className="relative min-h-[calc(100svh-var(--nav-height)-var(--quick-actions-height))] flex items-center justify-center overflow-hidden hero-gradient">
-      {/* The particle canvas, three blurred orbs and a grid overlay used to sit
-          here. All four were built to glow against a near-black page; on white
-          they range from invisible to grubby, and the canvas was a permanent
-          animation frame loop on the first screen a visitor sees. The soft blue
-          wash in .hero-gradient replaces the lot. */}
+      <div className="container-app relative z-10 text-center py-10 sm:py-16">
 
-      <div className="container-app relative z-10 text-center py-10 sm:py-14">
-        <div className="flex justify-center mb-5">
+        {/* Badge */}
+        <motion.div
+          initial={{ opacity: 0, y: -12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="flex justify-center mb-5"
+        >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-soft border border-brand/25 text-sm font-medium text-brand">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Academic Resource Hub for GBPIET</span>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Heading is a size smaller than it was. The search box below is the
-            point of this screen, and at 7xl the type pushed it under the fold
-            on a laptop. */}
-        <div className="mb-7">
+        {/* Heading */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, delay: 0.08 }}
+          className="mb-8"
+        >
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-black text-ink tracking-[-0.045em] leading-[1.05] mb-1">
             One Vault for{" "}
             <br className="hidden sm:block" />
@@ -59,50 +80,116 @@ export function HeroSection() {
           <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-black tracking-[-0.045em] leading-[1.05]">
             <AnimatedWord words={WORDS} />
           </div>
-        </div>
+        </motion.div>
 
-        {/* ── The search. This is what the page is for. ──────────────────
-            It was previously behind a magnifier icon in the navbar, two taps
-            away and invisible to anyone who did not think to look. Finding a
-            past paper is the whole job of the site, so it gets the middle of
-            the first screen. */}
-        <form onSubmit={submit} className="max-w-2xl mx-auto">
-          <label htmlFor="hero-search" className="sr-only">
-            Search past papers, notes and subjects
-          </label>
-          <div className="flex items-center gap-2 p-2 rounded-2xl bg-white border border-line shadow-[0_4px_24px_rgba(11,18,32,0.07)] focus-within:border-brand focus-within:shadow-[0_0_0_4px_rgba(2,132,199,0.12)] transition-shadow">
-            <Search className="w-5 h-5 text-muted shrink-0 ml-2" />
-            <input
-              id="hero-search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search a subject or code — try DBMS sem 3"
-              className="flex-1 min-w-0 bg-transparent outline-none text-base text-ink placeholder:text-muted py-2"
-              autoComplete="off"
-            />
-            <button
-              type="submit"
-              className="shrink-0 btn-primary px-5 sm:px-7 py-2.5 rounded-xl text-sm font-semibold"
+        {/* ── GOOGLE-STYLE SEARCH BAR ─────────────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 20, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.18 }}
+          className="max-w-3xl mx-auto px-2 sm:px-0"
+        >
+          <form onSubmit={submit}>
+            <label htmlFor="hero-search" className="sr-only">
+              Search subjects, papers, notes
+            </label>
+
+            {/* Search box — big, clean, Google-style */}
+            <div
+              className="
+                flex items-center gap-3
+                px-4 sm:px-6
+                py-3 sm:py-4
+                rounded-full
+                bg-white
+                border-2 border-line
+                shadow-[0_4px_32px_rgba(11,18,32,0.1)]
+                focus-within:border-brand
+                focus-within:shadow-[0_0_0_4px_rgba(2,132,199,0.15),0_4px_32px_rgba(11,18,32,0.1)]
+                transition-all duration-200
+              "
             >
-              Search
-            </button>
+              {/* Search icon */}
+              <Search className="w-5 h-5 sm:w-6 sm:h-6 text-muted shrink-0" />
+
+              {/* Input with animated placeholder */}
+              <AnimatedPlaceholderInput
+                id="hero-search"
+                ref={inputRef}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholders={PLACEHOLDER_EXAMPLES}
+                className="
+                  flex-1 min-w-0 bg-transparent outline-none
+                  text-base sm:text-lg md:text-xl
+                  text-ink
+                  placeholder:text-muted/60
+                  py-0
+                "
+              />
+
+              {/* Search button — hides label on very small phones, shows icon only */}
+              <button
+                type="submit"
+                className="
+                  shrink-0
+                  btn-primary
+                  px-4 sm:px-7
+                  py-2 sm:py-2.5
+                  rounded-full
+                  text-sm sm:text-base
+                  font-semibold
+                  flex items-center gap-2
+                "
+              >
+                <Search className="w-4 h-4 sm:hidden" />
+                <span className="hidden sm:inline">Search</span>
+              </button>
+            </div>
+
+            {/* Helper hint */}
+            <p className="text-xs text-muted mt-2.5 text-center">
+              Try a subject name, branch, or semester — e.g.{" "}
+              <button
+                type="button"
+                onClick={() => { setQuery("Graph Theory"); inputRef.current?.focus(); }}
+                className="text-brand hover:underline"
+              >
+                Graph Theory
+              </button>
+              {" "}or{" "}
+              <button
+                type="button"
+                onClick={() => { setQuery("Big Data"); inputRef.current?.focus(); }}
+                className="text-brand hover:underline"
+              >
+                Big Data
+              </button>
+            </p>
+          </form>
+
+          {/* Quick-pick chips */}
+          <div className="flex flex-wrap items-center justify-center gap-2 mt-5">
+            {QUICK_PICKS.map((p) => (
+              <Link
+                key={p.label}
+                href={p.href}
+                className="px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold text-brand bg-brand-soft border border-brand/20 hover:bg-white hover:border-brand/40 transition-colors"
+              >
+                {p.label}
+              </Link>
+            ))}
           </div>
-        </form>
+        </motion.div>
+        {/* ─────────────────────────────────────────────────────────────────── */}
 
-        <div className="flex flex-wrap items-center justify-center gap-2 mt-4">
-          {QUICK_PICKS.map((p) => (
-            <Link
-              key={p.label}
-              href={p.href}
-              className="px-3.5 py-1.5 rounded-full text-xs font-semibold text-brand bg-brand-soft border border-brand/20 hover:bg-white hover:border-brand/40 transition-colors"
-            >
-              {p.label}
-            </Link>
-          ))}
-        </div>
-
-        {/* Secondary to the search now, so they no longer compete with it. */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8 mb-10">
+        {/* Secondary CTA buttons */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.28 }}
+          className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-10 mb-10"
+        >
           <Link
             href="/resources"
             className="group flex items-center gap-2 btn-ghost px-6 py-2.5 rounded-xl text-sm font-semibold w-full sm:w-auto justify-center"
@@ -117,36 +204,16 @@ export function HeroSection() {
               className="flex items-center gap-2 btn-ghost px-6 py-2.5 rounded-xl text-sm font-semibold w-full sm:w-auto justify-center"
             >
               <Upload className="w-4 h-4" />
-              Join & Upload
+              Join &amp; Upload
             </Link>
           )}
-        </div>
-
-        {/* These were styled as buttons and had a pointer cursor but went
-            nowhere. Each one now runs the search it advertises. */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-w-2xl mx-auto">
-          {PREVIEW_CARDS.map((card) => (
-            <Link
-              key={card.label}
-              href={card.href}
-              className="glass-card text-left group hover:border-brand/40 transition-colors"
-            >
-              <div className="p-4">
-                <div className="mb-3">
-                  <div className={`inline-flex p-2 rounded-xl bg-surface-2 border border-line ${card.color}`}>
-                    <card.icon className="w-5 h-5" />
-                  </div>
-                </div>
-                <p className="text-xs font-semibold text-ink group-hover:text-brand transition-colors">{card.label}</p>
-                <p className="text-xs text-muted mt-0.5">{card.count}</p>
-              </div>
-            </Link>
-          ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
 }
+
+// ─── Animated cycling heading word ────────────────────────────────────────────
 
 function AnimatedWord({ words }: { words: string[] }) {
   const [index, setIndex] = useState(0);
@@ -174,11 +241,76 @@ function AnimatedWord({ words }: { words: string[] }) {
   );
 }
 
-const PREVIEW_CARDS = [
-  { icon: FileText, label: "PYQ Papers", count: "Semester-wise", color: "text-blue-600", href: "/resources?type=pyq" },
-  { icon: BookOpen, label: "Books", count: "Library & Ref", color: "text-emerald-600", href: "/resources?type=study_material" },
-  { icon: MonitorPlay, label: "Useful Softwares", count: "Tools & IDEs", color: "text-brand", href: "/resources?type=software" },
-  { icon: Pencil, label: "CT Papers", count: "Previous years", color: "text-orange-600", href: "/resources?type=ct" },
-  { icon: Lightbulb, label: "Projects", count: "Ideas & files", color: "text-amber-600", href: "/resources?type=project" },
-  { icon: Blocks, label: "Study Notes", count: "All subjects", color: "text-purple-600", href: "/resources?type=notes" },
-];
+
+
+interface AnimatedPlaceholderInputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {
+  placeholders: string[];
+}
+
+const AnimatedPlaceholderInput = forwardRef<
+  HTMLInputElement,
+  AnimatedPlaceholderInputProps
+>(function AnimatedPlaceholderInput(
+  { placeholders, value, onChange, className, id, ...rest },
+  ref
+) {
+  const [phIndex, setPhIndex] = useState(0);
+  const [displayedPh, setDisplayedPh] = useState("");
+  const [typing, setTyping] = useState(true);
+
+  // Cycle through placeholder strings with a typewriter effect
+  useEffect(() => {
+    if ((value as string)?.length > 0) return; // stop animating while user is typing
+
+    const target = placeholders[phIndex];
+    let i = typing ? displayedPh.length : displayedPh.length;
+    let timeout: ReturnType<typeof setTimeout>;
+
+    if (typing) {
+      if (displayedPh.length < target.length) {
+        timeout = setTimeout(() => {
+          setDisplayedPh(target.slice(0, displayedPh.length + 1));
+        }, 60);
+      } else {
+        // fully typed — pause then erase
+        timeout = setTimeout(() => setTyping(false), 1800);
+      }
+    } else {
+      if (displayedPh.length > 0) {
+        timeout = setTimeout(() => {
+          setDisplayedPh(displayedPh.slice(0, -1));
+        }, 30);
+      } else {
+        // fully erased — move to next placeholder
+        setPhIndex((prev) => (prev + 1) % placeholders.length);
+        setTyping(true);
+      }
+    }
+
+    return () => clearTimeout(timeout);
+  }, [displayedPh, typing, phIndex, placeholders, value]);
+
+  // When user clears input, restart animation from current placeholder
+  useEffect(() => {
+    if ((value as string)?.length === 0) {
+      setDisplayedPh("");
+      setTyping(true);
+    }
+  }, [value]);
+
+  return (
+    <input
+      ref={ref}
+      id={id}
+      value={value}
+      onChange={onChange}
+      placeholder={displayedPh}
+      autoComplete="off"
+      autoCorrect="off"
+      spellCheck={false}
+      className={className}
+      {...rest}
+    />
+  );
+});
